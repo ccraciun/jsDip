@@ -1,0 +1,21 @@
+﻿.l, .Unowned, .Independent	{fill:#FFFFDD; stroke:black; stroke-linejoin:round}
+.w				{fill:#99CCFF; stroke:black; stroke-linejoin:round}
+.s				{fill:#DDDDDD; stroke:black; stroke-linejoin:round}
+
+text				{font-family:Arial,Helvetica,sans-serif; font-size:8px}
+
+#MapLayer .Austria		{fill:#FF0000; stroke:black}
+#MapLayer .England		{fill:#0000FF; stroke:black}
+#MapLayer .France 		{fill:#00FFFF; stroke:black}
+#MapLayer .Germany		{fill:#808080; stroke:black}
+#MapLayer .Italy  		{fill:#00FF00; stroke:black}
+#MapLayer .Russia 		{fill:#008000; stroke:black}
+#MapLayer .Turkey 		{fill:#FFFF00; stroke:black}
+
+#ForcesLayer #Austria * 	{fill:#FF0000; stroke:black}
+#ForcesLayer #England * 	{fill:#0000FF; stroke:black}
+#ForcesLayer #France *  	{fill:#00FFFF; stroke:black}
+#ForcesLayer #Germany * 	{fill:#808080; stroke:black}
+#ForcesLayer #Italy *   	{fill:#00FF00; stroke:black}
+#ForcesLayer #Russia *  	{fill:#008000; stroke:black}
+#ForcesLayer #Turkey *  	{fill:#FFFF00; stroke:black}

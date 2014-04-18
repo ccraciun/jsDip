@@ -1,0 +1,71 @@
+﻿{
+    "turn": "Spring 1910",
+    "active": [
+        "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
+    ],
+    "SC": {
+        "Budapest": "Austria",
+        "Trieste": "Austria",
+        "Vienna": "Austria",
+        "Edinburgh": "England",
+        "Liverpool": "England",
+        "London": "England",
+        "Brest": "France",
+        "Marseilles": "France",
+        "Paris": "France",
+        "Berlin": "Germany",
+        "Kiel": "Germany",
+        "Munich": "Germany",
+        "Naples": "Italy",
+        "Rome": "Italy",
+        "Venice": "Italy",
+        "Moscow": "Russia",
+        "Sevastopol": "Russia",
+        "St_Petersburg": "Russia",
+        "Warsaw": "Russia",
+        "Ankara": "Turkey",
+        "Constantinople": "Turkey",
+        "Smyrna": "Turkey",
+        "Belgium": "Independent",
+        "Bulgaria": "Independent",
+        "Denmark": "Independent",
+        "Greece": "Independent",
+        "Norway": "Independent",
+        "Portugal": "Independent",
+        "Rumania": "Independent",
+        "Serbia": "Independent",
+        "Spain": "Independent",
+        "Sweden": "Independent",
+        "Tunis": "Independent"
+    },
+    "forces": {
+        "Austria": {
+            "armies": ["Budapest", "Vienna"],
+            "fleets": ["Trieste"]
+        },
+        "England": {
+            "armies": ["Liverpool"],
+            "fleets": ["London", "Edinburgh"]
+        },
+        "France": {
+            "armies": ["Paris", "Marseilles"],
+            "fleets": ["Brest"]
+        },
+        "Germany": {
+            "armies": ["Berlin", "Munich"],
+            "fleets": ["Kiel"]
+        },
+        "Italy": {
+            "armies": ["Rome", "Venice"],
+            "fleets": ["Naples"]
+        },
+        "Russia": {
+            "armies": ["Moscow", "Warsaw"],
+            "fleets": ["St_Petersburg", "Sevastopol"]
+        },
+        "Turkey": {
+            "armies": ["Constantinople", "Smyrna"],
+            "fleets": ["Ankara"]
+        }
+    }
+}
