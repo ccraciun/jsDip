@@ -1,2 +1,4 @@
-﻿#main #map			{ width: 80%; height: 100%; }
-#main #status			{ width: 20%; float: right; }
+﻿#main #map			{width:80%; height:90%;}
+#main #status			{width:19%; bottom:0px; float:right; background-color:#CCCCCC; border:1px; border-color:overflow:auto}
+
+.message 			{font-family:'Lucida Sans Unicode',monospace; font-size:12px}

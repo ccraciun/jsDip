@@ -19,3 +19,23 @@ text				{font-family:Arial,Helvetica,sans-serif; font-size:8px}
 #ForcesLayer #Italy *   	{fill:#00FF00; stroke:black}
 #ForcesLayer #Russia *  	{fill:#008000; stroke:black}
 #ForcesLayer #Turkey *  	{fill:#FFFF00; stroke:black}
+
+#ForcesLayer #Austria ordering:hover 	{fill:#FF1010; stroke:black}
+#ForcesLayer #England ordering:hover 	{fill:#1010FF; stroke:black}
+#ForcesLayer #France ordering:hover  	{fill:#10FFFF; stroke:black}
+#ForcesLayer #Germany ordering:hover 	{fill:#909090; stroke:black}
+#ForcesLayer #Italy ordering:hover   	{fill:#10FF10; stroke:black}
+#ForcesLayer #Russia ordering:hover  	{fill:#108010; stroke:black}
+#ForcesLayer #Turkey ordering:hover  	{fill:#FFFF10; stroke:black}
+
+#OrdersLayer .order {fill:none; stroke:black; stroke-width:3; marker-end:url(#arrow)}
+#OrdersLayer .order.fail {marker-mid:url(#
+
+.message.Austria		{color:#FF0000}
+.message.England		{color:#0000FF}
+.message.France 		{color:#00FFFF}
+.message.Germany		{color:#808080}
+.message.Italy  		{color:#00FF00}
+.message.Russia 		{color:#008000}
+.message.Turkey 		{color:#FFFF00}
+

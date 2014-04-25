@@ -22,6 +22,12 @@ Created for Diplomap (http://www.games2relax.net/diplomap/)
 <g id="SC"> <!-- unowned SC -->
         <circle r="4" class="Unowned"/>
 </g>
+<marker id="arrow" orient="auto" markerwidth="2" markerHeight="4" refX="0.1" refY="2">
+    <path d="M0,0 V4 L2,2 Z" fill="black"/>
+</marker>
+<marker id="fail" orient="auto" markerwidth="2" markerHeight="4" refX="0.1" refY="2">
+    <path d="M0,0 V4 H4 V-4 Z" fill="black"/>
+</marker>
 </defs>
 
 <g id="MapLayer">
