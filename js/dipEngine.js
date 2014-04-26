@@ -22,12 +22,13 @@
             counts[power].fleets = state.forces[power].fleets.length;
         };
 
-        // Update status bar.
         for (pow in counts) {
             statusBox.putLine(pow + ' has ' + counts[pow].SCs + ' SCs, ' +
                     counts[pow].armies + ' armies, ' +
                     counts[pow].fleets + ' fleets.', pow);
         };
+
+        state.counts = counts;
 
         return counts;
     };

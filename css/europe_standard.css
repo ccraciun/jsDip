@@ -12,24 +12,21 @@ text				{font-family:Arial,Helvetica,sans-serif; font-size:8px}
 #MapLayer .Russia 		{fill:#008000; stroke:black}
 #MapLayer .Turkey 		{fill:#FFFF00; stroke:black}
 
-#ForcesLayer #Austria * 	{fill:#FF0000; stroke:black}
-#ForcesLayer #England * 	{fill:#0000FF; stroke:black}
-#ForcesLayer #France *  	{fill:#00FFFF; stroke:black}
-#ForcesLayer #Germany * 	{fill:#808080; stroke:black}
-#ForcesLayer #Italy *   	{fill:#00FF00; stroke:black}
-#ForcesLayer #Russia *  	{fill:#008000; stroke:black}
-#ForcesLayer #Turkey *  	{fill:#FFFF00; stroke:black}
+#ForcesLayer #Austria .force 	{fill:#FF0000; stroke:black}
+#ForcesLayer #England .force 	{fill:#0000FF; stroke:black}
+#ForcesLayer #France .force  	{fill:#00FFFF; stroke:black}
+#ForcesLayer #Germany .force 	{fill:#808080; stroke:black}
+#ForcesLayer #Italy .force   	{fill:#00FF00; stroke:black}
+#ForcesLayer #Russia .force  	{fill:#008000; stroke:black}
+#ForcesLayer #Turkey .force  	{fill:#FFFF00; stroke:black}
 
-#ForcesLayer #Austria ordering:hover 	{fill:#FF1010; stroke:black}
-#ForcesLayer #England ordering:hover 	{fill:#1010FF; stroke:black}
-#ForcesLayer #France ordering:hover  	{fill:#10FFFF; stroke:black}
-#ForcesLayer #Germany ordering:hover 	{fill:#909090; stroke:black}
-#ForcesLayer #Italy ordering:hover   	{fill:#10FF10; stroke:black}
-#ForcesLayer #Russia ordering:hover  	{fill:#108010; stroke:black}
-#ForcesLayer #Turkey ordering:hover  	{fill:#FFFF10; stroke:black}
+#ForcesLayer .force.selected 	{stroke-width:2}
 
-#OrdersLayer .order {fill:none; stroke:black; stroke-width:3; marker-end:url(#arrow)}
-#OrdersLayer .order.fail {marker-mid:url(#
+#OrdersLayer .order.move {fill:none; stroke:black; stroke-width:3; marker-end:url(#move)}
+#OrdersLayer .order.support {fill:none; stroke:blue; stroke-width:3; marker-end:url(#support)}
+#OrdersLayer .order.convoy {fill:none; stroke:black; stroke-width:3; marker-end:url(#convoy)}
+#OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
+#OrdersLayer .order.fail {marker-mid:url(#fail)}
 
 .message.Austria		{color:#FF0000}
 .message.England		{color:#0000FF}

@@ -24,24 +24,17 @@
         defs = defsIn;
     };
 
-    this.placeItem = function (container, type, loc) {
-        var it = map.select('defs ' + type);
-        it.use().attr({'class': 'force'})
-                .transform('translate(' + defs.coords[loc] + ')')
-                .appendTo(container);
-    };
-
-    this.placeItem2 = function (power, type, loc) {
+    this.placeItem = function (power, type, loc) {
         var forces = map.select('g#ForcesLayer');
-        var power = forces.select('g#' + power);
-        if (!power) {
-            power = forces.group().attr({id: power});
+        var container = forces.select('g#' + power);
+        if (!container) {
+            container = forces.group().attr({id: power});
         }
         var it = map.select('defs ' + type);
         it.use().attr({'class': 'force'})
-                .data({loc: loc, type: type, power: power})
                 .transform('translate(' + defs.coords[loc] + ')')
-                .appendTo(container);
+                .appendTo(container)
+                .data({loc: loc, type: type, power: power});
     };
 
     this.setState = function (state) {
@@ -54,28 +47,30 @@
         var forces = map.select('g#ForcesLayer');
         forces.selectAll('g').remove();
         for (power in state.forces) {
-            gPow = forces.group().attr({id: power});
             state.forces[power].armies.map(
-                this.placeItem.partial(gPow, '#A'));
+                this.placeItem.partial(power, '#A'));
             state.forces[power].fleets.map(
-                this.placeItem.partial(gPow, '#F'));
+                this.placeItem.partial(power, '#F'));
         };
     };
 
     this.drawOrders = function (orders) {
         var ordersLayer = map.select('g#OrdersLayer');
         for (unit in orders) {
-            var unit = orders[unit].unit,
-                src = orders[unit].src,
+            var src = orders[unit].src,
                 act = orders[unit].act,
-                dst1 = orders[unit].dst1,
-                dst2 = orders[unit].dst2,
+                dst = orders[unit].dst,
+                org = orders[unit].org,
                 pow = orders[unit].pow;
             // TODO(ccraciun): Handle orders other than move.
-            if (act == 'move') {
-                ordersLayer.path('M' + defs.coords[src] + 'L' + defs.coords[dst1])
-                           .attr({'marker-end': 'url(#head_success)',
-                                  'class': 'order ' + pow});
+            if (act === 'support' || act === 'convoy') {
+                ordersLayer.path('M' + defs.coords[org] + ' ' +
+                                 'Q' + defs.coords[src] + ' ' + defs.coords[dst])
+                           .attr({'class': 'order ' + pow + ' ' + act});
+            } else {
+                ordersLayer.path('M' + defs.coords[org] + ' ' +
+                                 'L' + defs.coords[dst])
+                           .attr({'class': 'order ' + pow + ' ' + act});
             };
         };
     };
@@ -91,31 +86,42 @@
         map.selectAll('g#ForcesLayer #' + power + ' .force')
            .forEach(function (e) {
                e.click(function (evt) {
-                   console.log('Got a click on ' + evt.target);
-                   currentOrder.unit = evt.target;
+                   this.node.classList.add('selected');
+                   currentOrder.unit = this;
+                   currentOrder.org = this.data('loc');
+                   currentOrder.pow = this.data('power');
                })
         });
-        // Add listeners to the territories.
+
         var regionClick = function (evt) {
-            console.log('Got a click on ' + evt.target);
             tgt = evt.target.parentNode.id;
             if (!currentOrder.unit) {
                 return;
             };
             if (!currentOrder.src) {
                 currentOrder.src = tgt;
-            } else if (!currentOrder.dst1) {
-                currentOrder.dst1 = tgt;
-            } else if (!currentOrder.dst2) {
-                currentOrder.dst2 = tgt;
-                currentOrder.act = 'move';
+            } else if (!currentOrder.dst) {
+                currentOrder.dst = tgt;
+                if (currentOrder.dst === currentOrder.src &&
+                        currentOrder.src === currentOrder.org) {
+                    currentOrder.act = 'hold';
+                } else if (currentOrder.dst === currentOrder.src ||
+                        currentOrder.src === currentOrder.org) {
+                    currentOrder.act = 'move';
+                    currentOrder.src = currentOrder.org;
+                } else {
+                    currentOrder.act = 'support';
+                }
+
                 orders[currentOrder.unit] = currentOrder;
                 console.log(orders);
                 instanceDipMap.clearOrders();
                 instanceDipMap.drawOrders(orders);
+                currentOrder.unit.node.classList.remove('selected');
                 currentOrder = {};
             };
         };
+
         map.selectAll('g#MapLayer .l').forEach(function (e) {
             e.click(regionClick);
         });
