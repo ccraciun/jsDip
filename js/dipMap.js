@@ -1,4 +1,52 @@
-﻿function DipMap(mapSelector) {
+﻿function Order() {
+    var self = this;
+
+    this.toStr = function () {
+        prefix = self.type + ' ' + self.org;
+        if (self.act === 'hold') {
+            return prefix + ' hold';
+        } else if (self.act == 'move') {
+            return prefix + ' move ' + self.dst;
+        } else {
+            return prefix + ' ' + self.act + ' ' + self.src + ' ' + self.dst;
+        };
+    };
+
+    this.finish = function () {
+        // If we don't have a source unit, give up.
+        if (!self.org) {
+            return false;
+        };
+        // Try to guess source and destination based on action.
+        if (self.act === 'hold') {
+            self.src = self.dst = self.org;
+        } else if (self.act === 'move' && self.src !== self.org) {
+            self.dst = self.src;
+        };
+        // If we still have gaps, give up.
+        if (!self.org || !self.src || !self.dst ||
+                !self.pow || !self.type) {
+            return false;
+        };
+        // Try to guess action from source and destination.
+        if (!self.act) {
+            if (self.dst === self.src &&
+                    self.src === self.org) {
+                self.act = 'hold';
+            } else if (self.dst === self.src ||
+                    self.src === self.org) {
+                self.act = 'move';
+                self.src = self.org;
+            } else {
+                // Either support or convoy.
+                return false;
+            };
+        };
+        return true;
+    };
+};
+
+function DipMap(mapSelector) {
     // The map frontend
     // TODO(ccraciun): patch Snap to support loading defs.
     var map = Snap(mapSelector), defs = null, instanceDipMap = this;
@@ -20,7 +68,7 @@
         Snap.load(mapUrl, onLoadRawSvg);
     };
 
-    this.loadDefs = function (defsIn) {
+    this.setDefs = function (defsIn) {
         defs = defsIn;
     };
 
@@ -56,6 +104,7 @@
 
     this.drawOrders = function (orders) {
         var ordersLayer = map.select('g#OrdersLayer');
+        this.clearOrders();
         for (unit in orders) {
             var src = orders[unit].src,
                 act = orders[unit].act,
@@ -80,18 +129,46 @@
         ordersLayer.selectAll('.order').remove();
     };
 
-    this.listenOrders = function (power, toggle) {
-        var orders = {}, currentOrder = {};
-        // Add listeners to the forces of given power.
-        map.selectAll('g#ForcesLayer #' + power + ' .force')
-           .forEach(function (e) {
-               e.click(function (evt) {
-                   this.node.classList.add('selected');
-                   currentOrder.unit = this;
-                   currentOrder.org = this.data('loc');
-                   currentOrder.pow = this.data('power');
-               })
-        });
+    this.listenOrders = function (power) {
+        var orders = {}, currentOrder = new Order();
+
+        function deselectActions() {
+            jQuery('#map_interface .action.selected').removeClass('selected');
+        };
+
+        function selectAction(act) {
+            deselectActions();
+            jQuery('#map_interface .action.' + act.toLowerCase()).addClass('selected');
+        };
+
+        function selectedAction(pow) {
+            sel = jQuery('#map_interface .action.selected')[0];
+            if (sel) {
+                return sel.text
+            };
+        };
+
+        var finalizeOrder = function () {
+            orders[currentOrder.unit] = currentOrder;
+
+            instanceDipMap.drawOrders(orders);
+            currentOrder.unit.node.classList.remove('selected');
+            currentOrder = new Order();
+            deselectActions();
+        };
+
+        var forceClick = function (evt) {
+            this.node.classList.add('selected');
+            currentOrder.unit = this;
+            currentOrder.type = this.data('type')
+            currentOrder.org = this.data('loc');
+            currentOrder.pow = this.data('power');
+            currentOrder.src = null;
+            currentOrder.dst = null;
+            if (currentOrder.finish()) {
+                finalizeOrder();
+            };
+        };
 
         var regionClick = function (evt) {
             tgt = evt.target.parentNode.id;
@@ -102,34 +179,71 @@
                 currentOrder.src = tgt;
             } else if (!currentOrder.dst) {
                 currentOrder.dst = tgt;
-                if (currentOrder.dst === currentOrder.src &&
-                        currentOrder.src === currentOrder.org) {
-                    currentOrder.act = 'hold';
-                } else if (currentOrder.dst === currentOrder.src ||
-                        currentOrder.src === currentOrder.org) {
-                    currentOrder.act = 'move';
-                    currentOrder.src = currentOrder.org;
+                if (currentOrder.finish()) {
+                    finalizeOrder();
                 } else {
-                    currentOrder.act = 'support';
-                }
-
-                orders[currentOrder.unit] = currentOrder;
-                console.log(orders);
-                instanceDipMap.clearOrders();
-                instanceDipMap.drawOrders(orders);
-                currentOrder.unit.node.classList.remove('selected');
-                currentOrder = {};
+                    // We don't know what action is wanted.
+                    highlightActions();
+                };
+            };
+            if (currentOrder.finish()) {
+                finalizeOrder();
             };
         };
 
+        var actionClick = function (evt) {
+            currentOrder.act = evt.target.textContent.toLowerCase();
+            unhighlightActions();
+            selectAction(currentOrder.act);
+            if (currentOrder.finish()) {
+                finalizeOrder();
+            };
+        };
+
+        var highlightActions = function () {
+            jQuery('#map_interface #actions .action').addClass('highlight');
+        };
+
+        var unhighlightActions = function () {
+            jQuery('#map_interface #actions .action').removeClass('highlight');
+        };
+
+        var stopListen = function () {
+            map.selectAll('g#ForcesLayer #' + power + ' .force')
+               .forEach(function (e) {
+                   e.unclick();
+            });
+            map.selectAll('g#MapLayer .l').forEach(function (e) {
+                e.unclick();
+            });
+            map.selectAll('g#MapLayer .w').forEach(function (e) {
+                e.unclick();
+            });
+            jQuery('#map_interface #actions .action').click();
+
+            if (currentOrder.unit) {
+                currentOrder.unit.node.classList.remove('selected');
+            }
+            instanceDipMap.clearOrders();
+            deselectActions();
+            unhighlightActions();
+        };
+
+        // Add listeners to the forces of given power.
+        map.selectAll('g#ForcesLayer #' + power + ' .force')
+           .forEach(function (e) {
+               e.click(forceClick);
+        });
         map.selectAll('g#MapLayer .l').forEach(function (e) {
             e.click(regionClick);
         });
         map.selectAll('g#MapLayer .w').forEach(function (e) {
             e.click(regionClick);
         });
+        jQuery('#map_interface #actions .action').click(actionClick);
 
         return function () {
+            stopListen();
             return orders;
         };
     };
