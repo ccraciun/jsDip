@@ -26,16 +26,17 @@ Created for Diplomap (http://www.games2relax.net/diplomap/)
     <path d="M0,0 V4 L2,2 Z" fill="black"/>
 </marker>
 <marker id="support" orient="auto" markerwidth="1.5" markerHeight="3" refX="0.1" refY="1.5">
+    <path d="M0,0 V3 L1.5,1.5 Z" fill="green"/>
+</marker>
+<marker id="convoy" orient="auto" markerwidth="1.5" markerHeight="3" refX="0.1" refY="1.5">
     <path d="M0,0 V3 L1.5,1.5 Z" fill="blue"/>
 </marker>
-<marker id="convoy" orient="auto" markerwidth="2" markerHeight="4" refX="0.1" refY="2">
-    <path d="M0,0 V4 L2,2 Z" fill="green"/>
+<marker id="hold" orient="auto" markerwidth="4" markerHeight="4" refX="2" refY="0">
+    <!-- <path d="M0,0 l1,2 l2,0 l1,-2 l-1,-2 l0,-2 Z" fill="black"/> -->
+    <polygon points="0,0 1,2 3,2 4,0 3,-2 1,-2" fill="black"/>
 </marker>
-<marker id="hold" orient="auto" markerwidth="2" markerHeight="4" refX="0.1" refY="2">
-    <path d="M0,0 V4 L2,2 Z" fill="red"/>
-</marker>
-<marker id="fail" orient="auto" markerwidth="2" markerHeight="4" refX="0.1" refY="2">
-    <path d="M0,0 V4 H4 V-4 Z" fill="black"/>
+<marker id="fail" orient="auto" markerwidth="4" markerHeight="4" refX="2" refY="2">
+    <path d="M0,0 L4,4 L2,2 L0,4 L4,0" stroke="red"/>
 </marker>
 </defs>
 
