@@ -2,7 +2,14 @@
 .w				{fill:#99CCFF; stroke:black; stroke-linejoin:round}
 .s				{fill:#DDDDDD; stroke:black; stroke-linejoin:round}
 
-text				{font-family:Arial,Helvetica,sans-serif; font-size:8px}
+text {
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 8px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
 
 #MapLayer .Austria		{fill:#FF0000; stroke:black}
 #MapLayer .England		{fill:#0000FF; stroke:black}
@@ -23,8 +30,8 @@ text				{font-family:Arial,Helvetica,sans-serif; font-size:8px}
 #ForcesLayer .force.selected 	{stroke-width:2}
 
 #OrdersLayer .order.move {fill:none; stroke:black; stroke-width:3; marker-end:url(#move)}
-#OrdersLayer .order.support {fill:none; stroke:blue; stroke-width:3; marker-end:url(#support)}
-#OrdersLayer .order.convoy {fill:none; stroke:black; stroke-width:3; marker-end:url(#convoy)}
+#OrdersLayer .order.support {fill:none; stroke:green; stroke-width:3; marker-end:url(#support)}
+#OrdersLayer .order.convoy {fill:none; stroke:blue; stroke-width:3; marker-end:url(#convoy)}
 #OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
 #OrdersLayer .order.fail {marker-mid:url(#fail)}
 
