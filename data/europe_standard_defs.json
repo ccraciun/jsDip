@@ -128,6 +128,478 @@
         "St_Petersburg__nc": "St_Petersburg",
         "St_Petersburg__sc": "St_Petersburg"
     },
+
+    "alias": {
+        "swi": "Switzerland",
+        "adr": "Adriatic_Sea",
+        "aeg": "Aegean_Sea",
+        "alb": "Albania",
+        "ank": "Ankara",
+        "apu": "Apulia",
+        "arm": "Armenia",
+        "bal": "Baltic_Sea",
+        "bar": "Barents_Sea",
+        "bel": "Belgium",
+        "ber": "Berlin",
+        "bla": "Black_Sea",
+        "boh": "Bohemia",
+        "bre": "Brest",
+        "breast": "Brest",
+        "bud": "Budapest",
+        "bul": "Bulgaria",
+        "bur": "Burgundy",
+        "cly": "Clyde",
+        "con": "Constantinople",
+        "den": "Denmark",
+        "eas": "Eastern_Mediterranean",
+        "emed": "Eastern_Mediterranean",
+        "eastern med": "Eastern_Mediterranean",
+        "easternmed": "Eastern_Mediterranean",
+        "eastmed": "Eastern_Mediterranean",
+        "ems": "Eastern_Mediterranean",
+        "eme": "Eastern_Mediterranean",
+        "edi": "Edinburgh",
+        "eng": "English_Channel",
+        "ech": "English_Channel",
+        "channel": "English_Channel",
+        "man": "English_Channel",
+        "fin": "Finland",
+        "gal": "Galicia",
+        "gas": "Gascony",
+        "gre": "Greece",
+        "bot": "Gulf_of_Bothnia",
+        "gob": "Gulf_of_Bothnia",
+        "gulfofb": "Gulf_of_Bothnia",
+        "bothnia": "Gulf_of_Bothnia",
+        "gulf of bot": "Gulf_of_Bothnia",
+        "lyo": "Gulf_of_Lyon",
+        "gulf of lyo": "Gulf_of_Lyon",
+        "gol": "Gulf_of_Lyon",
+        "gulfofl": "Gulf_of_Lyon",
+        "lyon": "Gulf_of_Lyon",
+        "hel": "Helgoland_Bight",
+        "hol": "Holland",
+        "ion": "Ionian_Sea",
+        "iri": "Irish_Sea",
+        "stg": "Irish_Sea",
+        "kie": "Kiel",
+        "lon": "London",
+        "lvn": "Livonia",
+        "lvo": "Livonia",
+        "lva": "Livonia",
+        "lvp": "Liverpool",
+        "lpl": "Liverpool",
+        "mar": "Marseilles",
+        "mao": "Mid-Atlantic_Ocean",
+        "mid atlantic ocean": "Mid-Atlantic_Ocean",
+        "mid-atlantic": "Mid-Atlantic_Ocean",
+        "mid atlantic": "Mid-Atlantic_Ocean",
+        "midatlanticocean": "Mid-Atlantic_Ocean",
+        "mid": "Mid-Atlantic_Ocean",
+        "mat": "Mid-Atlantic_Ocean",
+        "mos": "Moscow",
+        "mun": "Munich",
+        "naf": "North_Africa",
+        "nora": "North_Africa",
+        "northafrica": "North_Africa",
+        "nap": "Naples",
+        "nao": "North_Atlantic_Ocean",
+        "northatlantic": "North_Atlantic_Ocean",
+        "north atlantic": "North_Atlantic_Ocean",
+        "nat": "North_Atlantic_Ocean",
+        "nth": "North_Sea",
+        "norsea": "North_Sea",
+        "northsea": "North_Sea",
+        "nts": "North_Sea",
+        "nrd": "North_Sea",
+        "nwy": "Norway",
+        "nor": "Norway",
+        "nge": "Norway",
+        "nwg": "Norwegian_Sea",
+        "norwegiansea": "Norwegian_Sea",
+        "norwsea": "Norwegian_Sea",
+        "nrg": "Norwegian_Sea",
+        "gro": "Norwegian_Sea",
+        "par": "Paris",
+        "pic": "Picardy",
+        "pie": "Piedmont",
+        "por": "Portugal",
+        "pru": "Prussia",
+        "rom": "Rome",
+        "ruh": "Ruhr",
+        "rhe": "Ruhr",
+        "rum": "Rumania",
+        "ser": "Serbia",
+        "sev": "Sevastopol",
+        "sevastapol": "Sevastopol",
+        "sil": "Silesia",
+        "ska": "Skagerrak",
+        "skaggerak": "Skagerrak",
+        "smy": "Smyrna",
+        "spa": "Spain",
+        "esp": "Spain",
+        "stp": "St_Petersburg",
+        "st petersburg": "St_Petersburg",
+        "stpetersburg": "St_Petersburg",
+        "st petersberg": "St_Petersburg",
+        "st. petersberg": "St_Petersburg",
+        "stpetersberg": "St_Petersburg",
+        "swe": "Sweden",
+        "syr": "Syria",
+        "tri": "Trieste",
+        "tun": "Tunis",
+        "tus": "Tuscany",
+        "tyr": "Tyrolia",
+        "tyl": "Tyrolia",
+        "trl": "Tyrolia",
+        "alp": "Tyrolia",
+        "tys": "Tyrrhenian_Sea",
+        "tyrhennian sea": "Tyrrhenian_Sea",
+        "tyrrhenian sea": "Tyrrhenian_Sea",
+        "tyrhenian sea": "Tyrrhenian_Sea",
+        "tyn": "Tyrrhenian_Sea",
+        "tyh": "Tyrrhenian_Sea",
+        "ukr": "Ukraine",
+        "ven": "Venice",
+        "vie": "Vienna",
+        "wal": "Wales",
+        "war": "Warsaw",
+        "var": "Warsaw",
+        "wes": "Western_Mediterranean",
+        "western med": "Western_Mediterranean",
+        "westernmed": "Western_Mediterranean",
+        "wmed": "Western_Mediterranean",
+        "westmed": "Western_Mediterranean",
+        "wms": "Western_Mediterranean",
+        "wme": "Western_Mediterranean",
+        "yor": "Yorkshire",
+        "yonkers": "Yorkshire"
+    },
+
     "adjacent": {
+        "Switzerland": {
+            "army": [],
+            "fleet": []
+        },
+        "Adriatic_Sea": {
+            "army": [],
+            "fleet": ["Albania", "Apulia", "Venice", "Trieste", "Ionian_Sea"]
+        },
+        "Aegean_Sea": {
+            "army": [],
+            "fleet": ["Greece", "Bulgaria__sc", "Constantinople", "Smyrna", "Eastern_Mediterranean", "Ionian_Sea"]
+        },
+        "Albania": {
+            "army": ["Trieste", "Greece", "Serbia"],
+            "fleet": ["Adriatic_Sea", "Trieste", "Greece", "Ionian_Sea"]
+        },
+        "Ankara": {
+            "army": ["Armenia", "Constantinople", "Smyrna"],
+            "fleet": ["Black_Sea", "Armenia", "Constantinople"]
+        },
+        "Apulia": {
+            "army": ["Venice", "Naples", "Rome"],
+            "fleet": ["Venice", "Adriatic_Sea", "Ionian_Sea", "Naples"]
+        },
+        "Armenia": {
+            "army": ["Smyrna", "Syria", "Ankara", "Sevastopol"],
+            "fleet": ["Ankara", "Sevastopol", "Black_Sea"]
+        },
+        "Baltic_Sea": {
+            "army": [],
+            "fleet": ["Livonia", "Prussia", "Berlin", "Kiel", "Denmark", "Sweden", "Gulf_of_Bothnia"]
+        },
+        "Barents_Sea": {
+            "army": [],
+            "fleet": ["Norwegian_Sea", "St_Petersburg__nc", "Norway"]
+        },
+        "Belgium": {
+            "army": ["Holland", "Picardy", "Ruhr", "Burgundy"],
+            "fleet": ["English_Channel", "North_Sea", "Holland", "Picardy"]
+        },
+        "Berlin": {
+            "army": ["Kiel", "Prussia", "Silesia", "Munich"],
+            "fleet": ["Kiel", "Baltic_Sea", "Prussia"]
+        },
+        "Black_Sea": {
+            "army": [],
+            "fleet": ["Rumania", "Sevastopol", "Armenia", "Ankara", "Constantinople", "Bulgaria__ec"]
+        },
+        "Bohemia": {
+            "army": ["Munich", "Silesia", "Galicia", "Vienna", "Tyrolia"],
+            "fleet": []
+        },
+        "Brest": {
+            "army": ["Picardy", "Gascony", "Paris"],
+            "fleet": ["Mid-Atlantic_Ocean", "English_Channel", "Picardy", "Gascony"]
+        },
+        "Budapest": {
+            "army": ["Vienna", "Galicia", "Rumania", "Serbia", "Trieste"],
+            "fleet": []
+        },
+        "Bulgaria": {
+            "army": ["Greece", "Constantinople", "Serbia", "Rumania"],
+            "fleet": []
+        },
+        "Bulgaria__ec": {
+            "army": [],
+            "fleet": ["Constantinople", "Black_Sea", "Rumania"]
+        },
+        "Bulgaria__sc": {
+            "army": [],
+            "fleet": ["Greece", "Aegean_Sea", "Constantinople"]
+        },
+        "Burgundy": {
+            "army": ["Marseilles", "Gascony", "Paris", "Picardy", "Belgium", "Ruhr", "Munich"],
+            "fleet": []
+        },
+        "Clyde": {
+            "army": ["Edinburgh", "Liverpool"],
+            "fleet": ["Edinburgh", "Liverpool", "North_Atlantic_Ocean", "Norwegian_Sea"]
+        },
+        "Constantinople": {
+            "army": ["Bulgaria", "Ankara", "Smyrna"],
+            "fleet": ["Bulgaria__sc", "Bulgaria__ec", "Black_Sea", "Ankara", "Smyrna", "Aegean_Sea"]
+        },
+        "Denmark": {
+            "army": ["Sweden", "Kiel"],
+            "fleet": ["Helgoland_Bight", "North_Sea", "Sweden", "Baltic_Sea", "Kiel", "Skaggerak"]
+        },
+        "Eastern_Mediterranean": {
+            "army": [],
+            "fleet": ["Syria", "Smyrna", "Aegean_Sea", "Ionian_Sea"]
+        },
+        "Edinburgh": {
+            "army": ["Liverpool", "Yorkshire", "Clyde"],
+            "fleet": ["North_Sea", "Norwegian_Sea", "Clyde", "Yorkshire"]
+        },
+        "English_Channel": {
+            "army": [],
+            "fleet": ["Mid-Atlantic_Ocean", "Irish_Sea", "Wales", "London", "North_Sea", "Belgium", "Picardy", "Brest"]
+        },
+        "Finland": {
+            "army": ["Sweden", "St_Petersburg", "Norway"],
+            "fleet": ["Sweden", "St_Petersburg__sc", "Gulf_of_Bothnia"]
+        },
+        "Galicia": {
+            "army": ["Warsaw", "Ukraine", "Rumania", "Budapest", "Vienna", "Bohemia", "Silesia"],
+            "fleet": []
+        },
+        "Gascony": {
+            "army": ["Paris", "Burgundy", "Marseilles", "Spain", "Brest"],
+            "fleet": ["Spain__nc", "Mid-Atlantic_Ocean", "Brest"]
+        },
+        "Greece": {
+            "army": ["Bulgaria", "Albania", "Serbia"],
+            "fleet": ["Bulgaria__sc", "Aegean_Sea", "Ionian_Sea", "Albania"]
+        },
+        "Gulf_of_Bothnia": {
+            "army": [],
+            "fleet": ["Sweden", "Finland", "St_Petersburg__sc", "Livonia", "Baltic_Sea"]
+        },
+        "Gulf_of_Lyon": {
+            "army": [],
+            "fleet": ["Spain__sc", "Marseilles", "Piedmont", "Tuscany", "Tyrrhenian_Sea", "Western_Mediterranean"]
+        },
+        "Helgoland_Bight": {
+            "army": [],
+            "fleet": ["North_Sea", "Denmark", "Kiel", "Holland"]
+        },
+        "Holland": {
+            "army": ["Belgium", "Kiel", "Ruhr"],
+            "fleet": ["Belgium", "North_Sea", "Helgoland_Bight", "Kiel"]
+        },
+        "Ionian_Sea": {
+            "army": [],
+            "fleet": ["Tunis", "Tyrrhenian_Sea", "Naples", "Apulia", "Adriatic_Sea", "Albania", "Greece", "Aegean_Sea", "Eastern_Mediterranean"]
+        },
+        "Irish_Sea": {
+            "army": [],
+            "fleet": ["North_Atlantic_Ocean", "Liverpool", "Wales", "English_Channel", "Mid-Atlantic_Ocean"]
+        },
+        "Kiel": {
+            "army": ["Holland", "Denmark", "Berlin", "Munich", "Ruhr"],
+            "fleet": ["Holland", "Helgoland_Bight", "Denmark", "Baltic_Sea", "Berlin"]
+        },
+        "London": {
+            "army": ["Yorkshire", "Wales"],
+            "fleet": ["Yorkshire", "North_Sea", "English_Channel", "Wales"]
+        },
+        "Livonia": {
+            "army": ["Prussia", "St_Petersburg", "Moscow", "Warsaw"],
+            "fleet": ["Prussia", "Baltic_Sea", "Gulf_of_Bothnia", "St_Petersburg__sc"]
+        },
+        "Liverpool": {
+            "army": ["Wales", "Edinburgh", "Yorkshire", "Clyde"],
+            "fleet": ["Wales", "Irish_Sea", "North_Atlantic_Ocean", "Clyde"]
+        },
+        "Marseilles": {
+            "army": ["Spain", "Piedmont", "Gascony", "Burgundy"],
+            "fleet": ["Spain__sc", "Gulf_of_Lyon", "Piedmont"]
+        },
+        "Mid-Atlantic_Ocean": {
+            "army": [],
+            "fleet": ["North_Atlantic_Ocean", "Irish_Sea", "English_Channel", "Brest", "Gascony", "Spain__nc", "Portugal", "Spain__sc", "North_Africa", "Western_Mediterranean"]
+        },
+        "Moscow": {
+            "army": ["St_Petersburg", "Livonia", "Warsaw", "Ukraine", "Sevastopol"],
+            "fleet": []
+        },
+        "Munich": {
+            "army": ["Burgundy", "Ruhr", "Kiel", "Berlin", "Silesia", "Bohemia", "Tyrolia"],
+            "fleet": []
+        },
+        "North_Africa": {
+            "army": ["Tunis"],
+            "fleet": ["Mid-Atlantic_Ocean", "Western_Mediterranean", "Tunis"]
+        },
+        "Naples": {
+            "army": ["Rome", "Apulia"],
+            "fleet": ["Rome", "Tyrrhenian_Sea", "Ionian_Sea", "Apulia"]
+        },
+        "North_Atlantic_Ocean": {
+            "army": [],
+            "fleet": ["Norwegian_Sea", "Liverpool", "Irish_Sea", "Mid-Atlantic_Ocean", "Clyde"]
+        },
+        "North_Sea": {
+            "army": [],
+            "fleet": ["Yorkshire", "Edinburgh", "Norwegian_Sea", "Norway", "Skaggerak", "Denmark", "Helgoland_Bight", "Holland", "Belgium", "English_Channel", "London"]
+        },
+        "Norway": {
+            "army": ["Finland", "St_Petersburg", "Sweden"],
+            "fleet": ["Skaggerak", "North_Sea", "Norwegian_Sea", "Barents_Sea", "St_Petersburg__nc", "Sweden"]
+        },
+        "Norwegian_Sea": {
+            "army": [],
+            "fleet": ["North_Atlantic_Ocean", "Barents_Sea", "Norway", "North_Sea", "Clyde", "Edinburgh"]
+        },
+        "Paris": {
+            "army": ["Brest", "Picardy", "Burgundy", "Gascony"],
+            "fleet": []
+        },
+        "Picardy": {
+            "army": ["Burgundy", "Paris", "Brest", "Belgium"],
+            "fleet": ["Brest", "English_Channel", "Belgium"]
+        },
+        "Piedmont": {
+            "army": ["Marseilles", "Tuscany", "Venice", "Tyrolia"],
+            "fleet": ["Marseilles", "Gulf_of_Lyon", "Tuscany"]
+        },
+        "Portugal": {
+            "army": ["Spain"],
+            "fleet": ["Mid-Atlantic_Ocean", "Spain__nc", "Spain__sc"]
+        },
+        "Prussia": {
+            "army": ["Warsaw", "Silesia", "Berlin", "Livonia"],
+            "fleet": ["Berlin", "Baltic_Sea", "Livonia"]
+        },
+        "Rome": {
+            "army": ["Tuscany", "Naples", "Venice", "Apulia"],
+            "fleet": ["Tuscany", "Tyrrhenian_Sea", "Naples"]
+        },
+        "Ruhr": {
+            "army": ["Burgundy", "Belgium", "Holland", "Kiel", "Munich"],
+            "fleet": []
+        },
+        "Rumania": {
+            "army": ["Serbia", "Budapest", "Galicia", "Ukraine", "Sevastopol", "Bulgaria"],
+            "fleet": ["Sevastopol", "Black_Sea", "Bulgaria__ec"]
+        },
+        "Serbia": {
+            "army": ["Trieste", "Budapest", "Rumania", "Bulgaria", "Greece", "Albania"],
+            "fleet": []
+        },
+        "Sevastopol": {
+            "army": ["Ukraine", "Moscow", "Rumania", "Armenia"],
+            "fleet": ["Rumania", "Black_Sea", "Armenia"]
+        },
+        "Silesia": {
+            "army": ["Munich", "Berlin", "Prussia", "Warsaw", "Galicia", "Bohemia"],
+            "fleet": []
+        },
+        "Skagerrak": {
+            "army": [],
+            "fleet": ["North_Sea", "Norway", "Denmark", "Sweden"]
+        },
+        "Smyrna": {
+            "army": ["Syria", "Constantinople", "Ankara", "Armenia"],
+            "fleet": []
+        },
+        "Spain__nc": {
+            "army": [],
+            "fleet": ["Gascony", "Mid-Atlantic_Ocean", "Portugal"]
+        },
+        "Spain__sc": {
+            "army": [],
+            "fleet": ["Portugal", "Western_Mediterranean", "Gulf_of_Lyon", "Marseilles", "Mid-Atlantic_Ocean"]
+        },
+        "St_Petersburg": {
+            "army": ["Finland", "Livonia", "Norway", "Moscow"],
+            "fleet": []
+        },
+        "St_Petersburg__nc": {
+            "army": [],
+            "fleet": ["Barents_Sea", "Norway"]
+        },
+        "St_Petersburg__sc": {
+            "army": [],
+            "fleet": ["Finland", "Livonia", "Gulf_of_Bothnia"]
+        },
+        "Sweden": {
+            "army": ["Finland", "Denmark", "Norway"],
+            "fleet": ["Finland", "Gulf_of_Bothnia", "Baltic_Sea", "Denmark", "Skaggerak", "Norway"]
+        },
+        "Syria": {
+            "army": ["Smyrna", "Armenia"],
+            "fleet": ["Eastern_Mediterranean", "Smyrna"]
+        },
+        "Trieste": {
+            "army": ["Tyrolia", "Vienna", "Budapest", "Serbia", "Albania", "Venice"],
+            "fleet": ["Albania", "Adriatic_Sea", "Venice"]
+        },
+        "Tunis": {
+            "army": ["North_Africa"],
+            "fleet": ["North_Africa", "Western_Mediterranean", "Tyrrhenian_Sea", "Ionian_Sea"]
+        },
+        "Tuscany": {
+            "army": ["Rome", "Piedmont", "Venice"],
+            "fleet": ["Rome", "Tyrrhenian_Sea", "Gulf_of_Lyon", "Piedmont"]
+        },
+        "Tyrolia": {
+            "army": ["Munich", "Bohemia", "Vienna", "Trieste", "Venice", "Piedmont"],
+            "fleet": []
+        },
+        "Tyrrhenian_Sea": {
+            "army": [],
+            "fleet": ["Western_Mediterranean", "Gulf_of_Lyon", "Tuscany", "Rome", "Naples", "Ionian_Sea", "Tunis"]
+        },
+        "Ukraine": {
+            "army": ["Rumania", "Galicia", "Warsaw", "Moscow", "Sevastopol"],
+            "fleet": []
+        },
+        "Venice": {
+            "army": ["Tyrolia", "Tuscany", "Rome", "Piedmont", "Apulia", "Trieste"],
+            "fleet": ["Apulia", "Adriatic_Sea", "Trieste"]
+        },
+        "Vienna": {
+            "army": ["Tyrolia", "Bohemia", "Galicia", "Budapest", "Trieste"],
+            "fleet": []
+        },
+        "Wales": {
+            "army": ["Liverpool", "London", "Yorkshire"],
+            "fleet": ["Liverpool", "Irish_Sea", "English_Channel", "London"]
+        },
+        "Warsaw": {
+            "army": ["Silesia", "Prussia", "Livonia", "Moscow", "Ukraine", "Galicia"],
+            "fleet": []
+        },
+        "Western_Mediterranean": {
+            "army": [],
+            "fleet": ["Mid-Atlantic_Ocean", "Spain__sc", "Gulf_of_Lyon", "Tyrrhenian_Sea", "Tunis", "North_Africa"]
+        },
+        "Yorkshire": {
+            "army": ["Edinburgh", "London", "Liverpool", "Wales"],
+            "fleet": ["Edinburgh", "North_Sea", "London"]
+        }
     }
 }
