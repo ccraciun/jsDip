@@ -1,10 +1,17 @@
-﻿function Order() {
+﻿function Order(str, defs) {
+    // self.unit - Element of unit for the order -- not guaranteed to be present.
+    // self.pow - Power controlling the unit ordered.
+    // self.org - Location of unit receiving order.
+    // self.type - Type of unit (army/fleet).
+    // self.act - Action being performed by unit from {build, hold, move, support, cargo}.
+    // self.src - For convoy or support, location of unit that's being assisted.
+    // self.dst - Destination of order.
     var self = this;
 
     this.toStr = function () {
         prefix = self.type + ' ' + self.org;
-        if (self.act === 'hold') {
-            return prefix + ' hold';
+        if (self.act === 'hold' || self.act === 'build') {
+            return prefix + ' ' + self.act;
         } else if (self.act == 'move') {
             return prefix + ' move ' + self.dst;
         } else {
@@ -44,11 +51,50 @@
         };
         return true;
     };
+
+    function fromString(str, defs) {
+        params = str.split(' ');
+        var type = params[0],
+            org = param[1],
+            act = param[2],
+            loc1 = param[3],
+            loc2 = param[4];
+
+        // TODO(ccraciun): Order sanity checks.
+        if (!(type in defs.force_types)) {
+            return null;
+        };
+        if (!(org in defs.alias)) {
+            return null;
+        };
+        org = defs.alias[org];
+        if (!(loc1 in defs.alias)) {
+            return null;
+        };
+        src = defs.alias[loc1];
+        if (!(loc2 in defs.alias)) {
+            return null;
+        };
+        dst = defs.alias[loc2];
+        if (!(act in ['hold', 'move', 'support', 'convoy', 'build'])) {
+            return null;
+        };
+
+        self.type = type;
+        self.org = org;
+        self.act = act;
+        self.src = loc1;
+        self.dst = loc2;
+    };
+
+    // build from string.
+    if (str && defs) {
+        return this.fromString(str, defs);
+    };
 };
 
 function DipMap(mapSelector) {
-    // The map frontend
-    // TODO(ccraciun): patch Snap to support loading defs.
+    // The map frontend.
     var map = Snap(mapSelector), defs = null, instanceDipMap = this;
 
     this.getMap = function () { return map };
@@ -129,7 +175,19 @@ function DipMap(mapSelector) {
         ordersLayer.selectAll('.order').remove();
     };
 
-    this.listenOrders = function (power) {
+    this.OrdersListener = function (power, phase) {
+    };
+
+    function listenAdjustmentOrders(power) {
+    };
+
+    function listenMovementOrders(power) {
+    };
+
+    function listenRetreatOrders(power) {
+    };
+
+    this.listenOrders = function (power, phase) {
         var orders = {}, currentOrder = new Order();
 
         function deselectActions() {
@@ -227,6 +285,7 @@ function DipMap(mapSelector) {
             instanceDipMap.clearOrders();
             deselectActions();
             unhighlightActions();
+            map.select('#MapLayer').node.classList.remove('accepting');
         };
 
         // Add listeners to the forces of given power.
@@ -241,6 +300,7 @@ function DipMap(mapSelector) {
             e.click(regionClick);
         });
         jQuery('#map_interface #actions .action').click(actionClick);
+        map.select('#MapLayer').node.classList.add('accepting');
 
         return function () {
             stopListen();

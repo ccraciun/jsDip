@@ -2,9 +2,10 @@
     var dipMap = new DipMap('#map'),
         statusBox = new StatusBox('#messageBox'),
         collectOrders = null,
-        turnOrders = {};
+        defs = null,
+        turnOrders = {}, state = null;
 
-    function countStatus(state) {
+    function updateCounts(state) {
         var counts = {};
 
         // Update SC state.
@@ -35,7 +36,14 @@
                     counts[pow].armies + ' armies, ' +
                     counts[pow].fleets + ' fleets.', pow);
         };
-    }
+    };
+
+    function showTurn(state) {
+        jQuery('#map_interface #status #turn').text(
+                state.turn.year + ' ' +
+                state.turn.season + ' ' +
+                state.turn.phase);
+    };
 
     function loadMap(defsUrl, mapSvg, mapCss) {
         console.log('deferring loadMap');
@@ -43,6 +51,7 @@
         // TODO(ccraciun): Support loading jDip map data..
         jQuery.getJSON('data/europe_standard_defs.json')
             .done(function (data) {
+                defs = data;
                 dipMap.setDefs(data);
                 console.log('done loadMap');
                 deferred.resolve();
@@ -57,12 +66,14 @@
     }
 
     function setState(state) {
+        updateCounts(state);
+        printCounts(state);
+        showTurn(state);
         dipMap.setState(state);
-        countStatus(state);
         for (i in state.active) {
             pow = state.active[i];
-            jQuery('<span class="separator"> | </span>').appendTo(jQuery('#menu'));
-            jQuery('<a href="#" class="menu-item power ' + pow.toLowerCase() + '"><span>' + pow + '</span></a>').appendTo(jQuery('#menu'));
+            jQuery('<span class="separator"> | </span>').appendTo(jQuery('#menu #powers'));
+            jQuery('<a href="#" class="menu-item power ' + pow.toLowerCase() + '"><span>' + pow + '</span></a>').appendTo(jQuery('#menu #powers'));
         };
     };
 
@@ -110,13 +121,21 @@
         if (collectOrders) {
             turnOrders[selectedPower] = collectOrders();
         };
+        collectOrders = null;
         deselectPowers();
+        state.orders = turnOrders;
+    };
+
+    function clickEndPhase(evt) {
+        for (pow in state.active) {
+        }
     };
 
     function menuListen() {
         console.log('menuListen');
         jQuery('#menu .menu-item.power').click(clickPower);
         jQuery('#menu .menu-item.done').click(clickDone);
+        jQuery('#menu .menu-item.end-phase').click(clickEndPhase);
     };
 
     jQuery.when(loadMap('data/europe_standard_defs.json', 'img/europe_standard.svg', 'css/europe_standard_defs'), loadStateUrl('data/europe_standard_start.json'))
