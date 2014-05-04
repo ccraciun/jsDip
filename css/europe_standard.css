@@ -19,6 +19,9 @@ text {
 #MapLayer .Russia 		{fill:#008000; stroke:black}
 #MapLayer .Turkey 		{fill:#FFFF00; stroke:black}
 
+#MapLayer.accepting .l:hover	{fill:#BADA55;}
+#MapLayer.accepting .w:hover	{fill:#BAAADA;}
+
 #ForcesLayer #Austria .force 	{fill:#FF0000; stroke:black}
 #ForcesLayer #England .force 	{fill:#0000FF; stroke:black}
 #ForcesLayer #France .force  	{fill:#00FFFF; stroke:black}
