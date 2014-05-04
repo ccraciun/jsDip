@@ -20,12 +20,19 @@
 <body>
     <div id="main">
         <div id="menu">
-            <a href="#" class="menu-item done"><span>Done</span></a>
+            <span id="controls">
+                <a href="#" class="menu-item done"><span>Done</span></a>
+                <span class="separator"> | </span>
+                <a href="#" class="menu-item end-phase"><span>End Phase</span></a>
+            </span>
+            <span id="powers">
+                Power
+            </span>
         </div>
         <svg id="map" viewbox="0 0 610 560"></svg>
         <div id="map_interface">
             <div id="status">
-                <h2>History</h2>
+                <div id="turn"></div>
                 <div id="messageBox"></div>
             </div>
             <div id="actions">
@@ -39,12 +46,14 @@
                 <span class="separator"> | </span>
                 <a href="#" class="convoy action"><span>Convoy</span></a>
             </div>
-            <div id="resupplies">
-                Resupply
+            <div id="adjustments">
+                Adjust
                 <span class="separator"> : </span>
-                <a href="#" class="army resupply"><span>Army</span></a>
+                <a href="#" class="army resupply"><span>New Army</span></a>
                 <span class="separator"> | </span>
-                <a href="#" class="fleet resupply"><span>Fleet</span></a>
+                <a href="#" class="fleet resupply"><span>New Fleet</span></a>
+                <span class="separator"> | </span>
+                <a href="#" class="disband action"><span>Disband</span></a>
             </div>
         </div>
     </div>
