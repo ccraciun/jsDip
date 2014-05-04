@@ -1,5 +1,9 @@
 ﻿{
-    "turn": "Spring 1910",
+    "turn": {
+        "year": "1901",
+        "season": "Spring",
+        "phase": "Movement"
+    },
     "active": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
     ],
