@@ -1,0 +1,75 @@
+﻿{
+    "time": {
+        "year": "1900",
+        "season": "Winter",
+        "phase": "Adjustment"
+    },
+    "active": [
+        "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
+    ],
+    "SC": {
+        "Budapest": "Austria",
+        "Trieste": "Austria",
+        "Vienna": "Austria",
+        "Edinburgh": "England",
+        "Liverpool": "England",
+        "London": "England",
+        "Brest": "France",
+        "Marseilles": "France",
+        "Paris": "France",
+        "Berlin": "Germany",
+        "Kiel": "Germany",
+        "Munich": "Germany",
+        "Naples": "Italy",
+        "Rome": "Italy",
+        "Venice": "Italy",
+        "Moscow": "Russia",
+        "Sevastopol": "Russia",
+        "St_Petersburg": "Russia",
+        "Warsaw": "Russia",
+        "Ankara": "Turkey",
+        "Constantinople": "Turkey",
+        "Smyrna": "Turkey",
+        "Belgium": "Independent",
+        "Bulgaria": "Independent",
+        "Denmark": "Independent",
+        "Greece": "Independent",
+        "Norway": "Independent",
+        "Portugal": "Independent",
+        "Rumania": "Independent",
+        "Serbia": "Independent",
+        "Spain": "Independent",
+        "Sweden": "Independent",
+        "Tunis": "Independent"
+    },
+    "forces": {
+        "Austria": {
+            "armies": [],
+            "fleets": []
+        },
+        "England": {
+            "armies": [],
+            "fleets": []
+        },
+        "France": {
+            "armies": [],
+            "fleets": []
+        },
+        "Germany": {
+            "armies": [],
+            "fleets": []
+        },
+        "Italy": {
+            "armies": [],
+            "fleets": []
+        },
+        "Russia": {
+            "armies": [],
+            "fleets": []
+        },
+        "Turkey": {
+            "armies": [],
+            "fleets": []
+        }
+    }
+}
