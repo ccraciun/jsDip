@@ -89,7 +89,7 @@
 
     // build from string.
     if (str && defs) {
-        return this.fromString(str, defs);
+        fromString(str, defs);
     };
 };
 
@@ -102,8 +102,8 @@ function DipMap(mapSelector) {
     function onLoadRawSvg(rawMap) {
         map.append(rawMap.select('defs'));
         map.append(rawMap.select('g#MapLayer'));
-        map.group().attr({id: 'ForcesLayer'});
-        map.group().attr({id: 'OrdersLayer'});
+        map.group().attr({'id': 'ForcesLayer', 'class': 'layer'});
+        map.group().attr({'id': 'OrdersLayer', 'class': 'layer'});
     };
 
     this.loadMap = function (mapSvg) {
@@ -118,11 +118,14 @@ function DipMap(mapSelector) {
         defs = defsIn;
     };
 
-    this.placeItem = function (power, type, loc) {
-        var forces = map.select('g#ForcesLayer');
-        var container = forces.select('g#' + power);
+    function drawItem(power, type, loc, layerSel) {
+        var layer = map.select('g#ForcesLayer');
+        if (layerSel) {
+            layer = map.select(layerSel);
+        };
+        var container = layer.select('g#' + power);
         if (!container) {
-            container = forces.group().attr({id: power});
+            container = layer.group().attr({id: power});
         }
         var it = map.select('defs ' + type);
         it.use().attr({'class': 'force'})
@@ -131,8 +134,37 @@ function DipMap(mapSelector) {
                 .data({loc: loc, type: type, power: power});
     };
 
-    this.setState = function (state) {
-        // Update SC state.
+    this.drawOrder = function (order, layerSel) {
+        var src = order.src,
+            act = order.act,
+            dst = order.dst,
+            org = order.org,
+            pow = order.pow,
+            type = order.type;
+        var layer = map.select('g#OrdersLayer');
+        if (layerSel) {
+            layer = map.select(layerSel);
+        };
+        var container = layer.select('g#' + pow);
+        if (!container) {
+            container = layer.group().attr({id: pow});
+        };
+
+        if (act === 'build') {
+            drawItem(pow, type, org, cont);
+        } else if (act === 'support' || act === 'convoy') {
+            container.path('M' + defs.coords[org] + ' ' +
+                           'Q' + defs.coords[src] + ' ' + defs.coords[dst])
+                       .attr({'class': 'order ' + pow + ' ' + act});
+        } else {
+            container.path('M' + defs.coords[org] + ' ' +
+                           'L' + defs.coords[dst])
+                       .attr({'class': 'order ' + pow + ' ' + act});
+        };
+    };
+
+    this.drawState = function (state) {
+        // Draw SCs.
         for (sc in state.SC) {
             map.select('#sc' + sc).node.setAttribute('class', state.SC[sc]);
         };
@@ -141,54 +173,32 @@ function DipMap(mapSelector) {
         var forces = map.select('g#ForcesLayer');
         forces.selectAll('g').remove();
         for (power in state.forces) {
-            state.forces[power].armies.map(
-                this.placeItem.partial(power, '#A'));
-            state.forces[power].fleets.map(
-                this.placeItem.partial(power, '#F'));
-        };
-    };
-
-    this.drawOrders = function (orders) {
-        var ordersLayer = map.select('g#OrdersLayer');
-        this.clearOrders();
-        for (unit in orders) {
-            var src = orders[unit].src,
-                act = orders[unit].act,
-                dst = orders[unit].dst,
-                org = orders[unit].org,
-                pow = orders[unit].pow;
-            // TODO(ccraciun): Handle orders other than move.
-            if (act === 'support' || act === 'convoy') {
-                ordersLayer.path('M' + defs.coords[org] + ' ' +
-                                 'Q' + defs.coords[src] + ' ' + defs.coords[dst])
-                           .attr({'class': 'order ' + pow + ' ' + act});
-            } else {
-                ordersLayer.path('M' + defs.coords[org] + ' ' +
-                                 'L' + defs.coords[dst])
-                           .attr({'class': 'order ' + pow + ' ' + act});
-            };
+            forces = state.forces[power];
+            forces.armies.forEach(function (org) {
+                drawItem(power, '#A', org);
+            });
+            forces.fleets.forEach(function (org) {
+                drawItem(power, '#F', org);
+            });
         };
     };
 
     this.clearOrders = function () {
         var ordersLayer = map.select('g#OrdersLayer');
         ordersLayer.selectAll('.order').remove();
+        ordersLayer.selectAll('.force').remove();
     };
 
-    this.OrdersListener = function (power, phase) {
+    this.drawOrders = function (orders) {
+        this.clearOrders();
+        for (it in orders) {
+            order = orders[it];
+            this.drawOrder(order, 'g#OrdersLayer');
+        };
     };
 
-    function listenAdjustmentOrders(power) {
-    };
-
-    function listenMovementOrders(power) {
-    };
-
-    function listenRetreatOrders(power) {
-    };
-
-    this.listenOrders = function (power, phase) {
-        var orders = {}, currentOrder = new Order();
+    this.listenOrders = function (power, state) {
+        var orders = {};
 
         function deselectActions() {
             jQuery('#map_interface .action.selected').removeClass('selected');
@@ -206,58 +216,6 @@ function DipMap(mapSelector) {
             };
         };
 
-        var finalizeOrder = function () {
-            orders[currentOrder.unit] = currentOrder;
-
-            instanceDipMap.drawOrders(orders);
-            currentOrder.unit.node.classList.remove('selected');
-            currentOrder = new Order();
-            deselectActions();
-        };
-
-        var forceClick = function (evt) {
-            this.node.classList.add('selected');
-            currentOrder.unit = this;
-            currentOrder.type = this.data('type')
-            currentOrder.org = this.data('loc');
-            currentOrder.pow = this.data('power');
-            currentOrder.src = null;
-            currentOrder.dst = null;
-            if (currentOrder.finish()) {
-                finalizeOrder();
-            };
-        };
-
-        var regionClick = function (evt) {
-            tgt = evt.target.parentNode.id;
-            if (!currentOrder.unit) {
-                return;
-            };
-            if (!currentOrder.src) {
-                currentOrder.src = tgt;
-            } else if (!currentOrder.dst) {
-                currentOrder.dst = tgt;
-                if (currentOrder.finish()) {
-                    finalizeOrder();
-                } else {
-                    // We don't know what action is wanted.
-                    highlightActions();
-                };
-            };
-            if (currentOrder.finish()) {
-                finalizeOrder();
-            };
-        };
-
-        var actionClick = function (evt) {
-            currentOrder.act = evt.target.textContent.toLowerCase();
-            unhighlightActions();
-            selectAction(currentOrder.act);
-            if (currentOrder.finish()) {
-                finalizeOrder();
-            };
-        };
-
         var highlightActions = function () {
             jQuery('#map_interface #actions .action').addClass('highlight');
         };
@@ -266,7 +224,25 @@ function DipMap(mapSelector) {
             jQuery('#map_interface #actions .action').removeClass('highlight');
         };
 
+        var highlightResupply = function () {
+            jQuery('#map_interface #adjustments .resupply').addClass('highlight');
+        };
+
+        var unhighlightResupply = function () {
+            jQuery('#map_interface #adjustments .resupply').removeClass('highlight');
+        };
+
+        var highlightDisband = function () {
+            jQuery('#map_interface #adjustments .disband').addClass('highlight');
+        };
+
+        var unhighlightDisband = function () {
+            jQuery('#map_interface #adjustments .disband').removeClass('highlight');
+        };
+
         var stopListen = function () {
+            // TODO(ccraciun): Should specify which handlers we're removing
+            // for better manners.
             map.selectAll('g#ForcesLayer #' + power + ' .force')
                .forEach(function (e) {
                    e.unclick();
@@ -277,34 +253,167 @@ function DipMap(mapSelector) {
             map.selectAll('g#MapLayer .w').forEach(function (e) {
                 e.unclick();
             });
-            jQuery('#map_interface #actions .action').click();
+            jQuery('#map_interface #actions .action').unbind('click');
+            jQuery('#map_interface #adjustments .resupply').unbind('click');
+            jQuery('#map_interface #adjustments .action').unbind('click');
 
-            if (currentOrder.unit) {
-                currentOrder.unit.node.classList.remove('selected');
-            }
+            map.selectAll('g#ForcesLayer .force.selected')
+                    .forEach(function (sel) {
+                sel.node.classList.remove('selected');
+            });
+
             instanceDipMap.clearOrders();
             deselectActions();
             unhighlightActions();
-            map.select('#MapLayer').node.classList.remove('accepting');
+
+            map.selectAll('.layer').forEach(function (layer) {
+                layer.node.classList.remove('accepting');
+            });
         };
 
-        // Add listeners to the forces of given power.
-        map.selectAll('g#ForcesLayer #' + power + ' .force')
-           .forEach(function (e) {
-               e.click(forceClick);
-        });
-        map.selectAll('g#MapLayer .l').forEach(function (e) {
-            e.click(regionClick);
-        });
-        map.selectAll('g#MapLayer .w').forEach(function (e) {
-            e.click(regionClick);
-        });
-        jQuery('#map_interface #actions .action').click(actionClick);
-        map.select('#MapLayer').node.classList.add('accepting');
+        function listenMovementOrders(power) {
+            var currentOrder = new Order();
 
-        return function () {
-            stopListen();
-            return orders;
+            var finalizeOrder = function () {
+                orders[currentOrder.org] = currentOrder;
+
+                instanceDipMap.drawOrders(orders);
+                currentOrder.unit.node.classList.remove('selected');
+                currentOrder = new Order();
+                deselectActions();
+            };
+
+            var forceClick = function (evt) {
+                if (currentOrder.unit) {
+                    currentOrder.unit.node.classList.remove('selected');
+                }
+                this.node.classList.add('selected');
+                currentOrder.unit = this;
+                currentOrder.type = this.data('type')
+                currentOrder.org = this.data('loc');
+                currentOrder.pow = this.data('power');
+                currentOrder.src = null;
+                currentOrder.dst = null;
+                if (currentOrder.finish()) {
+                    finalizeOrder();
+                };
+            };
+
+            var regionClick = function (evt) {
+                tgt = evt.target.parentNode.id;
+                if (!currentOrder.unit) {
+                    return;
+                };
+                if (!currentOrder.src) {
+                    currentOrder.src = tgt;
+                } else if (!currentOrder.dst) {
+                    currentOrder.dst = tgt;
+                    if (currentOrder.finish()) {
+                        finalizeOrder();
+                    } else {
+                        // We don't know what action is wanted.
+                        highlightActions();
+                    };
+                };
+                if (currentOrder.finish()) {
+                    finalizeOrder();
+                };
+            };
+
+            var actionClick = function (evt) {
+                currentOrder.act = evt.target.textContent.toLowerCase();
+                unhighlightActions();
+                selectAction(currentOrder.act);
+                if (currentOrder.finish()) {
+                    finalizeOrder();
+                };
+            };
+
+            // Add listeners to the forces of given power.
+            map.selectAll('g#ForcesLayer #' + power + ' .force')
+               .forEach(function (e) {
+                   e.click(forceClick);
+            });
+            map.selectAll('g#MapLayer .l').forEach(function (e) {
+                e.click(regionClick);
+            });
+            map.selectAll('g#MapLayer .w').forEach(function (e) {
+                e.click(regionClick);
+            });
+            jQuery('#map_interface #actions .action').click(actionClick);
+            // TODO(ccraciun): Narrow accepting to only valid forces, and
+            // territories when in retreat/resupply mode.
+            map.select('#MapLayer').node.classList.add('accepting');
+            map.select('#ForcesLayer').node.classList.add('accepting');
+
+            return function () {
+                stopListen();
+                return orders;
+            };
+        };
+
+        function listenAdjustmentOrders(power, adjustment) {
+            var currentOrder = new Order();
+
+            var finalizeOrder = function () {
+                orders[currentOrder.org] = currentOrder;
+
+                instanceDipMap.drawOrders(orders);
+                currentOrder = new Order();
+                unhighlightResupply();
+            };
+
+            var regionClick = function (evt) {
+                tgt = evt.target.parentNode.id;
+                currentOrder.org = tgt;
+                if (currentOrder.finish()) {
+                    finalizeOrder();
+                } else {
+                    highlightResupply();
+                };
+            };
+
+            var resupplyClick = function (evt) {
+                currentOrder.act = evt.target.textContent.toLowerCase();
+                unhighlightActions();
+                selectAction(currentOrder.act);
+                if (currentOrder.finish()) {
+                    finalizeOrder();
+                };
+            };
+
+            var disbandClick = function (evt) {
+            };
+
+            map.selectAll('g#MapLayer .l').forEach(function (e) {
+                e.click(regionClick);
+            });
+            map.selectAll('g#MapLayer .w').forEach(function (e) {
+                e.click(regionClick);
+            });
+            if (adjustment > 0) {
+                jQuery('#map_interface #adjustments .resupply').click(resupplyClick);
+            } else {
+                jQuery('#map_interface #adjustments .disband').click(disbandClick);
+            };
+
+            return function () {
+                stopListen();
+                return orders;
+            };
+        };
+
+        function listenRetreatOrders(power) {
+        };
+
+        if (state.date.phase === 'Movement') {
+            return listenMovementOrders(power);
+        } else if (state.date.phase === 'Retreat') {
+            return listenRetreatOrders(power);
+        } else if (state.date.phase === 'Adjustment') {
+            var counts = state.counts[power],
+                adjustment = counts.SCs - counts.armies - counts.fleets;
+            return listenAdjustmentOrders(power, adjustment);
         };
     };
 };

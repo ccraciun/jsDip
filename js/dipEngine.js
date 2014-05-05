@@ -38,18 +38,18 @@
         };
     };
 
-    function showTurn(state) {
+    function showTime(state) {
         jQuery('#map_interface #status #turn').text(
-                state.turn.year + ' ' +
-                state.turn.season + ' ' +
-                state.turn.phase);
+                state.date.year + ' ' +
+                state.date.season + ' ' +
+                state.date.phase);
     };
 
-    function loadMap(defsUrl, mapSvg, mapCss) {
+    function loadMap(defsUrl, mapSvgUrl, mapCssUrl) {
         console.log('deferring loadMap');
         var deferred = new jQuery.Deferred();
         // TODO(ccraciun): Support loading jDip map data..
-        jQuery.getJSON('data/europe_standard_defs.json')
+        jQuery.getJSON(defsUrl)
             .done(function (data) {
                 defs = data;
                 dipMap.setDefs(data);
@@ -60,16 +60,17 @@
                 jQueryAjaxErrorHandler(jqxhr, textStatus, error);
                 deferred.reject(jqxhr, textStatus, error);
             });
-        dipMap.loadMapFromUrl('img/europe_standard.svg');
-        loadjscssfile('css/europe_standard.css', 'css');
+        dipMap.loadMapFromUrl(mapSvgUrl);
+        loadjscssfile(mapCssUrl, 'css');
         return deferred.promise();
     }
 
-    function setState(state) {
+    function setState(newState) {
+        state = newState;
         updateCounts(state);
         printCounts(state);
-        showTurn(state);
-        dipMap.setState(state);
+        showTime(state);
+        dipMap.drawState(state);
         for (i in state.active) {
             pow = state.active[i];
             jQuery('<span class="separator"> | </span>').appendTo(jQuery('#menu #powers'));
@@ -80,9 +81,9 @@
     function loadStateUrl(stateUrl) {
         console.log('deferring loadStateUrl');
         var deferred = new jQuery.Deferred();
-        jQuery.getJSON('data/europe_standard_start.json')
-            .done(function (state) {
-                setState(state);
+        jQuery.getJSON(stateUrl)
+            .done(function (newState) {
+                setState(newState);
                 console.log('done loadStateUrl');
                 deferred.resolve();
             })
@@ -113,7 +114,8 @@
         if (collectOrders) {
             turnOrders[selectedPower] = collectOrders();
         };
-        collectOrders = dipMap.listenOrders(evt.target.textContent);
+        // collectOrders = dipMap.listenOrders(evt.target.textContent);
+        collectOrders = dipMap.listenOrders(evt.target.textContent, state);
         selectPower(evt.target.textContent);
     };
 
@@ -121,6 +123,8 @@
         if (collectOrders) {
             turnOrders[selectedPower] = collectOrders();
         };
+        console.log('Current turn orders:');
+        console.log(turnOrders);
         collectOrders = null;
         deselectPowers();
         state.orders = turnOrders;
@@ -131,15 +135,15 @@
         }
     };
 
-    function menuListen() {
-        console.log('menuListen');
+    function listenMenu() {
+        console.log('listenMenu');
         jQuery('#menu .menu-item.power').click(clickPower);
         jQuery('#menu .menu-item.done').click(clickDone);
         jQuery('#menu .menu-item.end-phase').click(clickEndPhase);
     };
 
-    jQuery.when(loadMap('data/europe_standard_defs.json', 'img/europe_standard.svg', 'css/europe_standard_defs'), loadStateUrl('data/europe_standard_start.json'))
-            .then(menuListen);
+    jQuery.when(loadMap('data/europe_standard_defs.json', 'img/europe_standard.svg', 'css/europe_standard.css'), loadStateUrl('data/europe_sconly_start.json'))
+            .then(listenMenu);
 });
 
 // TODO(ccraciun): Rename to history box.
