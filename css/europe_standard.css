@@ -32,11 +32,21 @@ text {
 
 #ForcesLayer .force.selected 	{stroke-width:2}
 
+#ForcesLayer.accepting .force:hover 	{stroke:gray}
+
 #OrdersLayer .order.move {fill:none; stroke:black; stroke-width:3; marker-end:url(#move)}
 #OrdersLayer .order.support {fill:none; stroke:green; stroke-width:3; marker-end:url(#support)}
 #OrdersLayer .order.convoy {fill:none; stroke:blue; stroke-width:3; marker-end:url(#convoy)}
 #OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
 #OrdersLayer .order.fail {marker-mid:url(#fail)}
+
+#OrdersLayer #Austria .force 	{fill:#FF0000; stroke:black; opacity:.5}
+#OrdersLayer #England .force 	{fill:#0000FF; stroke:black; opacity:.5}
+#OrdersLayer #France .force  	{fill:#00FFFF; stroke:black; opacity:.5}
+#OrdersLayer #Germany .force 	{fill:#808080; stroke:black; opacity:.5}
+#OrdersLayer #Italy .force   	{fill:#00FF00; stroke:black; opacity:.5}
+#OrdersLayer #Russia .force  	{fill:#008000; stroke:black; opacity:.5}
+#OrdersLayer #Turkey .force  	{fill:#FFFF00; stroke:black; opacity:.5}
 
 .message.Austria		{color:#FF0000}
 .message.England		{color:#0000FF}
