@@ -11,24 +11,28 @@ text {
     -ms-user-select: none;
 }
 
-#MapLayer .Austria		{fill:#FF0000; stroke:black}
-#MapLayer .England		{fill:#0000FF; stroke:black}
-#MapLayer .France 		{fill:#00FFFF; stroke:black}
-#MapLayer .Germany		{fill:#808080; stroke:black}
-#MapLayer .Italy  		{fill:#00FF00; stroke:black}
-#MapLayer .Russia 		{fill:#008000; stroke:black}
-#MapLayer .Turkey 		{fill:#FFFF00; stroke:black}
-
 #MapLayer.accepting .l:hover	{fill:#BADA55;}
 #MapLayer.accepting .w:hover	{fill:#BAAADA;}
 
-#ForcesLayer #Austria .force 	{fill:#FF0000; stroke:black}
-#ForcesLayer #England .force 	{fill:#0000FF; stroke:black}
-#ForcesLayer #France .force  	{fill:#00FFFF; stroke:black}
-#ForcesLayer #Germany .force 	{fill:#808080; stroke:black}
-#ForcesLayer #Italy .force   	{fill:#00FF00; stroke:black}
-#ForcesLayer #Russia .force  	{fill:#008000; stroke:black}
-#ForcesLayer #Turkey .force  	{fill:#FFFF00; stroke:black}
+#SupplyCentersLayer .Austria		{fill:#FF0000; stroke:black}
+#SupplyCentersLayer .England		{fill:#0000FF; stroke:black}
+#SupplyCentersLayer .France 		{fill:#00FFFF; stroke:black}
+#SupplyCentersLayer .Germany		{fill:#808080; stroke:black}
+#SupplyCentersLayer .Italy  		{fill:#00FF00; stroke:black}
+#SupplyCentersLayer .Russia 		{fill:#008000; stroke:black}
+#SupplyCentersLayer .Turkey 		{fill:#FFFF00; stroke:black}
+
+#SupplyCentersLayer .accepting .sc:hover {fill:#BADA55;}
+
+#SupplyCentersLayer .sc.selected {stroke-width:2;}
+
+#ForcesLayer .Austria .force 	{fill:#FF0000; stroke:black}
+#ForcesLayer .England .force 	{fill:#0000FF; stroke:black}
+#ForcesLayer .France .force  	{fill:#00FFFF; stroke:black}
+#ForcesLayer .Germany .force 	{fill:#808080; stroke:black}
+#ForcesLayer .Italy .force   	{fill:#00FF00; stroke:black}
+#ForcesLayer .Russia .force  	{fill:#008000; stroke:black}
+#ForcesLayer .Turkey .force  	{fill:#FFFF00; stroke:black}
 
 #ForcesLayer .force.selected 	{stroke-width:2}
 
@@ -40,13 +44,13 @@ text {
 #OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
 #OrdersLayer .order.fail {marker-mid:url(#fail)}
 
-#OrdersLayer #Austria .force 	{fill:#FF0000; stroke:black; opacity:.5}
-#OrdersLayer #England .force 	{fill:#0000FF; stroke:black; opacity:.5}
-#OrdersLayer #France .force  	{fill:#00FFFF; stroke:black; opacity:.5}
-#OrdersLayer #Germany .force 	{fill:#808080; stroke:black; opacity:.5}
-#OrdersLayer #Italy .force   	{fill:#00FF00; stroke:black; opacity:.5}
-#OrdersLayer #Russia .force  	{fill:#008000; stroke:black; opacity:.5}
-#OrdersLayer #Turkey .force  	{fill:#FFFF00; stroke:black; opacity:.5}
+#OrdersLayer .Austria .force 	{fill:#FF0000; stroke:black; opacity:.5}
+#OrdersLayer .England .force 	{fill:#0000FF; stroke:black; opacity:.5}
+#OrdersLayer .France .force  	{fill:#00FFFF; stroke:black; opacity:.5}
+#OrdersLayer .Germany .force 	{fill:#808080; stroke:black; opacity:.5}
+#OrdersLayer .Italy .force   	{fill:#00FF00; stroke:black; opacity:.5}
+#OrdersLayer .Russia .force  	{fill:#008000; stroke:black; opacity:.5}
+#OrdersLayer .Turkey .force  	{fill:#FFFF00; stroke:black; opacity:.5}
 
 .message.Austria		{color:#FF0000}
 .message.England		{color:#0000FF}
