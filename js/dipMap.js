@@ -10,7 +10,7 @@
 
     this.toStr = function () {
         prefix = self.type + ' ' + self.org;
-        if (self.act === 'hold' || self.act === 'build') {
+        if (self.act === 'hold' || self.act === 'build' || self.act === 'disband') {
             return prefix + ' ' + self.act;
         } else if (self.act == 'move') {
             return prefix + ' move ' + self.dst;
@@ -21,22 +21,29 @@
 
     this.finish = function () {
         // If we don't have a source unit, give up.
-        if (!self.org) {
+        if (!self.org || !self.type) {
             return false;
         };
         // Try to guess source and destination based on action.
-        if (self.act === 'hold') {
-            self.src = self.dst = self.org;
-        } else if (self.act === 'move' && self.src !== self.org) {
-            self.dst = self.src;
-        };
-        // If we still have gaps, give up.
-        if (!self.org || !self.src || !self.dst ||
-                !self.pow || !self.type) {
-            return false;
+        if (self.act in ['build', 'move', 'disband']) {
+            return true;
+        } else if (self.act === 'move') {
+            if (self.src !== self.org) {
+                // We can guess the destination.
+                self.dst = self.src;
+            };
+            // Valid if we have a destination.
+            return self.dst;
+        } else if (self.act in ['support', 'convoy']) {
+            // Valid if we have a source and destination.
+            return self.src && self.dst;
         };
         // Try to guess action from source and destination.
         if (!self.act) {
+            if (!self.src || !self.dst) {
+                // Not enough to guess;
+                return false;
+            }
             if (self.dst === self.src &&
                     self.src === self.org) {
                 self.act = 'hold';
@@ -45,7 +52,7 @@
                 self.act = 'move';
                 self.src = self.org;
             } else {
-                // Either support or convoy.
+                // Either support or convoy, but we can't easily guess.
                 return false;
             };
         };
@@ -54,29 +61,30 @@
 
     function fromString(str, defs) {
         params = str.split(' ');
-        var type = params[0],
-            org = param[1],
-            act = param[2],
-            loc1 = param[3],
-            loc2 = param[4];
+        var type = params[0] || null,
+            org = param[1] || null,
+            act = param[2] || null,
+            loc1 = param[3] || null,
+            loc2 = param[4] || null;
 
-        // TODO(ccraciun): Order sanity checks.
-        if (!(type in defs.force_types)) {
+        // TODO(ccraciun): Parse more order phrases, add more order sanity checks.
+        // type, origin and action are mandatory.
+        if (type && !(type in defs.force_types)) {
             return null;
         };
-        if (!(org in defs.alias)) {
+        if (!(org = defs.alias[org])) {
             return null;
         };
-        org = defs.alias[org];
-        if (!(loc1 in defs.alias)) {
+        if (act) {
+            act = act.toLowerCase();
+        };
+        if (!(act in ['hold', 'move', 'support', 'convoy', 'build', 'disband'])) {
             return null;
         };
-        src = defs.alias[loc1];
-        if (!(loc2 in defs.alias)) {
+        if (src && !(src = defs.alias[loc1])) {
             return null;
         };
-        dst = defs.alias[loc2];
-        if (!(act in ['hold', 'move', 'support', 'convoy', 'build'])) {
+        if (dst && !(dst = defs.alias[loc2])) {
             return null;
         };
 
@@ -100,10 +108,13 @@ function DipMap(mapSelector) {
     this.getMap = function () { return map };
 
     function onLoadRawSvg(rawMap) {
+        map.clear();
         map.append(rawMap.select('defs'));
         map.append(rawMap.select('g#MapLayer'));
         map.group().attr({'id': 'ForcesLayer', 'class': 'layer'});
+        map.group().attr({'id': 'SupplyCentersLayer', 'class': 'layer'});
         map.group().attr({'id': 'OrdersLayer', 'class': 'layer'});
+        map.group().attr({'id': 'ResultsLayer', 'class': 'layer'});
     };
 
     this.loadMap = function (mapSvg) {
@@ -118,55 +129,66 @@ function DipMap(mapSelector) {
         defs = defsIn;
     };
 
-    function drawItem(power, type, loc, layerSel) {
-        var layer = map.select('g#ForcesLayer');
-        if (layerSel) {
-            layer = map.select(layerSel);
-        };
-        var container = layer.select('g#' + power);
+    function getPowerContainer(layer, power) {
+        var container = layer.select('g.' + power);
         if (!container) {
-            container = layer.group().attr({id: power});
+            container = layer.group().attr({'class': power});
         }
-        var it = map.select('defs ' + type);
+        return container;
+    };
+
+
+    function drawForce(power, type, loc, layerSel) {
+        var layer = map.select(layerSel || 'g#ForcesLayer'),
+            container = getPowerContainer(layer, power),
+            it = map.select('defs #' + type);
         it.use().attr({'class': 'force'})
                 .transform('translate(' + defs.coords[loc] + ')')
                 .appendTo(container)
-                .data({loc: loc, type: type, power: power});
+                .data({org: loc, type: type, power: power});
     };
 
-    this.drawOrder = function (order, layerSel) {
+    function drawSC(power, loc, layerSel) {
+        var layer = map.select(layerSel || 'g#SupplyCentersLayer'),
+            container = getPowerContainer(layer, power),
+            it = map.select('defs #sc');
+        it.use().attr({'class': 'sc ' + power})
+                .transform('translate(' + defs.coords['sc' + loc] + ')')
+                .appendTo(container)
+                .data({org: loc, power: power});
+    };
+
+    function drawOrder(order, layerSel) {
         var src = order.src,
             act = order.act,
             dst = order.dst,
             org = order.org,
             pow = order.pow,
             type = order.type;
-        var layer = map.select('g#OrdersLayer');
-        if (layerSel) {
-            layer = map.select(layerSel);
-        };
-        var container = layer.select('g#' + pow);
-        if (!container) {
-            container = layer.group().attr({id: pow});
-        };
 
         if (act === 'build') {
-            drawItem(pow, type, org, cont);
-        } else if (act === 'support' || act === 'convoy') {
-            container.path('M' + defs.coords[org] + ' ' +
-                           'Q' + defs.coords[src] + ' ' + defs.coords[dst])
-                       .attr({'class': 'order ' + pow + ' ' + act});
-        } else {
-            container.path('M' + defs.coords[org] + ' ' +
-                           'L' + defs.coords[dst])
-                       .attr({'class': 'order ' + pow + ' ' + act});
+            return drawForce(pow, type, org, 'g#OrdersLayer');
         };
+
+        var layer = map.select(layerSel || 'g#OrdersLayer'),
+            container = getPowerContainer(layer, power),
+            it = null;
+        if (act === 'support' || act === 'convoy') {
+            it = container.path('M' + defs.coords[org] + ' ' +
+                           'Q' + defs.coords[src] + ' ' + defs.coords[dst])
+                          .attr({'class': 'order ' + pow + ' ' + act});
+        } else {
+            it = container.path('M' + defs.coords[org] + ' ' +
+                           'L' + defs.coords[dst])
+                          .attr({'class': 'order ' + pow + ' ' + act});
+        };
+        it.data({org: org, power: pow, type: type, act: act, src: src, dst: dst});
     };
 
     this.drawState = function (state) {
         // Draw SCs.
-        for (sc in state.SC) {
-            map.select('#sc' + sc).node.setAttribute('class', state.SC[sc]);
+        for (scLoc in state.SC) {
+            drawSC(state.SC[scLoc], scLoc);
         };
 
         // Update forces
@@ -174,26 +196,25 @@ function DipMap(mapSelector) {
         forces.selectAll('g').remove();
         for (power in state.forces) {
             forces = state.forces[power];
+            // TODO(ccraciun): Support different force types.
             forces.armies.forEach(function (org) {
-                drawItem(power, '#A', org);
+                drawForce(power, 'A', org);
             });
             forces.fleets.forEach(function (org) {
-                drawItem(power, '#F', org);
+                drawForce(power, 'F', org);
             });
         };
     };
 
     this.clearOrders = function () {
-        var ordersLayer = map.select('g#OrdersLayer');
-        ordersLayer.selectAll('.order').remove();
-        ordersLayer.selectAll('.force').remove();
+        map.select('g#OrdersLayer').clear();
     };
 
     this.drawOrders = function (orders) {
         this.clearOrders();
         for (it in orders) {
             order = orders[it];
-            this.drawOrder(order, 'g#OrdersLayer');
+            drawOrder(order, 'g#OrdersLayer');
         };
     };
 
@@ -201,49 +222,41 @@ function DipMap(mapSelector) {
         var orders = {};
 
         function deselectActions() {
-            jQuery('#map_interface .action.selected').removeClass('selected');
+            jQuery('#map_actions .selected').removeClass('selected');
         };
 
         function selectAction(act) {
             deselectActions();
-            jQuery('#map_interface .action.' + act.toLowerCase()).addClass('selected');
+            jQuery('#map_actions .action.' + act.toLowerCase())
+                    .addClass('selected');
         };
 
-        function selectedAction(pow) {
-            sel = jQuery('#map_interface .action.selected')[0];
-            if (sel) {
-                return sel.text
+        function selectedAction() {
+            sel = jQuery('#map_actions .action.selected')[0];
+            return sel.text;
+        };
+
+        function highlightActions(actClass, actContainer) {
+            actContainer = actContainer || 'map_actions';
+            actClass = actClass || 'movement';
+            jQuery('#' + actContainer + ' .' + actClass + '.action')
+                    .addClass('highlight');
+        };
+
+        function unhighlightActions(actClass, actContainer) {
+            actContainer = actContainer || 'map_actions';
+            if (actClass) {
+                jQuery('#' + actContainer + ' .' + actClass + '.action')
+                        .removeClass('highlight');
+            } else {
+                jQuery('#' + actContainer + ' .action').removeClass('highlight');
             };
-        };
-
-        var highlightActions = function () {
-            jQuery('#map_interface #actions .action').addClass('highlight');
-        };
-
-        var unhighlightActions = function () {
-            jQuery('#map_interface #actions .action').removeClass('highlight');
-        };
-
-        var highlightResupply = function () {
-            jQuery('#map_interface #adjustments .resupply').addClass('highlight');
-        };
-
-        var unhighlightResupply = function () {
-            jQuery('#map_interface #adjustments .resupply').removeClass('highlight');
-        };
-
-        var highlightDisband = function () {
-            jQuery('#map_interface #adjustments .disband').addClass('highlight');
-        };
-
-        var unhighlightDisband = function () {
-            jQuery('#map_interface #adjustments .disband').removeClass('highlight');
         };
 
         var stopListen = function () {
             // TODO(ccraciun): Should specify which handlers we're removing
             // for better manners.
-            map.selectAll('g#ForcesLayer #' + power + ' .force')
+            map.selectAll('g#ForcesLayer .' + power + ' .force')
                .forEach(function (e) {
                    e.unclick();
             });
@@ -253,7 +266,10 @@ function DipMap(mapSelector) {
             map.selectAll('g#MapLayer .w').forEach(function (e) {
                 e.unclick();
             });
-            jQuery('#map_interface #actions .action').unbind('click');
+            map.selectAll('g#SupplyCentersLayer .sc').forEach(function (e) {
+                e.unclick();
+            });
+            jQuery('#map_interface #map_actions .action').unbind('click');
             jQuery('#map_interface #adjustments .resupply').unbind('click');
             jQuery('#map_interface #adjustments .action').unbind('click');
 
@@ -266,8 +282,8 @@ function DipMap(mapSelector) {
             deselectActions();
             unhighlightActions();
 
-            map.selectAll('.layer').forEach(function (layer) {
-                layer.node.classList.remove('accepting');
+            map.selectAll('.accepting').forEach(function (it) {
+                it.node.classList.remove('accepting');
             });
         };
 
@@ -279,8 +295,9 @@ function DipMap(mapSelector) {
 
                 instanceDipMap.drawOrders(orders);
                 currentOrder.unit.node.classList.remove('selected');
-                currentOrder = new Order();
                 deselectActions();
+
+                currentOrder = new Order();
             };
 
             var forceClick = function (evt) {
@@ -290,7 +307,7 @@ function DipMap(mapSelector) {
                 this.node.classList.add('selected');
                 currentOrder.unit = this;
                 currentOrder.type = this.data('type')
-                currentOrder.org = this.data('loc');
+                currentOrder.org = this.data('org');
                 currentOrder.pow = this.data('power');
                 currentOrder.src = null;
                 currentOrder.dst = null;
@@ -302,6 +319,8 @@ function DipMap(mapSelector) {
             var regionClick = function (evt) {
                 tgt = evt.target.parentNode.id;
                 if (!currentOrder.unit) {
+                    // TODO(ccraciun): Set origin/get unit that lives at
+                    // this point if available.
                     return;
                 };
                 if (!currentOrder.src) {
@@ -312,7 +331,7 @@ function DipMap(mapSelector) {
                         finalizeOrder();
                     } else {
                         // We don't know what action is wanted.
-                        highlightActions();
+                        highlightActions('movement');
                     };
                 };
                 if (currentOrder.finish()) {
@@ -329,22 +348,23 @@ function DipMap(mapSelector) {
                 };
             };
 
-            // Add listeners to the forces of given power.
-            map.selectAll('g#ForcesLayer #' + power + ' .force')
+            // TODO(ccraciun): Narrow accepting to only valid forces, and
+            // territories when in retreat/resupply mode.
+            map.selectAll('g#ForcesLayer .' + power + ' .force')
                .forEach(function (e) {
                    e.click(forceClick);
             });
+            map.select('#ForcesLayer').node.classList.add('accepting');
+
             map.selectAll('g#MapLayer .l').forEach(function (e) {
                 e.click(regionClick);
             });
             map.selectAll('g#MapLayer .w').forEach(function (e) {
                 e.click(regionClick);
             });
-            jQuery('#map_interface #actions .action').click(actionClick);
-            // TODO(ccraciun): Narrow accepting to only valid forces, and
-            // territories when in retreat/resupply mode.
             map.select('#MapLayer').node.classList.add('accepting');
-            map.select('#ForcesLayer').node.classList.add('accepting');
+
+            jQuery('#map_interface #map_actions .action').click(actionClick);
 
             return function () {
                 stopListen();
@@ -353,48 +373,93 @@ function DipMap(mapSelector) {
         };
 
         function listenAdjustmentOrders(power, adjustment) {
+            // TODO(ccraciun): Disallow building in occupied non-home regions.
+            // Disallow building fleets in non-coastal regions.
             var currentOrder = new Order();
 
-            var finalizeOrder = function () {
+            function finalizeOrder () {
                 orders[currentOrder.org] = currentOrder;
 
                 instanceDipMap.drawOrders(orders);
+                if (currentOrder.sc) {
+                    currentOrder.sc.node.classList.remove('selected');
+                };
+                unhighlightActions();
+                deselectActions();
+
                 currentOrder = new Order();
-                unhighlightResupply();
             };
 
-            var regionClick = function (evt) {
-                tgt = evt.target.parentNode.id;
-                currentOrder.org = tgt;
+            function forceClick (evt) {
+                this.node.classList.add('selected');
+                currentOrder.unit = this;
+                currentOrder.type = this.data('type')
+                currentOrder.org = this.data('org');
+                currentOrder.pow = this.data('power');
+                if (currentOrder.finish()) {
+                    finalizeOrder();
+                };
+            };
+
+            var scClick = function (evt) {
+                this.node.classList.add('selected');
+                currentOrder.sc = this;
+                currentOrder.org = this.data('org');
+                currentOrder.pow = this.data('power');
                 if (currentOrder.finish()) {
                     finalizeOrder();
                 } else {
-                    highlightResupply();
+                    highlightActions('resupply');
                 };
             };
 
             var resupplyClick = function (evt) {
-                currentOrder.act = evt.target.textContent.toLowerCase();
-                unhighlightActions();
-                selectAction(currentOrder.act);
+                currentOrder.act = 'build';
+                // TODO(ccraciun): Load/Set force types dynamically.
+                type = evt.target.textContent.toLowerCase();
+                currentOrder.type = {'army':'A', 'fleet':'F'}[type];
+                selectAction(type);
+                unhighlightActions('resupply');
                 if (currentOrder.finish()) {
                     finalizeOrder();
                 };
             };
 
             var disbandClick = function (evt) {
+                currentOrder.act = 'disband';
+                unhighlightDisband();
+                selectAction(currentOrder.act);
+                if (currentOrder.finish()) {
+                    finalizeOrder();
+                };
             };
 
-            map.selectAll('g#MapLayer .l').forEach(function (e) {
-                e.click(regionClick);
+            // TODO(ccraciun): Support regionclick here since SCs are small.
+            map.selectAll('g#SupplyCentersLayer .' + power + ' .sc')
+                    .forEach(function (e) {
+                e.click(scClick);
             });
-            map.selectAll('g#MapLayer .w').forEach(function (e) {
-                e.click(regionClick);
-            });
+
             if (adjustment > 0) {
-                jQuery('#map_interface #adjustments .resupply').click(resupplyClick);
+                jQuery('#map_interface #adjustments .resupply')
+                        .click(resupplyClick);
+                map.selectAll('g#SupplyCentersLayer .' + power + ' .sc')
+                        .forEach(function (e) {
+                    e.click(scClick);
+                });
+                map.select('g#SupplyCentersLayer .' + power)
+                        .node.classList.add('accepting');
+            } else if (adjustment < 0) {
+                jQuery('#map_interface #adjustments .disband')
+                        .click(disbandClick);
+                map.selectAll('g#ForcesLayer .' + power + ' .force')
+                        .forEach(function (e) {
+                    e.click(forceClick);
+                });
+                map.select('g#ForcesLayer .' + power)
+                        .node.classList.add('accepting');
             } else {
-                jQuery('#map_interface #adjustments .disband').click(disbandClick);
+                // Highlight "Done" button?
             };
 
             return function () {
@@ -411,7 +476,7 @@ function DipMap(mapSelector) {
         } else if (state.date.phase === 'Retreat') {
             return listenRetreatOrders(power);
         } else if (state.date.phase === 'Adjustment') {
-            var counts = state.counts[power],
+            var counts = state.counts()[power],
                 adjustment = counts.SCs - counts.armies - counts.fleets;
             return listenAdjustmentOrders(power, adjustment);
         };

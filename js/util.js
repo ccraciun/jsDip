@@ -1,19 +1,19 @@
 ﻿function loadjscssfile(filename, filetype) {
     if (filetype == "js") { //if filename is a external JavaScript file
         // alert('called');
-        var fileref = document.createElement('script')
-            fileref.setAttribute("type", "text/javascript")
-            fileref.setAttribute("src", filename)
+        var fileref = document.createElement('script');
+            fileref.setAttribute("type", "text/javascript");
+            fileref.setAttribute("src", filename);
             // alert('called');
     }
     else if (filetype == "css") { //if filename is an external CSS file
-        var fileref = document.createElement("link")
-            fileref.setAttribute("rel", "stylesheet")
-            fileref.setAttribute("type", "text/css")
-            fileref.setAttribute("href", filename)
+        var fileref = document.createElement("link");
+            fileref.setAttribute("rel", "stylesheet");
+            fileref.setAttribute("type", "text/css");
+            fileref.setAttribute("href", filename);
     }
     if (typeof fileref != "undefined")
-        document.getElementsByTagName("head")[0].appendChild(fileref)
+        document.getElementsByTagName("head")[0].appendChild(fileref);
 };
 
 function jQueryAjaxErrorHandler(jqxhr, textStatus, error) {
@@ -28,4 +28,4 @@ Function.prototype.partial = function () {
         return method.apply(this,
                 args.concat(Array.prototype.slice.call(arguments)));
     }
-}
+};

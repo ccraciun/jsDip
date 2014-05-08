@@ -1,45 +1,78 @@
-﻿$(function () {
+﻿function State (info) {
+    var self = this,
+        _counts = null;
+
+    this.counts = function () {
+        if (!_counts) {
+            _counts = {};
+            // Update SC self.
+            for (sc in self.SC) {
+                if (!(self.SC[sc] in _counts)) {
+                    _counts[self.SC[sc]] = {
+                        SCs: 0,
+                        armies: 0,
+                        fleets: 0
+                    }
+                }
+                _counts[self.SC[sc]].SCs++;
+            };
+
+            for (power in self.forces) {
+                _counts[power].armies = self.forces[power].armies.length;
+                _counts[power].fleets = self.forces[power].fleets.length;
+                _counts[power].forces = _counts[power].armies +
+                                        _counts[power].fleets;
+                _counts[power].adjustment = _counts[power].SCs -
+                                            _counts[power].forces;
+            };
+        };
+        return _counts;
+    };
+
+    this.forceAt = function (loc) {
+        for (power in self.forces) {
+            for (type in self.forces[power]) {
+                if (loc in self.forces[power][type]) {
+                    return {power: power, type: type};
+                };
+            };
+        };
+        return null;
+    };
+
+    jQuery.extend(this, info);
+};
+
+$(function () {
     var dipMap = new DipMap('#map'),
         statusBox = new StatusBox('#messageBox'),
         collectOrders = null,
         defs = null,
         turnOrders = {}, state = null;
 
-    function updateCounts(state) {
-        var counts = {};
-
-        // Update SC state.
-        for (sc in state.SC) {
-            if (!(state.SC[sc] in counts)) {
-                counts[state.SC[sc]] = {
-                    SCs: 0,
-                    armies: 0,
-                    fleets: 0
-                }
-            }
-            counts[state.SC[sc]].SCs++;
-        };
-
-        for (power in state.forces) {
-            counts[power].armies = state.forces[power].armies.length;
-            counts[power].fleets = state.forces[power].fleets.length;
-        };
-
-        state.counts = counts;
-        return counts;
-    };
-
     function printCounts(state) {
-        var counts = state.counts;
+        var counts = state.counts();
         for (pow in counts) {
+            // TODO(ccraciun): Multiple types of forces here.
             statusBox.putLine(pow + ' has ' + counts[pow].SCs + ' SCs, ' +
                     counts[pow].armies + ' armies, ' +
                     counts[pow].fleets + ' fleets.', pow);
         };
     };
 
+    function printOrders(orders) {
+        console.log('Current turn orders:');
+        for (pow in turnOrders) {
+            console.log('For ' + pow);
+            for (idx in turnOrders[pow]) {
+                console.log(turnOrders[pow][idx].toStr());
+            };
+        };
+        console.log(turnOrders);
+    };
+
     function showTime(state) {
-        jQuery('#map_interface #status #turn').text(
+        jQuery('#map_interface #status #date').text(
                 state.date.year + ' ' +
                 state.date.season + ' ' +
                 state.date.phase);
@@ -66,8 +99,7 @@
     }
 
     function setState(newState) {
-        state = newState;
-        updateCounts(state);
+        state = new State(newState);
         printCounts(state);
         showTime(state);
         dipMap.drawState(state);
@@ -103,7 +135,7 @@
         jQuery('#menu .menu-item.' + pow.toLowerCase()).addClass('selected');
     };
 
-    function selectedPower(pow) {
+    function selectedPower() {
         sel = jQuery('#menu .menu-item.selected')[0];
         if (sel) {
             return sel.textContent;
@@ -112,27 +144,32 @@
 
     function clickPower(evt) {
         if (collectOrders) {
-            turnOrders[selectedPower] = collectOrders();
+            turnOrders[selectedPower()] = collectOrders();
         };
-        // collectOrders = dipMap.listenOrders(evt.target.textContent);
         collectOrders = dipMap.listenOrders(evt.target.textContent, state);
         selectPower(evt.target.textContent);
     };
 
     function clickDone(evt) {
         if (collectOrders) {
-            turnOrders[selectedPower] = collectOrders();
+            turnOrders[selectedPower()] = collectOrders();
         };
-        console.log('Current turn orders:');
-        console.log(turnOrders);
         collectOrders = null;
         deselectPowers();
-        state.orders = turnOrders;
+        printOrders(turnOrders);
     };
 
     function clickEndPhase(evt) {
-        for (pow in state.active) {
-        }
+        clickDone();
+        for (idx in state.active) {
+            pow = state.active[idx];
+            if (!(pow in turnOrders)) {
+                console.log(pow + ' is active but has no orders.');
+            };
+        };
+        // WIP(ccraciun): Stuff here.
+        newState = judge(state, turnOrders);
+        console.log(newState);
     };
 
     function listenMenu() {
@@ -142,7 +179,7 @@
         jQuery('#menu .menu-item.end-phase').click(clickEndPhase);
     };
 
-    jQuery.when(loadMap('data/europe_standard_defs.json', 'img/europe_standard.svg', 'css/europe_standard.css'), loadStateUrl('data/europe_sconly_start.json'))
+    jQuery.when(loadMap('data/europe_standard_defs.json', 'img/europe_standard.svg', 'css/europe_standard.css'), loadStateUrl('data/europe_standard_start.json'))
             .then(listenMenu);
 });
 

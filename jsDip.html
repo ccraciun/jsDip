@@ -10,10 +10,13 @@
 <link rel="stylesheet" type="text/css" href="css/interface.css" />
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="lib/underscore.js"></script>
 <script src="lib/snap.svg.js"></script>
+
 <script src="js/dipMap.js"></script>
 <script src="js/util.js"></script>
 <script src="js/dipEngine.js"></script>
+<script src="js/judge.js"></script>
 
 </head>
 
@@ -23,6 +26,8 @@
             <span id="controls">
                 <a href="#" class="menu-item done"><span>Done</span></a>
                 <span class="separator"> | </span>
+                <a href="#" class="menu-item resign"><span>Resign</span></a>
+                <span class="separator"> | </span>
                 <a href="#" class="menu-item end-phase"><span>End Phase</span></a>
             </span>
             <span id="powers">
@@ -31,35 +36,42 @@
         </div>
         <svg id="map" viewbox="0 0 610 560"></svg>
         <div id="map_interface">
-            <!-- TODO(ccraciun): Replace these with checkboxes -->
             <div id="status">
-                <div id="turn"></div>
+                <div id="date"></div>
                 <div id="messageBox"></div>
             </div>
-            <div id="actions">
-                Action
-                <span class="separator"> : </span>
-                <a href="#" class="move action"><span>Move</span></a>
-                <span class="separator"> | </span>
-                <a href="#" class="hold action"><span>Hold</span></a>
-                <span class="separator"> | </span>
-                <a href="#" class="support action"><span>Support</span></a>
-                <span class="separator"> | </span>
-                <a href="#" class="convoy action"><span>Convoy</span></a>
+            <div id="map_actions">
+                <div id="movements">
+                    <!-- TODO(ccraciun): Replace these with radio/checkboxes -->
+                    Action
+                    <!-- TODO(ccraciun): Handle separators with ::before and/or ::after css -->
+                    <span class="separator"> : </span>
+                    <a href="#" class="move movement action"><span>Move</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="hold movement action"><span>Hold</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="support movement action"><span>Support</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="convoy movement action"><span>Convoy</span></a>
+                </div>
+                <div id="adjustments">
+                    Build/Adjust
+                    <span class="separator"> : </span>
+                    <a href="#" class="army resupply action"><span>Army</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="fleet resupply action"><span>Fleet</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="disband action"><span>Disband</span></a>
+                </div>
             </div>
-            <div id="adjustments">
-                Adjust
-                <span class="separator"> : </span>
-                <a href="#" class="army resupply"><span>New Army</span></a>
-                <span class="separator"> | </span>
-                <a href="#" class="fleet resupply"><span>New Fleet</span></a>
-                <span class="separator"> | </span>
-                <a href="#" class="disband action"><span>Disband</span></a>
-            </div>
+        </div>
+        <div id="footer" class="footer">
+            <a href="#" class="load-standard"><span>Load Standard</span></a>
+            <a href="#" class="load-sconly"><span>Load SConly</span></a>
         </div>
     </div>
 
-    <div id="footer" class="footer">
+    <div id="about" class="about">
         <strong>jsDip GUI Sandbox</strong> | <a href="https://github.com/ccraciun/jsDip">https://github.com/ccraciun/jsDip</a> &nbsp;
     </div>
 
