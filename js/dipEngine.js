@@ -5,19 +5,14 @@
     this.counts = function () {
         if (!_counts) {
             _counts = {};
-            // Update SC self.
-            for (sc in self.SC) {
-                if (!(self.SC[sc] in _counts)) {
-                    _counts[self.SC[sc]] = {
-                        SCs: 0,
-                        armies: 0,
-                        fleets: 0
-                    }
-                }
-                _counts[self.SC[sc]].SCs++;
+
+            for (power in self.SCs) {
+                _counts[power] = _counts[power] || {};
+                _counts[power].SCs = self.SCs[power].length;
             };
 
             for (power in self.forces) {
+                _counts[power] = _counts[power] || {};
                 _counts[power].armies = self.forces[power].armies.length;
                 _counts[power].fleets = self.forces[power].fleets.length;
                 _counts[power].forces = _counts[power].armies +
@@ -41,6 +36,18 @@
     };
 
     jQuery.extend(this, info);
+
+    self.SC = {};
+    _(self.SCs).each(function (scList, power) {
+        _(scList).each(function (loc) {
+            if (self.SC[loc]) {
+                console.error(loc + " is claimed by " + this.SC[loc] + " and " 
+                        + power);
+                return null;
+            };
+            self.SC[loc] = power;
+        });
+    });
 };
 
 $(function () {
