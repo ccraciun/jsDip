@@ -15,17 +15,27 @@
     float: right;
 }
 
-#menu .menu-item span {
+.interf-btn span {
     display: inline-block;
     border-radius: 4px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border: 1px;
     border-color: black;
+    margin-left: 2px;
+    margin-right: 2px;
+    border-style: solid;
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
-#menu .menu-item.selected span {
+.interf-btn.selected span {
     background-color: #3194C6;
+    color: white;
+}
+
+.interf-btn.highlight span {
+    background-color: #CCCCFF;
 }
 
 #map_interface {
@@ -52,6 +62,11 @@
     -moz-border-radius: 4px;
     border: 1px;
     border-color: black;
+    margin-left: 2px;
+    margin-right: 2px;
+    border-style: solid;
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
 #map_actions .action.highlight span {

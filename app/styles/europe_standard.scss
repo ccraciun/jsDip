@@ -12,10 +12,15 @@ text {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    cursor: default;
 }
 
+// TODO(ccraciun): One rule here?
 #MapLayer.accepting .l:hover	{fill:#BADA55;}
 #MapLayer.accepting .w:hover	{fill:#BAAADA;}
+
+#MapLayer .accepting .l:hover	{fill:#BADA55;}
+#MapLayer .accepting .w:hover	{fill:#BAAADA;}
 
 #SupplyCentersLayer .Austria		{fill:#FF0000; stroke:black}
 #SupplyCentersLayer .England		{fill:#0000FF; stroke:black}
@@ -25,7 +30,8 @@ text {
 #SupplyCentersLayer .Russia 		{fill:#008000; stroke:black}
 #SupplyCentersLayer .Turkey 		{fill:#FFFF00; stroke:black}
 
-#SupplyCentersLayer .accepting .sc:hover {fill:#BADA55;}
+#SupplyCentersLayer .accepting .sc:hover 	{fill:#BADA55;}
+#SupplyCentersLayer .sc.accepting:hover 	{fill:#BADA55;}
 
 #SupplyCentersLayer .sc.selected {stroke-width:2;}
 

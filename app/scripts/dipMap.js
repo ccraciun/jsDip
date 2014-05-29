@@ -3,7 +3,7 @@ function Order(str, defs) {
     // self.pow - Power controlling the unit ordered.
     // self.org - Location of unit receiving order.
     // self.type - Type of unit (army/fleet).
-    // self.act - Action being performed by unit from {build, hold, move, support, cargo}.
+    // self.act - Action being performed by unit from {build, hold, move, support, convoy}.
     // self.src - For convoy or support, location of unit that's being assisted.
     // self.dst - Destination of order.
     var self = this;
@@ -15,7 +15,7 @@ function Order(str, defs) {
         } else if (self.act == 'move') {
             return prefix + ' move ' + self.dst;
         } else {
-            return prefix + ' ' + self.act + ' ' + self.src + ' ' + self.dst;
+            return prefix + ' ' + self.act + ' ' + self.src + ' -> ' + self.dst;
         };
     };
 
@@ -59,7 +59,7 @@ function Order(str, defs) {
         return true;
     };
 
-    function fromString(str, defs) {
+    function fromStr(str, defs) {
         params = str.split(' ');
         var type = params[0] || null,
             org = param[1] || null,
@@ -138,10 +138,12 @@ function DipMap(mapSelector) {
     };
 
 
-    function drawForce(power, type, loc, layerSel) {
-        var layer = map.select(layerSel || 'g#ForcesLayer'),
-            container = getPowerContainer(layer, power),
-            it = map.select('defs #' + type);
+    function drawForce(power, type, loc, container) {
+        var it = map.select('defs #' + type);
+        if (!container) {
+            var layer = map.select('g#ForcesLayer'),
+            container = getPowerContainer(layer, power);
+        };
         it.use().attr({'class': 'force'})
                 .transform('translate(' + defs.coords[loc] + ')')
                 .appendTo(container)
@@ -152,7 +154,7 @@ function DipMap(mapSelector) {
         var layer = map.select(layerSel || 'g#SupplyCentersLayer'),
             container = getPowerContainer(layer, power),
             it = map.select('defs #sc');
-        it.use().attr({'class': 'sc ' + power})
+        it.use().attr({'class': 'sc ' + power + ' ' + loc})
                 .transform('translate(' + defs.coords['sc' + loc] + ')')
                 .appendTo(container)
                 .data({org: loc, power: power});
@@ -164,15 +166,17 @@ function DipMap(mapSelector) {
             dst = order.dst,
             org = order.org,
             pow = order.pow,
-            type = order.type;
-
-        if (act === 'build') {
-            return drawForce(pow, type, org, 'g#OrdersLayer');
-        };
+            type = order.type,
+            result = order.result;
 
         var layer = map.select(layerSel || 'g#OrdersLayer'),
-            container = getPowerContainer(layer, power),
+            container = getPowerContainer(layer, pow),
             it = null;
+
+        if (act === 'build') {
+            return drawForce(pow, type, org, container);
+        };
+
         if (act === 'support' || act === 'convoy') {
             it = container.path('M' + defs.coords[org] + ' ' +
                            'Q' + defs.coords[src] + ' ' + defs.coords[dst])
@@ -291,7 +295,8 @@ function DipMap(mapSelector) {
             var currentOrder = new Order();
 
             var finalizeOrder = function () {
-                orders[currentOrder.org] = currentOrder;
+                var canonical = defs.canonical(currentOrder.org);
+                orders[canonical] = currentOrder;
 
                 instanceDipMap.drawOrders(orders);
                 currentOrder.unit.node.classList.remove('selected');
@@ -317,7 +322,7 @@ function DipMap(mapSelector) {
             };
 
             var regionClick = function (evt) {
-                tgt = evt.target.parentNode.id;
+                var tgt = evt.target.parentNode.id;
                 if (!currentOrder.unit) {
                     // TODO(ccraciun): Set origin/get unit that lives at
                     // this point if available.
@@ -378,7 +383,8 @@ function DipMap(mapSelector) {
             var currentOrder = new Order();
 
             function finalizeOrder () {
-                orders[currentOrder.org] = currentOrder;
+                var canonical = defs.canonical(currentOrder.org);
+                orders[canonical] = currentOrder;
 
                 instanceDipMap.drawOrders(orders);
                 if (currentOrder.sc) {
@@ -401,11 +407,14 @@ function DipMap(mapSelector) {
                 };
             };
 
-            var scClick = function (evt) {
-                this.node.classList.add('selected');
-                currentOrder.sc = this;
-                currentOrder.org = this.data('org');
-                currentOrder.pow = this.data('power');
+            var regionClick = function (evt) {
+                var tgt = evt.target.parentNode.id,
+                    canonical = defs.canonical(tgt),
+                    sc = map.select('#SupplyCentersLayer .' + canonical);
+                sc.node.classList.add('selected');
+                currentOrder.sc = sc;
+                currentOrder.org = tgt;
+                currentOrder.pow = sc.data('power');
                 if (currentOrder.finish()) {
                     finalizeOrder();
                 } else {
@@ -434,22 +443,22 @@ function DipMap(mapSelector) {
                 };
             };
 
-            // TODO(ccraciun): Support regionclick here since SCs are small.
-            map.selectAll('g#SupplyCentersLayer .' + power + ' .sc')
-                    .forEach(function (e) {
-                e.click(scClick);
-            });
-
             if (adjustment > 0) {
+                // Player may build.
                 jQuery('#map_interface #adjustments .resupply')
                         .click(resupplyClick);
-                map.selectAll('g#SupplyCentersLayer .' + power + ' .sc')
-                        .forEach(function (e) {
-                    e.click(scClick);
+
+                _(defs.headquarters[power]).each(function (hq) {
+                    if (state.SC[hq] === power) {
+                        map.selectAll('g#MapLayer .' + hq)
+                                .forEach(function (e) {
+                            e.node.classList.add('accepting');
+                            e.click(regionClick);
+                        });
+                    };
                 });
-                map.select('g#SupplyCentersLayer .' + power)
-                        .node.classList.add('accepting');
             } else if (adjustment < 0) {
+                // Player has to disband.
                 jQuery('#map_interface #adjustments .disband')
                         .click(disbandClick);
                 map.selectAll('g#ForcesLayer .' + power + ' .force')
