@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>jsDipWebApp</title>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+
+  </head>
+  <body>
+    <div id="main">
+        <div id="menu">
+            <span id="controls">
+                <a href="#" class="menu-item done"><span>Done</span></a>
+                <span class="separator"> | </span>
+                <a href="#" class="menu-item resign"><span>Resign</span></a>
+                <span class="separator"> | </span>
+                <a href="#" class="menu-item end-phase"><span>End Phase</span></a>
+            </span>
+            <span id="powers">
+                Power
+            </span>
+        </div>
+        <svg id="map" viewbox="0 0 610 560"></svg>
+        <div id="map_interface">
+            <div id="status">
+                <div id="date"></div>
+                <div id="messageBox"></div>
+            </div>
+            <div id="map_actions">
+                <div id="movements">
+                    <!-- TODO(ccraciun): Replace these with radio/checkboxes -->
+                    Action
+                    <!-- TODO(ccraciun): Handle separators with ::before and/or ::after css -->
+                    <span class="separator"> : </span>
+                    <a href="#" class="move movement action"><span>Move</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="hold movement action"><span>Hold</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="support movement action"><span>Support</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="convoy movement action"><span>Convoy</span></a>
+                </div>
+                <div id="adjustments">
+                    Build/Adjust
+                    <span class="separator"> : </span>
+                    <a href="#" class="army resupply action"><span>Army</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="fleet resupply action"><span>Fleet</span></a>
+                    <span class="separator"> | </span>
+                    <a href="#" class="disband action"><span>Disband</span></a>
+                </div>
+            </div>
+        </div>
+        <div id="footer" class="footer">
+            <a href="#" class="load-standard"><span>Load Standard</span></a>
+            <a href="#" class="load-sconly"><span>Load SConly</span></a>
+        </div>
+    </div>
+
+    <div id="about" class="about">
+        <strong>jsDip GUI Sandbox</strong> | <a href="https://github.com/ccraciun/jsDip">https://github.com/ccraciun/jsDip</a> &nbsp;
+    </div>
+
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/snap.svg/dist/snap.svg.js"></script>
+    <script src="../bower_components/underscore/underscore.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js scripts/main.js -->
+        <script src="scripts/dipMap.js"></script>
+        <script src="scripts/util.js"></script>
+        <script src="scripts/dipEngine.js"></script>
+        <script src="scripts/judge.js"></script>
+        <!-- endbuild -->
+</body>
+</html>
