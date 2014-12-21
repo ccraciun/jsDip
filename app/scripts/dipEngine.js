@@ -101,7 +101,7 @@ $(function () {
                 deferred.reject(jqxhr, textStatus, error);
             });
         dipMap.loadMapFromUrl(mapSvgUrl);
-        loadjscssfile(mapCssUrl, 'css');
+        if(mapCssUrl !== undefined){ loadjscssfile(mapCssUrl, 'css') };
         return deferred.promise();
     }
 
@@ -186,7 +186,7 @@ $(function () {
         jQuery('#menu .menu-item.end-phase').click(clickEndPhase);
     };
 
-    jQuery.when(loadMap('data/europe_standard_defs.json', 'img/europe_standard.svg', 'css/europe_standard.css'), loadStateUrl('data/europe_standard_start.json'))
+    jQuery.when(loadMap('data/europe_standard_defs.json', 'images/europe_standard.svg'), loadStateUrl('data/europe_standard_start.json'))
             .then(listenMenu);
 });
 
