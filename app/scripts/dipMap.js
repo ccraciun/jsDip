@@ -1,4 +1,4 @@
-﻿function Order(str, defs) {
+function Order(str, defs) {
     // self.unit - Element of unit for the order -- not guaranteed to be present.
     // self.pow - Power controlling the unit ordered.
     // self.org - Location of unit receiving order.

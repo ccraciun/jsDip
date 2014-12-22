@@ -1,4 +1,4 @@
-﻿function State (info) {
+function State (info) {
     var self = this,
         _counts = null;
 

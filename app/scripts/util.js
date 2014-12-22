@@ -1,4 +1,4 @@
-﻿function loadjscssfile(filename, filetype) {
+function loadjscssfile(filename, filetype) {
     if (filetype == "js") { //if filename is a external JavaScript file
         // alert('called');
         var fileref = document.createElement('script');

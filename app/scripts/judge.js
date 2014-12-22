@@ -1,4 +1,4 @@
-﻿// judge(state, orders) -> state.
+// judge(state, orders) -> state.
 // Here, state will have orders attached results [success, fail, standoff, retreat, disband].
 function judge(state, orders, defs) {
     // Default seasons are:
