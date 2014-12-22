@@ -115,7 +115,7 @@ gulp.task('watch', ['connect'], function () {
     '.tmp/styles/**/*.css',
     '{.tmp,app}/scripts/**/*.js',
     'app/images/**/*'
-  ]).on('change', $.livereload.changed).on('change', function(){console.log("changewatcher noticed a change")});
+  ]).on('change', $.livereload.changed);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('app/scripts/**/*.coffee', ['scripts']);
