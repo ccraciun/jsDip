@@ -13,3 +13,9 @@ changes to html/js/css!
 
 # Building
 Run `gulp` to build into `dist/`
+
+# Cheatsheet
+
+- Add a frontend package: `bower install <package name> --save`
+- Add an npm package: `npm install <package name> --save-dev` (assuming
+  all npm packages are for dev tasks)
