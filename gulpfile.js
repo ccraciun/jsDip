@@ -22,7 +22,14 @@ gulp.task('jshint', function () {
     .pipe($.jshint.reporter('fail'));
 });
 
-gulp.task('html', ['styles'], function () {
+gulp.task('scripts', function(){
+  // bare: 'compile without a top-level function wrapper'
+  return gulp.src('app/scripts/**/*.coffee')
+    .pipe($.coffee({bare: true})).on('error', $.util.log)
+    .pipe(gulp.dest('.tmp/scripts'));
+});
+
+gulp.task('html', ['styles', 'scripts'], function () {
   var assets = $.useref.assets({searchPath: '{.tmp,app}'});
 
   return gulp.src('app/*.html')
@@ -63,7 +70,7 @@ gulp.task('extras', function () {
 
 gulp.task('clean', require('del').bind(null, ['.tmp', 'dist']));
 
-gulp.task('connect', ['styles'], function () {
+gulp.task('connect', ['styles', 'scripts'], function () {
   var serveStatic = require('serve-static');
   var serveIndex = require('serve-index');
   var app = require('connect')()
@@ -106,11 +113,12 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch([
     'app/*.html',
     '.tmp/styles/**/*.css',
-    'app/scripts/**/*.js',
+    '{.tmp,app}/scripts/**/*.js',
     'app/images/**/*'
-  ]).on('change', $.livereload.changed);
+  ]).on('change', $.livereload.changed).on('change', function(){console.log("changewatcher noticed a change")});
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
+  gulp.watch('app/scripts/**/*.coffee', ['scripts']);
   gulp.watch('bower.json', ['wiredep']);
 });
 
