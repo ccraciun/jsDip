@@ -15,7 +15,7 @@ changes to html/js/css!
 Run `gulp` to build into `dist/`
 
 # Planning
-Current planning document at (Project Planning)[https://hackpad.com/jsDip-Project-Plan-Jj5sK0HFCvn]
+Current planning document at [Project Planning](https://hackpad.com/jsDip-Project-Plan-Jj5sK0HFCvn)
 
 # Cheatsheet
 
