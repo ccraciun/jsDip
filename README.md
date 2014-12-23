@@ -14,6 +14,9 @@ changes to html/js/css!
 # Building
 Run `gulp` to build into `dist/`
 
+# Planning
+Current planning document at (Project Planning)[https://hackpad.com/jsDip-Project-Plan-Jj5sK0HFCvn]
+
 # Cheatsheet
 
 - Add a frontend package: `bower install <package name> --save`
