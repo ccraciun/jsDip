@@ -3,10 +3,10 @@
 (function () {
     'use strict';
 
-    describe('Give it some context', function () {
-        describe('maybe a bit more context here', function () {
-            it('should run here few assertions', function () {
-
+    describe('Truth test', function () {
+        describe('maybe describe it some more here?', function () {
+            it('should describe truth as true.', function () {
+              true.should.be.true;
             });
         });
     });
