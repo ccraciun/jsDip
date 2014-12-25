@@ -85,7 +85,7 @@ $(function () {
                 state.date.phase);
     }
 
-    function loadMap(defsUrl, mapSvgUrl, mapCssUrl) {
+    function loadMap(defsUrl, mapSvgUrl) {
         console.log('deferring loadMap');
         var deferred = new jQuery.Deferred();
         // TODO(ccraciun): Support loading jDip map data..
@@ -97,11 +97,11 @@ $(function () {
                 deferred.resolve();
             })
             .fail(function(jqxhr, textStatus, error) {
-                jQueryAjaxErrorHandler(jqxhr, textStatus, error);
+                console.error(textStatus + ', ' + error);
                 deferred.reject(jqxhr, textStatus, error);
+        if(mapCssUrl !== undefined){ loadjscssfile(mapCssUrl, 'css') };
             });
         dipMap.loadMapFromUrl(mapSvgUrl);
-        if(mapCssUrl !== undefined){ loadjscssfile(mapCssUrl, 'css') };
         return deferred.promise();
     }
 
@@ -127,7 +127,7 @@ $(function () {
                 deferred.resolve();
             })
             .fail(function(jqxhr, textStatus, error) {
-                jQueryAjaxErrorHandler(jqxhr, textStatus, error);
+                console.error(textStatus + ', ' + error);
                 deferred.reject(jqxhr, textStatus, error);
             });
         return deferred.promise();
