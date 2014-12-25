@@ -26,7 +26,7 @@ gulp.task('scripts', function(){
   // bare: 'compile without a top-level function wrapper'
   return gulp.src('app/scripts/**/*.coffee')
     .pipe($.sourcemaps.init())
-    .pipe($.coffee({bare: true})).on('error', $.util.log)
+    .pipe($.coffee()).on('error', $.util.log)
     .pipe($.sourcemaps.write('./maps'))
     .pipe(gulp.dest('tmp/scripts'));
 });
