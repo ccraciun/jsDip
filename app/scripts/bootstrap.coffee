@@ -3,7 +3,7 @@ HistoryBox = window.HistoryBox
 DipMap = window.DipMap
 Menu = window.Menu
 
-class window.Engine
+class window.DipEngine
   constructor: () ->
     @dipMap = new DipMap("#map")
     @historyBox = new HistoryBox("#messageBox")
@@ -30,7 +30,7 @@ class window.Engine
     deferred = new jQuery.Deferred()
 
     # TODO(ccraciun): Support loading jDip map data..
-    $.getJSON(defsUrl).done((data) ->
+    $.getJSON(defsUrl).done((data) =>
       @defs = data
       @dipMap.setDefs data
       console.log "done loadMap"
@@ -39,24 +39,23 @@ class window.Engine
       console.error(textStatus + ', ' + error)
       deferred.reject jqxhr, textStatus, error
 
-    dipMap.loadMapFromUrl mapSvgUrl
+    @dipMap.loadMapFromUrl mapSvgUrl
     deferred.promise()
 
-  setState = (newState) ->
-    state = new State(newState)
-    printCounts state
-    showTime state
-    dipMap.drawState state
-    for i of state.active
-      pow = state.active[i]
-      jQuery("<span class=\"separator\"> | </span>").appendTo jQuery("#menu #powers")
-      jQuery("<a href=\"#\" class=\"menu-item power " + pow.toLowerCase() + "\"><span>" + pow + "</span></a>").appendTo jQuery("#menu #powers")
+  setState: (newState) ->
+    @state = new State(newState)
+    @printCounts @state
+    @showTime @state
+    @dipMap.drawState state
+    for pow of state.active
+      $("<span class=\"separator\"> | </span>").appendTo $("#menu #powers")
+      $("<a href=\"#\" class=\"menu-item power " + pow.toLowerCase() + "\"><span>" + pow + "</span></a>").appendTo $("#menu #powers")
 
-  loadStateUrl = (stateUrl) ->
+  loadStateUrl: (stateUrl) ->
     console.log "deferring loadStateUrl"
     deferred = new jQuery.Deferred()
-    jQuery.getJSON(stateUrl).done((newState) ->
-      setState newState
+    $.getJSON(stateUrl).done((newState) =>
+      @setState newState
       console.log "done loadStateUrl"
       deferred.resolve()
     ).fail (jqxhr, textStatus, error) ->
@@ -66,6 +65,7 @@ class window.Engine
     deferred.promise()
 
 
-$().ready bootstrap
-    $.when(loadMap("data/europe_standard_defs.json", "images/europe_standard.svg"), loadStateUrl("data/europe_standard_start.json")).then ->
-      new Menu(dipMap, state)
+$().ready ->
+  dip = new DipEngine() # args here
+  $.when(dip.loadMap("data/europe_standard_defs.json", "images/europe_standard.svg"), dip.loadStateUrl("data/europe_standard_start.json")).then ->
+    new Menu(dipMap, state)
