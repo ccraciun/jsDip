@@ -1,4 +1,4 @@
-function window.State(info) {
+window.State = function(info) {
     var self = this,
         _counts = null;
 
@@ -6,12 +6,12 @@ function window.State(info) {
         if (!_counts) {
             _counts = {};
 
-            for (power in self.SCs) {
+            for (var power in self.SCs) {
                 _counts[power] = _counts[power] || {};
                 _counts[power].SCs = self.SCs[power].length;
             }
 
-            for (power in self.forces) {
+            for (var power in self.forces) {
                 _counts[power] = _counts[power] || {};
                 _counts[power].armies = self.forces[power].armies.length;
                 _counts[power].fleets = self.forces[power].fleets.length;
@@ -25,8 +25,8 @@ function window.State(info) {
     };
 
     this.forceAt = function (loc) {
-        for (power in self.forces) {
-            for (type in self.forces[power]) {
+        for (var power in self.forces) {
+            for (var type in self.forces[power]) {
                 if (loc in self.forces[power][type]) {
                     return {power: power, type: type};
                 }
@@ -41,11 +41,10 @@ function window.State(info) {
     _(self.SCs).each(function (scList, power) {
         _(scList).each(function (loc) {
             if (self.SC[loc]) {
-                console.error(loc + " is claimed by " + this.SC[loc] + " and "
-                        + power);
+                console.error(loc + " is claimed by " + this.SC[loc] + " and " + power);
                 return null;
             }
             self.SC[loc] = power;
         });
     });
-}
+};

@@ -2,6 +2,7 @@
 HistoryBox = window.HistoryBox
 DipMap = window.DipMap
 Menu = window.Menu
+State = window.State
 
 class window.DipEngine
   constructor: () ->
@@ -10,22 +11,31 @@ class window.DipEngine
     @defs = null
     @state = null
 
-  printCounts: (state) ->
-    for pow of state.counts()
+  init: ->
+    $.when(@loadMap("data/europe_standard_defs.json", "images/europe_standard.svg"),
+           @loadStateUrl("data/europe_standard_start.json"))
+      .then @finishInit
+
+  finishInit: =>
+    @menu = new Menu(@dipMap, @state)
+    @showTime()
+
+  printCounts: ->
+    for pow in @state.counts()
       # TODO(ccraciun): Multiple types of forces here.
-      description = [
+      forceDescription = [
         "#{counts[pow].SCs} SCs"
         "#{counts[pow].armies} armies"
         "#{counts[pow].fleets} fleets."
       ].join(', ')
-      historyBox.putLine "#{pow} has #{description}", pow
+      @historyBox.putLine "#{pow} has #{forceDescription}", pow
 
-  showTime: (state) ->
-    # TODO(rkofman): refactor so the view-updating code is in the map view.
+  showTime: ->
     dateString = [@state.date.year, @state.date.season, @state.date.phase].join(" ")
     $("#map_interface #status #date").text dateString
 
-  loadMap: (defsUrl, mapSvgUrl) ->
+  loadMap: (defsUrl, mapSvgUrl) =>
+    # TODO(rkofman): just return the getJSON deferred object
     console.log "deferring loadMap"
     deferred = new jQuery.Deferred()
 
@@ -44,14 +54,15 @@ class window.DipEngine
 
   setState: (newState) ->
     @state = new State(newState)
-    @printCounts @state
-    @showTime @state
-    @dipMap.drawState state
-    for pow of state.active
+    @printCounts
+    @showTime
+    @dipMap.drawState @state
+    for pow in @state.active
       $("<span class=\"separator\"> | </span>").appendTo $("#menu #powers")
       $("<a href=\"#\" class=\"menu-item power " + pow.toLowerCase() + "\"><span>" + pow + "</span></a>").appendTo $("#menu #powers")
 
-  loadStateUrl: (stateUrl) ->
+  loadStateUrl: (stateUrl) =>
+    # TODO(rkofman): just return the getJSON deferred object
     console.log "deferring loadStateUrl"
     deferred = new jQuery.Deferred()
     $.getJSON(stateUrl).done((newState) =>
@@ -63,6 +74,3 @@ class window.DipEngine
       deferred.reject jqxhr, textStatus, error
 
     deferred.promise()
-
-  initMenu: ->
-    @menu = new Menu(@dipMap, @state)

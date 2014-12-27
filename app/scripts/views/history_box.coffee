@@ -5,4 +5,4 @@ class window.HistoryBox
     @$el = $(selector)
 
   putLine: (text, source='') ->
-    @$el.add('div', class: 'message #{source}', text: text)
+    @$el.append("<div class='message #{source}'>#{text}</div>")
