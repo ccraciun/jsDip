@@ -25,7 +25,7 @@ class window.Engine
     dateString = [@state.date.year, @state.date.season, @state.date.phase].join(" ")
     $("#map_interface #status #date").text dateString
 
-  loadMap: (defsUrl, mapSvgUrl, mapCssUrl) ->
+  loadMap: (defsUrl, mapSvgUrl) ->
     console.log "deferring loadMap"
     deferred = new jQuery.Deferred()
 
@@ -36,11 +36,10 @@ class window.Engine
       console.log "done loadMap"
       deferred.resolve()
     ).fail (jqxhr, textStatus, error) ->
-      jQueryAjaxErrorHandler jqxhr, textStatus, error
+      console.error(textStatus + ', ' + error)
       deferred.reject jqxhr, textStatus, error
 
     dipMap.loadMapFromUrl mapSvgUrl
-    loadjscssfile mapCssUrl, "css"  if mapCssUrl isnt `undefined`
     deferred.promise()
 
   setState = (newState) ->
@@ -61,7 +60,7 @@ class window.Engine
       console.log "done loadStateUrl"
       deferred.resolve()
     ).fail (jqxhr, textStatus, error) ->
-      jQueryAjaxErrorHandler jqxhr, textStatus, error
+      console.error(textStatus + ', ' + error)
       deferred.reject jqxhr, textStatus, error
 
     deferred.promise()
