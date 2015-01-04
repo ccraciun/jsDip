@@ -26,6 +26,6 @@ Current planning document at [Project Planning](https://hackpad.com/jsDip-Projec
 # Cheatsheet
 
 - Add a frontend package: `bower install <package name> --save`
-- Add a frontend test-related package: `bower install <package name> --save-dev`
+- Add a frontend test-related package: `bower install <package name> --save`,  in the `/test` folder!
 - Add an npm package: `npm install <package name> --save-dev` (assuming
   all npm packages are for dev tasks)
