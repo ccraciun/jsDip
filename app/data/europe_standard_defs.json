@@ -4,6 +4,11 @@
     ],
     "seasons": ["Spring", "Autumn", "Winter"],
     "adjustment_seasons": ["Winter"],
+    "phases": {
+        "Spring": ["Movement", "Retreat"],
+        "Autumn": ["Movement", "Retreat"],
+        "Winter": ["Winter"]
+    },
     "headquarters": {
         "Austria": ["Budapest", "Trieste", "Vienna"],
         "England": ["Edinburgh", "Liverpool", "London"],
