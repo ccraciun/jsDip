@@ -12,15 +12,16 @@ function judge(state, orders, defs) {
         adj_seasons = defs.adjustment_seasons;
 
     var phaseJudge = {
-        'Movement': judgeMovement,
-        'Retreat': judgeRetreat,
+        'Movement': naiveJudge,
+        'Retreat': naiveJudge,
         'Adjustment': judgeAdjustment
     };
 
-    var prePhaseJudge = {
+    // Run updates on state before taking orders for a phase.
+    var prePhaseUpdate = {
         'Movement': function () {},
         'Retreat': function () {},
-        'Adjustment': judgePreAdjustment
+        'Adjustment': updatePreAdjustment
     };
 
     // TODO(ccraciun): Move this to util.js?
@@ -53,17 +54,7 @@ function judge(state, orders, defs) {
         return {year: newYear, season: newSeason, phase: newPhase};
     };
 
-    function judgeMovement(state, orders) {
-        // Invalid orders.
-        // Disrupted support.
-        // Fail dislodged convoys.
-        // Fail non-adjacent movements that are not convoyed.
-        // Fail bounces.
-        // Special cases.
-        return undefined;
-    };
-
-    function judgePreAdjustment(stateIn) {
+    function updatePreAdjustment(stateIn) {
         for (power in state.forces) {
             for (type in state.forces[power]) {
                 for (idx in state.forces[power][type]) {
@@ -75,6 +66,14 @@ function judge(state, orders, defs) {
                 };
             };
         };
+    };
+
+    function naiveJudge(state, orders) {
+        _(orders).each(function (power) {
+            _(orders[power]).each(function (order) {
+                order.result = 'success';
+            });
+        });
     };
 
     function judgeAdjustment(state, orders) {
@@ -90,7 +89,7 @@ function judge(state, orders, defs) {
         };
         _(state.active).each(function (power) {
             var adjustment = state.counts()[power].adjustment;
-            // TODO(ccraciun): Consider reverse chronological order for orders 
+            // TODO(ccraciun): Consider reverse chronological order for orders
             // since we might end up ignoring some.
             _(orders[power]).each(function (order) {
                 if (adjustment > 0) {
@@ -111,7 +110,7 @@ function judge(state, orders, defs) {
                         return;
                     };
                     adjustment--;
-                    order.success = true;
+                    order.result = 'success';
                 } else if (adjustment < 0) {
                     if (order.act != 'disband') {
                         order.result = 'fail';
@@ -132,11 +131,11 @@ function judge(state, orders, defs) {
                 };
             });
             if (adjustment < 0) {
+                // TODO(ccraciun): Random disbands.
                 console.error(power + ' still needs to disband ' + (-adjustment) + ' forces but has not.');
                 return undefined;
             };
         });
-        return state;
     };
 
     function judgeRetreat(state, orders) {
@@ -146,7 +145,17 @@ function judge(state, orders, defs) {
         return undefined;
     };
 
+    function judgeMovement(state, orders) {
+        // Invalid orders.
+        // Disrupted support.
+        // Fail dislodged convoys.
+        // Fail non-adjacent movements that are not convoyed.
+        // Fail bounces.
+        // Special cases.
+        return undefined;
+    };
+
     newState = new State(state);
-    phaseJudge[state.date.phase](newState, orders);
-    prePhaseJudge[newState.date.phase](newState);
+    phaseJudge[newState.date.phase](newState, orders);
+    prePhaseUpdate[newState.date.phase](newState);
 };

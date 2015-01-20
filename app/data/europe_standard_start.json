@@ -42,7 +42,7 @@
         },
         "Russia": {
             "armies": ["Moscow", "Warsaw"],
-            "fleets": ["St_Petersburg", "Sevastopol"]
+            "fleets": ["St_Petersburg__sc", "Sevastopol"]
         },
         "Turkey": {
             "armies": ["Constantinople", "Smyrna"],
