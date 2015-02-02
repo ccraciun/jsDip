@@ -1,0 +1,26 @@
+# format of tests:
+# precondition
+# rules, with a true/false depending on expected outcome
+# link to docs on http://web.inter.nl.net/users/L.B.Kruijswijk
+- precondition:
+    england:
+      fleets:
+        - North Sea
+      armies:
+  orders:
+    england:
+      - F North Sea - Picardy: false
+  test_case: 6.A.1
+  reference: >
+    http://web.inter.nl.net/users/L.B.Kruijswijk/#6.A.1
+- precondition:
+    england:
+      fleets:
+      armies:
+        - Liverpool
+  orders:
+    england:
+      - A Liverpool - Irish Sea: false
+  test_case: 6.A.2
+  reference: >
+    http://web.inter.nl.net/users/L.B.Kruijswijk/#6.A.2
