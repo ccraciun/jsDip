@@ -18,7 +18,7 @@
       england: [North Sea]
   orders:
     england:
-      - F North Sea - Picardy: false
+      F North Sea - Picardy: false
 
 ###################################
 # 6.A.2. TEST CASE, MOVE ARMY TO SEA
@@ -34,7 +34,7 @@
       england: [Liverpool]
   orders:
     england:
-      - A Liverpool - Irish Sea: false
+      A Liverpool - Irish Sea: false
 
 ###################################
 # 6.A.3. TEST CASE, MOVE FLEET TO LAND
@@ -50,7 +50,7 @@
       germany: [Kiel]
   orders:
     germany:
-      - F Kiel - Munich: false
+      F Kiel - Munich: false
 
 ###################################
 # 6.A.4. TEST CASE, MOVE TO OWN SECTOR
@@ -66,7 +66,7 @@
       germany: [Kiel]
   orders:
     germany:
-      - F Kiel - Kiel: false
+      F Kiel - Kiel: false
 
 ###################################
 # 6.A.5. TEST CASE, MOVE TO OWN SECTOR WITH CONVOY
@@ -92,13 +92,13 @@
       germany: [Wales]
   orders:
     england:
-      - F North Sea Convoys A Yorkshire - Yorkshire: false
-      - A Yorkshire - Yorkshire: false
-      - A Liverpool Supports A Yorkshire - Yorkshire: false
+      F North Sea Convoys A Yorkshire - Yorkshire: false
+      A Yorkshire - Yorkshire: false
+      A Liverpool Supports A Yorkshire - Yorkshire: false
 
     germany:
-      - F London - Yorkshire: true
-      - A Wales Supports F London - Yorkshire: true
+      F London - Yorkshire: true
+      A Wales Supports F London - Yorkshire: true
 
 ###################################
 # 6.A.6. TEST CASE, ORDERING A UNIT OF ANOTHER COUNTRY
@@ -106,7 +106,7 @@
 # Check whether someone can not order a unit that is not his own unit.
 #
 # England has a fleet in London.
-
+#
 # Germany:
 # F London - North Sea
 # Order should fail.
@@ -116,7 +116,7 @@
       england: [London]
   orders:
     germany:
-      - F London - North Sea: false
+      F London - North Sea: false
 
 ###################################
 # 6.A.7. TEST CASE, ONLY ARMIES CAN BE CONVOYED
@@ -128,6 +128,13 @@
 # F North Sea Convoys A London - Belgium
 # Move from London to Belgium should fail.
 ###################################
+- precondition:
+    fleets:
+      england: [London, North Sea]
+  orders:
+    england:
+      F London - Belgium: false
+      F North Sea Convoys A London - Belgium: false
 
 ###################################
 # 6.A.8. TEST CASE, SUPPORT TO HOLD YOURSELF IS NOT POSSIBLE
@@ -142,6 +149,17 @@
 # F Trieste Supports F Trieste
 # The army in Trieste should be dislodged.
 ###################################
+- precondition:
+    armies:
+      italy: [Venice, Tyrolia]
+    fleets:
+      austria: [Trieste]
+  orders:
+    italy:
+      A Venice - Trieste: true
+      A Tyrolia Supports A Venice - Trieste: true
+    austria:
+      F Trieste Supports F Trieste: false
 
 ###################################
 # 6.A.9. TEST CASE, FLEETS MUST FOLLOW COAST IF NOT ON SEA
