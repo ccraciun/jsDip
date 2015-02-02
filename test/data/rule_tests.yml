@@ -120,9 +120,9 @@
 
 ###################################
 # 6.A.7. TEST CASE, ONLY ARMIES CAN BE CONVOYED
-
+#
 # A fleet can not be convoyed.
-
+#
 # England:
 # F London - Belgium
 # F North Sea Convoys A London - Belgium
@@ -138,13 +138,13 @@
 
 ###################################
 # 6.A.8. TEST CASE, SUPPORT TO HOLD YOURSELF IS NOT POSSIBLE
-
+#
 # An army can not get an additional hold power by supporting itself.
-
+#
 # Italy:
 # A Venice - Trieste
 # A Tyrolia Supports A Venice - Trieste
-
+#
 # Austria:
 # F Trieste Supports F Trieste
 # The army in Trieste should be dislodged.
@@ -163,56 +163,94 @@
 
 ###################################
 # 6.A.9. TEST CASE, FLEETS MUST FOLLOW COAST IF NOT ON SEA
-
+#
 # If two places are adjacent, that does not mean that a fleet can move between those two places. An implementation that only holds one list of adjacent places for each place, is incorrect.
-
+#
 # Italy:
 # F Rome - Venice
 # Move fails. An army can go from Rome to Venice, but a fleet can not.
 ###################################
+- precondition:
+    fleets:
+      italy: [Rome]
+  orders:
+    italy:
+      F Rome - Venice: false
 
 ###################################
 # 6.A.10. TEST CASE, SUPPORT ON UNREACHABLE DESTINATION NOT POSSIBLE
-
+#
 # The destination of the move that is supported must be reachable by the supporting unit.
-
+#
 # Austria:
 # A Venice Hold
-
+#
 # Italy:
 # F Rome Supports A Apulia - Venice
 # A Apulia - Venice
 # The support of Rome is illegal, because Venice can not be reached from Rome by a fleet. Venice is not dislodged.
 ###################################
+- precondition:
+    armies:
+      austria: [Venice]
+      italy: [Apulia]
+    fleets:
+      italy: [Rome]
+  orders:
+    austria:
+      A Venice Hold: true
+    italy:
+      F Rome Supports A Apulia - Venice: false
+      A Apulia - Venice: false
 
 ###################################
 # 6.A.11. TEST CASE, SIMPLE BOUNCE
-
+#
 # Two armies bouncing on each other.
-
+#
 # Austria:
 # A Vienna - Tyrolia
-
+#
 # Italy:
 # A Venice - Tyrolia
 # The two units bounce.
 ###################################
-
+- precondition:
+    armies:
+      austria: [Vienna]
+      italy: [Venice]
+  orders:
+    austria:
+      A Vienna - Tyrolia: false
+    italy:
+      A Venice - Tyrolia: false
 ###################################
 # 6.A.12. TEST CASE, BOUNCE OF THREE UNITS
-
+#
 # If three units move to the same place, the adjudicator should not bounce the first two units and then let the third unit go to the now open place.
-
+#
 # Austria:
 # A Vienna - Tyrolia
-
+#
 # Germany:
 # A Munich - Tyrolia
-
+#
 # Italy:
 # A Venice - Tyrolia
 # The three units bounce.
 ###################################
+- precondition:
+    armies:
+      austria: [Vienna]
+      germany: [Munich]
+      italy: [Venice]
+  orders:
+    austria:
+      A Vienna - Tyrolia: false
+    italy:
+      A Venice - Tyrolia: false
+    germany:
+      A Munich - Tyrolia: false
 
 ###################################
 # 6.B. TEST CASES, COASTAL ISSUES
