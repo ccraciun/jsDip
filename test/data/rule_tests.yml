@@ -1,26 +1,39 @@
-# format of tests:
-# precondition
-# rules, with a true/false depending on expected outcome
-# link to docs on http://web.inter.nl.net/users/L.B.Kruijswijk
+# Test cases transcribed from http://web.inter.nl.net/users/L.B.Kruijswijk
+#
+# Note: "fleets" and "armies" are both optional for each test case.
+#
+###################################
+# 6.A.1 TEST CASE, MOVING TO AN AREA THAT IS NOT A NEIGHBOUR
+#
+# Check if an illegal move (without convoy) will fail.
+#
+# England:
+# F North Sea - Picardy
+# Order should fail.
+###################################
 - precondition:
-    england:
-      fleets:
-        - North Sea
-      armies:
+    fleets:
+      england: [North Sea]
+    armies:
+      # same format as fleets, above
   orders:
     england:
       - F North Sea - Picardy: false
   test_case: 6.A.1
-  reference: >
-    http://web.inter.nl.net/users/L.B.Kruijswijk/#6.A.1
+
+###################################
+# 6.A.2. TEST CASE, MOVE ARMY TO SEA
+#
+# Check if an army could not be moved to open sea.
+#
+# England:
+# A Liverpool - Irish Sea
+# Order should fail.
+###################################
 - precondition:
-    england:
-      fleets:
-      armies:
-        - Liverpool
+    armies:
+      england: [Liverpool]
   orders:
     england:
       - A Liverpool - Irish Sea: false
   test_case: 6.A.2
-  reference: >
-    http://web.inter.nl.net/users/L.B.Kruijswijk/#6.A.2
