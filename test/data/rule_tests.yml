@@ -1,0 +1,3923 @@
+# Test cases transcribed from http://web.inter.nl.net/users/L.B.Kruijswijk
+#
+# Note: in `precondition`, `fleets` and `armies` are both optional.
+#
+###################################
+# 6.A. TEST CASES, BASIC CHECKS
+###################################
+# 6.A.1 TEST CASE, MOVING TO AN AREA THAT IS NOT A NEIGHBOUR
+#
+# Check if an illegal move (without convoy) will fail.
+#
+# England:
+# F North Sea - Picardy
+# Order should fail.
+###################################
+- precondition:
+    fleets:
+      england: [North Sea]
+  orders:
+    england:
+      F North Sea - Picardy: false
+
+###################################
+# 6.A.2. TEST CASE, MOVE ARMY TO SEA
+#
+# Check if an army could not be moved to open sea.
+#
+# England:
+# A Liverpool - Irish Sea
+# Order should fail.
+###################################
+- precondition:
+    armies:
+      england: [Liverpool]
+  orders:
+    england:
+      A Liverpool - Irish Sea: false
+
+###################################
+# 6.A.3. TEST CASE, MOVE FLEET TO LAND
+
+# Check whether a fleet can not move to land.
+
+# Germany:
+# F Kiel - Munich
+# Order should fail.
+###################################
+- precondition:
+    fleets:
+      germany: [Kiel]
+  orders:
+    germany:
+      F Kiel - Munich: false
+
+###################################
+# 6.A.4. TEST CASE, MOVE TO OWN SECTOR
+
+# Moving to the same sector is an illegal move (2000 rulebook, page 4, "An Army can be ordered to move into an adjacent inland or coastal province.").
+
+# Germany:
+# F Kiel - Kiel
+# Program should not crash.
+###################################
+- precondition:
+    fleets:
+      germany: [Kiel]
+  orders:
+    germany:
+      F Kiel - Kiel: false
+
+###################################
+# 6.A.5. TEST CASE, MOVE TO OWN SECTOR WITH CONVOY
+
+# Moving to the same sector is still illegal with convoy (2000 rulebook, page 4, "Note: An Army can move across water provinces from one coastal province to another...").
+
+# England:
+# F North Sea Convoys A Yorkshire - Yorkshire
+# A Yorkshire - Yorkshire
+# A Liverpool Supports A Yorkshire - Yorkshire
+
+# Germany:
+# F London - Yorkshire
+# A Wales Supports F London - Yorkshire
+# The move of the army in Yorkshire is illegal. This makes the support of Liverpool also illegal and without the support, the Germans have a stronger force. The army in London dislodges the army in Yorkshire.
+###################################
+- precondition:
+    fleets:
+      england: [North Sea]
+      germany: [London]
+    armies:
+      england: [Yorkshire, Liverpool]
+      germany: [Wales]
+  orders:
+    england:
+      F North Sea Convoys A Yorkshire - Yorkshire: false
+      A Yorkshire - Yorkshire: false
+      A Liverpool Supports A Yorkshire - Yorkshire: false
+
+    germany:
+      F London - Yorkshire: true
+      A Wales Supports F London - Yorkshire: true
+
+###################################
+# 6.A.6. TEST CASE, ORDERING A UNIT OF ANOTHER COUNTRY
+#
+# Check whether someone can not order a unit that is not his own unit.
+#
+# England has a fleet in London.
+#
+# Germany:
+# F London - North Sea
+# Order should fail.
+###################################
+- precondition:
+    fleets:
+      england: [London]
+  orders:
+    germany:
+      F London - North Sea: false
+
+###################################
+# 6.A.7. TEST CASE, ONLY ARMIES CAN BE CONVOYED
+#
+# A fleet can not be convoyed.
+#
+# England:
+# F London - Belgium
+# F North Sea Convoys A London - Belgium
+# Move from London to Belgium should fail.
+###################################
+- precondition:
+    fleets:
+      england: [London, North Sea]
+  orders:
+    england:
+      F London - Belgium: false
+      F North Sea Convoys A London - Belgium: false
+
+###################################
+# 6.A.8. TEST CASE, SUPPORT TO HOLD YOURSELF IS NOT POSSIBLE
+#
+# An army can not get an additional hold power by supporting itself.
+#
+# Italy:
+# A Venice - Trieste
+# A Tyrolia Supports A Venice - Trieste
+#
+# Austria:
+# F Trieste Supports F Trieste
+# The army in Trieste should be dislodged.
+###################################
+- precondition:
+    armies:
+      italy: [Venice, Tyrolia]
+    fleets:
+      austria: [Trieste]
+  orders:
+    italy:
+      A Venice - Trieste: true
+      A Tyrolia Supports A Venice - Trieste: true
+    austria:
+      F Trieste Supports F Trieste: false
+
+###################################
+# 6.A.9. TEST CASE, FLEETS MUST FOLLOW COAST IF NOT ON SEA
+#
+# If two places are adjacent, that does not mean that a fleet can move between those two places. An implementation that only holds one list of adjacent places for each place, is incorrect.
+#
+# Italy:
+# F Rome - Venice
+# Move fails. An army can go from Rome to Venice, but a fleet can not.
+###################################
+- precondition:
+    fleets:
+      italy: [Rome]
+  orders:
+    italy:
+      F Rome - Venice: false
+
+###################################
+# 6.A.10. TEST CASE, SUPPORT ON UNREACHABLE DESTINATION NOT POSSIBLE
+#
+# The destination of the move that is supported must be reachable by the supporting unit.
+#
+# Austria:
+# A Venice Hold
+#
+# Italy:
+# F Rome Supports A Apulia - Venice
+# A Apulia - Venice
+# The support of Rome is illegal, because Venice can not be reached from Rome by a fleet. Venice is not dislodged.
+###################################
+- precondition:
+    armies:
+      austria: [Venice]
+      italy: [Apulia]
+    fleets:
+      italy: [Rome]
+  orders:
+    austria:
+      A Venice Hold: true
+    italy:
+      F Rome Supports A Apulia - Venice: false
+      A Apulia - Venice: false
+
+###################################
+# 6.A.11. TEST CASE, SIMPLE BOUNCE
+#
+# Two armies bouncing on each other.
+#
+# Austria:
+# A Vienna - Tyrolia
+#
+# Italy:
+# A Venice - Tyrolia
+# The two units bounce.
+###################################
+- precondition:
+    armies:
+      austria: [Vienna]
+      italy: [Venice]
+  orders:
+    austria:
+      A Vienna - Tyrolia: false
+    italy:
+      A Venice - Tyrolia: false
+###################################
+# 6.A.12. TEST CASE, BOUNCE OF THREE UNITS
+#
+# If three units move to the same place, the adjudicator should not bounce the first two units and then let the third unit go to the now open place.
+#
+# Austria:
+# A Vienna - Tyrolia
+#
+# Germany:
+# A Munich - Tyrolia
+#
+# Italy:
+# A Venice - Tyrolia
+# The three units bounce.
+###################################
+- precondition:
+    armies:
+      austria: [Vienna]
+      germany: [Munich]
+      italy: [Venice]
+  orders:
+    austria:
+      A Vienna - Tyrolia: false
+    italy:
+      A Venice - Tyrolia: false
+    germany:
+      A Munich - Tyrolia: false
+
+###################################
+# 6.B. TEST CASES, COASTAL ISSUES
+###################################
+
+# 6.B.1. TEST CASE, MOVING WITH UNSPECIFIED COAST WHEN COAST IS NECESSARY
+
+# Coast is significant in this case:
+
+# France:
+# F Portugal - Spain
+# Some adjudicators take a default coast (see issue 4.B.1).
+
+# I prefer that the move fails.
+
+# 6.B.2. TEST CASE, MOVING WITH UNSPECIFIED COAST WHEN COAST IS NOT NECESSARY
+
+# There is only one coast possible in this case:
+
+# France:
+# F Gascony - Spain
+# Since the North Coast is the only coast that can be reached, it seems logical that the a move is attempted to the north coast of Spain. Some adjudicators require that a coast is also specified in this case and will decide that the move fails or take a default coast (see issue 4.B.2).
+
+# I prefer that an attempt is made to the only possible coast, the north coast of Spain.
+
+# 6.B.3. TEST CASE, MOVING WITH WRONG COAST WHEN COAST IS NOT NECESSARY
+
+# If only one coast is possible, but the wrong coast can be specified.
+
+# France:
+# F Gascony - Spain(sc)
+# If the rules are played very clemently, a move will be attempted to the north coast of Spain. However, since this order is very clear and precise, it is more common that the move fails (see issue 4.B.3).
+
+# I prefer that the move fails.
+
+# 6.B.4. TEST CASE, SUPPORT TO UNREACHABLE COAST ALLOWED
+
+# A fleet can give support to a coast where it can not go.
+
+# France:
+# F Gascony - Spain(nc)
+# F Marseilles Supports F Gascony - Spain(nc)
+
+# Italy:
+# F Western Mediterranean - Spain(sc)
+# Although the fleet in Marseilles can not go to the north coast it can still support targeting the north coast. So, the support is successful, the move of the fleet in Gasgony succeeds and the move of the Italian fleet fails.
+
+# 6.B.5. TEST CASE, SUPPORT FROM UNREACHABLE COAST NOT ALLOWED
+
+# A fleet can not give support to an area that can not be reached from the current coast of the fleet.
+
+# France:
+# F Marseilles - Gulf of Lyon
+# F Spain(nc) Supports F Marseilles - Gulf of Lyon
+
+# Italy:
+# F Gulf of Lyon Hold
+# The Gulf of Lyon can not be reached from the North Coast of Spain. Therefore, the support of Spain is invalid and the fleet in the Gulf of Lyon is not dislodged.
+
+# 6.B.6. TEST CASE, SUPPORT CAN BE CUT WITH OTHER COAST
+
+# Support can be cut from the other coast.
+
+# England:
+# F Irish Sea Supports F North Atlantic Ocean - Mid-Atlantic Ocean
+# F North Atlantic Ocean - Mid-Atlantic Ocean
+
+# France:
+# F Spain(nc) Supports F Mid-Atlantic Ocean
+# F Mid-Atlantic Ocean Hold
+
+# Italy:
+# F Gulf of Lyon - Spain(sc)
+# The Italian fleet in the Gulf of Lyon will cut the support in Spain. That means that the French fleet in the Mid Atlantic Ocean will be dislodged by the English fleet in the North Atlantic Ocean.
+
+# 6.B.7. TEST CASE, SUPPORTING WITH UNSPECIFIED COAST
+
+# Most house rules accept support orders without coast specification.
+
+# France:
+# F Portugal Supports F Mid-Atlantic Ocean - Spain
+# F Mid-Atlantic Ocean - Spain(nc)
+
+# Italy:
+# F Gulf of Lyon Supports F Western Mediterranean - Spain(sc)
+# F Western Mediterranean - Spain(sc)
+# See issue 4.B.4. If coasts are not required in support orders, then the support of Portugal is successful. This means that the Italian fleet in the Western Mediterranean bounces. Some adjudicators may not accept a support order without coast (the support will fail or a default coast is taken). In that case the support order of Portugal fails (in case of a default coast the coast will probably the south coast) and the Italian fleet in the Western Mediterranean will successfully move.
+
+# I prefer that the support succeeds and the Italian fleet in the Western Mediterranean bounces.
+
+# 6.B.8. TEST CASE, SUPPORTING WITH UNSPECIFIED COAST WHEN ONLY ONE COAST IS POSSIBLE
+
+# Some hardliners require a coast in a support order even when only one coast is possible.
+
+# France:
+# F Portugal Supports F Gascony - Spain
+# F Gascony - Spain(nc)
+
+# Italy:
+# F Gulf of Lyon Supports F Western Mediterranean - Spain(sc)
+# F Western Mediterranean - Spain(sc)
+# See issue 4.B.4. If coasts are not required in support orders, then the support of Portugal is successful. This means that the Italian fleet in the Western Mediterranean bounces. Some adjudicators may not accept a support order without coast (the support will fail or a default coast is taken). In that case the support order of Portugal fails (in case of a default coast the coast will probably the south coast) and the Italian fleet in the Western Mediterranean will successfully move.
+
+# I prefer that supporting without coasts should be allowed. So I prefer that the support of Portugal is successful and that the Italian fleet in the Western Mediterranean bounces.
+
+# 6.B.9. TEST CASE, SUPPORTING WITH WRONG COAST
+
+# Coasts can be specified in a support, but the result depends on the house rules.
+
+# France:
+# F Portugal Supports F Mid-Atlantic Ocean - Spain(nc)
+# F Mid-Atlantic Ocean - Spain(sc)
+
+# Italy:
+# F Gulf of Lyon Supports F Western Mediterranean - Spain(sc)
+# F Western Mediterranean - Spain(sc)
+# See issue 4.B.4. If it is required that the coast matches, then the support of the French fleet in the Mid-Atlantic Ocean fails and that the Italian fleet in the Western Mediterranean moves successfully. Some adjudicators ignores the coasts in support orders. In that case, the move of the Italian fleet bounces.
+
+# I prefer that the support fails and that the Italian fleet in the Western Mediterranean moves successfully.
+
+# 6.B.10. TEST CASE, UNIT ORDERED WITH WRONG COAST
+
+# A player might specify the wrong coast for the ordered unit.
+
+# France has a fleet on the south coast of Spain and orders:
+
+# France:
+# F Spain(nc) - Gulf of Lyon
+# If only perfect orders are accepted, then the move will fail, but since the coast for the ordered unit has no purpose, it might also be ignored (see issue 4.B.5).
+
+# I prefer that a move will be attempted.
+
+# 6.B.11. TEST CASE, COAST CAN NOT BE ORDERED TO CHANGE
+
+# The coast can not change by just ordering the other coast.
+
+# France has a fleet on the north coast of Spain and orders:
+
+# France:
+# F Spain(sc) - Gulf of Lyon
+# The move fails.
+
+# 6.B.12. TEST CASE, ARMY MOVEMENT WITH COASTAL SPECIFICATION
+
+# For armies the coasts are irrelevant:
+
+# France:
+# A Gascony - Spain(nc)
+# If only perfect orders are accepted, then the move will fail. But it is also possible that coasts are ignored in this case and a move will be attempted (see issue 4.B.6).
+
+# I prefer that a move will be attempted.
+
+# 6.B.13. TEST CASE, COASTAL CRAWL NOT ALLOWED
+
+# If a fleet is leaving a sector from a certain coast while in the opposite direction another fleet is moving to another coast of the sector, it is still a head to head battle. This has been decided in the great revision of the 1961 rules that resulted in the 1971 rules.
+
+# Turkey:
+# F Bulgaria(sc) - Constantinople
+# F Constantinople - Bulgaria(ec)
+# Both moves fail.
+
+# 6.B.14. TEST CASE, BUILDING WITH UNSPECIFIED COAST
+
+# Coast must be specified in certain build cases:
+
+# Russia:
+# Build F St Petersburg
+# If no default coast is taken (see issue 4.B.7), the build fails.
+
+# I do not like default coast, so I prefer that the build fails.
+
+# 6.C. TEST CASES, CIRCULAR MOVEMENT
+
+# 6.C.1. TEST CASE, THREE ARMY CIRCULAR MOVEMENT
+
+# Three units can change place, even in spring 1901.
+
+# Turkey:
+# F Ankara - Constantinople
+# A Constantinople - Smyrna
+# A Smyrna - Ankara
+# All three units will move.
+
+# 6.C.2. TEST CASE, THREE ARMY CIRCULAR MOVEMENT WITH SUPPORT
+
+# Three units can change place, even when one gets support.
+
+# Turkey:
+# F Ankara - Constantinople
+# A Constantinople - Smyrna
+# A Smyrna - Ankara
+# A Bulgaria Supports F Ankara - Constantinople
+# Of course the three units will move, but knowing how programs are written, this can confuse the adjudicator.
+
+# 6.C.3. TEST CASE, A DISRUPTED THREE ARMY CIRCULAR MOVEMENT
+
+# When one of the units bounces, the whole circular movement will hold.
+
+# Turkey:
+# F Ankara - Constantinople
+# A Constantinople - Smyrna
+# A Smyrna - Ankara
+# A Bulgaria - Constantinople
+# Every unit will keep its place.
+
+# 6.C.4. TEST CASE, A CIRCULAR MOVEMENT WITH ATTACKED CONVOY
+
+# When the circular movement contains an attacked convoy, the circular movement succeeds. The adjudication algorithm should handle attack of convoys before calculating circular movement.
+
+# Austria:
+# A Trieste - Serbia
+# A Serbia - Bulgaria
+
+# Turkey:
+# A Bulgaria - Trieste
+# F Aegean Sea Convoys A Bulgaria - Trieste
+# F Ionian Sea Convoys A Bulgaria - Trieste
+# F Adriatic Sea Convoys A Bulgaria - Trieste
+
+# Italy:
+# F Naples - Ionian Sea
+# The fleet in the Ionian Sea is attacked but not dislodged. The circular movement succeeds. The Austrian and Turkish armies will advance.
+
+# 6.C.5. TEST CASE, A DISRUPTED CIRCULAR MOVEMENT DUE TO DISLODGED CONVOY
+
+# When the circular movement contains a convoy, the circular movement is disrupted when the convoying fleet is dislodged. The adjudication algorithm should disrupt convoys before calculating circular movement.
+
+# Austria:
+# A Trieste - Serbia
+# A Serbia - Bulgaria
+
+# Turkey:
+# A Bulgaria - Trieste
+# F Aegean Sea Convoys A Bulgaria - Trieste
+# F Ionian Sea Convoys A Bulgaria - Trieste
+# F Adriatic Sea Convoys A Bulgaria - Trieste
+
+# Italy:
+# F Naples - Ionian Sea
+# F Tunis Supports F Naples - Ionian Sea
+# Due to the dislodged convoying fleet, all Austrian and Turkish armies will not move.
+
+# 6.C.6. TEST CASE, TWO ARMIES WITH TWO CONVOYS
+
+# Two armies can swap places even when they are not adjacent.
+
+# England:
+# F North Sea Convoys A London - Belgium
+# A London - Belgium
+
+# France:
+# F English Channel Convoys A Belgium - London
+# A Belgium - London
+# Both convoys should succeed.
+
+# 6.C.7. TEST CASE, DISRUPTED UNIT SWAP
+
+# If in a swap one of the unit bounces, then the swap fails.
+
+# England:
+# F North Sea Convoys A London - Belgium
+# A London - Belgium
+
+# France:
+# F English Channel Convoys A Belgium - London
+# A Belgium - London
+# A Burgundy - Belgium
+# None of the units will succeed to move.
+
+# 6.D. TEST CASES, SUPPORTS AND DISLODGES
+
+# 6.D.1. TEST CASE, SUPPORTED HOLD CAN PREVENT DISLODGEMENT
+
+# The most simple support to hold order.
+
+# Austria:
+# F Adriatic Sea Supports A Trieste - Venice
+# A Trieste - Venice
+
+# Italy:
+# A Venice Hold
+# A Tyrolia Supports A Venice
+# The support of Tyrolia prevents that the army in Venice is dislodged. The army in Trieste will not move.
+
+# 6.D.2. TEST CASE, A MOVE CUTS SUPPORT ON HOLD
+
+# The most simple support on hold cut.
+
+# Austria:
+# F Adriatic Sea Supports A Trieste - Venice
+# A Trieste - Venice
+# A Vienna - Tyrolia
+
+# Italy:
+# A Venice Hold
+# A Tyrolia Supports A Venice
+# The support of Tyrolia is cut by the army in Vienna. That means that the army in Venice is dislodged by the army from Trieste.
+
+# 6.D.3. TEST CASE, A MOVE CUTS SUPPORT ON MOVE
+
+# The most simple support on move cut.
+
+# Austria:
+# F Adriatic Sea Supports A Trieste - Venice
+# A Trieste - Venice
+
+# Italy:
+# A Venice Hold
+# F Ionian Sea - Adriatic Sea
+# The support of the fleet in the Adriatic Sea is cut. That means that the army in Venice will not be dislodged and the army in Trieste stays in Trieste.
+
+# 6.D.4. TEST CASE, SUPPORT TO HOLD ON UNIT SUPPORTING A HOLD ALLOWED
+
+# A unit that is supporting a hold, can receive a hold support.
+
+# Germany:
+# A Berlin Supports F Kiel
+# F Kiel Supports A Berlin
+
+# Russia:
+# F Baltic Sea Supports A Prussia - Berlin
+# A Prussia - Berlin
+# The Russian move from Prussia to Berlin fails.
+
+# 6.D.5. TEST CASE, SUPPORT TO HOLD ON UNIT SUPPORTING A MOVE ALLOWED
+
+# A unit that is supporting a move, can receive a hold support.
+
+# Germany:
+# A Berlin Supports A Munich - Silesia
+# F Kiel Supports A Berlin
+# A Munich - Silesia
+
+# Russia:
+# F Baltic Sea Supports A Prussia - Berlin
+# A Prussia - Berlin
+# The Russian move from Prussia to Berlin fails.
+
+# 6.D.6. TEST CASE, SUPPORT TO HOLD ON CONVOYING UNIT ALLOWED
+
+# A unit that is convoying, can receive a hold support.
+
+# Germany:
+# A Berlin - Sweden
+# F Baltic Sea Convoys A Berlin - Sweden
+# F Prussia Supports F Baltic Sea
+
+# Russia:
+# F Livonia - Baltic Sea
+# F Gulf of Bothnia Supports F Livonia - Baltic Sea
+# The Russian move from Livonia to the Baltic Sea fails. The convoy from Berlin to Sweden succeeds.
+
+# 6.D.7. TEST CASE, SUPPORT TO HOLD ON MOVING UNIT NOT ALLOWED
+
+# A unit that is moving, can not receive a hold support for the situation that the move fails.
+
+# Germany:
+# F Baltic Sea - Sweden
+# F Prussia Supports F Baltic Sea
+
+# Russia:
+# F Livonia - Baltic Sea
+# F Gulf of Bothnia Supports F Livonia - Baltic Sea
+# A Finland - Sweden
+# The support of the fleet in Prussia fails. The fleet in Baltic Sea will bounce on the Russian army in Finland and will be dislodged by the Russian fleet from Livonia when it returns to the Baltic Sea.
+
+# 6.D.8. TEST CASE, FAILED CONVOY CAN NOT RECEIVE HOLD SUPPORT
+
+# If a convoy fails because of disruption of the convoy or when the right convoy orders are not given, then the army to be convoyed can not receive support in hold, since it still tried to move.
+
+# Austria:
+# F Ionian Sea Hold
+# A Serbia Supports A Albania - Greece
+# A Albania - Greece
+
+# Turkey:
+# A Greece - Naples
+# A Bulgaria Supports A Greece
+# There was a possible convoy from Greece to Naples, before the orders were made public (via the Ionian Sea). This means that the order of Greece to Naples should never be treated as illegal order and be changed in a hold order able to receive hold support (see also issue VI.A). Therefore, the support in Bulgaria fails and the army in Greece is dislodged by the army in Albania.
+
+# 6.D.9. TEST CASE, SUPPORT TO MOVE ON HOLDING UNIT NOT ALLOWED
+
+# A unit that is holding can not receive a support in moving.
+
+# Italy:
+# A Venice - Trieste
+# A Tyrolia Supports A Venice - Trieste
+
+# Austria:
+# A Albania Supports A Trieste - Serbia
+# A Trieste Hold
+# The support of the army in Albania fails and the army in Trieste is dislodged by the army from Venice.
+
+# 6.D.10. TEST CASE, SELF DISLODGMENT PROHIBITED
+
+# A unit may not dislodge a unit of the same great power.
+
+# Germany:
+# A Berlin Hold
+# F Kiel - Berlin
+# A Munich Supports F Kiel - Berlin
+# Move to Berlin fails.
+
+# 6.D.11. TEST CASE, NO SELF DISLODGMENT OF RETURNING UNIT
+
+# Idem.
+
+# Germany:
+# A Berlin - Prussia
+# F Kiel - Berlin
+# A Munich Supports F Kiel - Berlin
+
+# Russia:
+# A Warsaw - Prussia
+# Army in Berlin bounces, but is not dislodged by own unit.
+
+# 6.D.12. TEST CASE, SUPPORTING A FOREIGN UNIT TO DISLODGE OWN UNIT PROHIBITED
+
+# You may not help another power in dislodging your own unit.
+
+# Austria:
+# F Trieste Hold
+# A Vienna Supports A Venice - Trieste
+
+# Italy:
+# A Venice - Trieste
+# No dislodgment of fleet in Trieste.
+
+# 6.D.13. TEST CASE, SUPPORTING A FOREIGN UNIT TO DISLODGE A RETURNING OWN UNIT PROHIBITED
+
+# Idem.
+
+# Austria:
+# F Trieste - Adriatic Sea
+# A Vienna Supports A Venice - Trieste
+
+# Italy:
+# A Venice - Trieste
+# F Apulia - Adriatic Sea
+# No dislodgment of fleet in Trieste.
+
+# 6.D.14. TEST CASE, SUPPORTING A FOREIGN UNIT IS NOT ENOUGH TO PREVENT DISLODGEMENT
+
+# If a foreign unit has enough support to dislodge your unit, you may not prevent that dislodgement by supporting the attack.
+
+# Austria:
+# F Trieste Hold
+# A Vienna Supports A Venice - Trieste
+
+# Italy:
+# A Venice - Trieste
+# A Tyrolia Supports A Venice - Trieste
+# F Adriatic Sea Supports A Venice - Trieste
+# The fleet in Trieste is dislodged.
+
+# 6.D.15. TEST CASE, DEFENDER CAN NOT CUT SUPPORT FOR ATTACK ON ITSELF
+
+# A unit that is attacked by a supported unit can not prevent dislodgement by guessing which of the units will do the support.
+
+# Russia:
+# F Constantinople Supports F Black Sea - Ankara
+# F Black Sea - Ankara
+
+# Turkey:
+# F Ankara - Constantinople
+# The support of Constantinople is not cut and the fleet in Ankara is dislodged by the fleet in the Black Sea. a name="6.D.16">
+
+# 6.D.16. TEST CASE, CONVOYING A UNIT DISLODGING A UNIT OF SAME POWER IS ALLOWED
+
+# It is allowed to convoy a foreign unit that dislodges your own unit is allowed.
+
+# England:
+# A London Hold
+# F North Sea Convoys A Belgium - London
+
+# France:
+# F English Channel Supports A Belgium - London
+# A Belgium - London
+# The English army in London is dislodged by the French army coming from Belgium.
+
+# 6.D.17. TEST CASE, DISLODGEMENT CUTS SUPPORTS
+
+# The famous dislodge rule.
+
+# Russia:
+# F Constantinople Supports F Black Sea - Ankara
+# F Black Sea - Ankara
+
+# Turkey:
+# F Ankara - Constantinople
+# A Smyrna Supports F Ankara - Constantinople
+# A Armenia - Ankara
+# The Russian fleet in Constantinople is dislodged. This cuts the support to from Black Sea to Ankara. Black Sea will bounce with the army from Armenia.
+
+# 6.D.18. TEST CASE, A SURVIVING UNIT WILL SUSTAIN SUPPORT
+
+# Idem. But now with an additional hold that prevents dislodgement.
+
+# Russia:
+# F Constantinople Supports F Black Sea - Ankara
+# F Black Sea - Ankara
+# A Bulgaria Supports F Constantinople
+
+# Turkey:
+# F Ankara - Constantinople
+# A Smyrna Supports F Ankara - Constantinople
+# A Armenia - Ankara
+# The Russian fleet in the Black Sea will dislodge the Turkish fleet in Ankara.
+
+# 6.D.19. TEST CASE, EVEN WHEN SURVIVING IS IN ALTERNATIVE WAY
+
+# Now, the dislodgement is prevented because the supports comes from a Russian army:
+
+# Russia:
+# F Constantinople Supports F Black Sea - Ankara
+# F Black Sea - Ankara
+# A Smyrna Supports F Ankara - Constantinople
+
+# Turkey:
+# F Ankara - Constantinople
+# The Russian fleet in Constantinople is not dislodged, because one of the support is of Russian origin. The support from Black Sea to Ankara will sustain and the fleet in Ankara will be dislodged.
+
+# 6.D.20. TEST CASE, UNIT CAN NOT CUT SUPPORT OF ITS OWN COUNTRY
+
+# Although this is not mentioned in all rulebooks, it is generally accepted that when a unit attacks another unit of the same Great Power, it will not cut support.
+
+# England:
+# F London Supports F North Sea - English Channel
+# F North Sea - English Channel
+# A Yorkshire - London
+
+# France:
+# F English Channel Hold
+# The army in York does not cut support. This means that the fleet in the English Channel is dislodged by the fleet in the North Sea.
+
+# 6.D.21. TEST CASE, DISLODGING DOES NOT CANCEL A SUPPORT CUT
+
+# Sometimes there is the question whether a dislodged moving unit does not cut support (similar to the dislodge rule). This is not the case.
+
+# Austria:
+# F Trieste Hold
+
+# Italy:
+# A Venice - Trieste
+# A Tyrolia Supports A Venice - Trieste
+
+# Germany:
+# A Munich - Tyrolia
+
+# Russia:
+# A Silesia - Munich
+# A Berlin Supports A Silesia - Munich
+# Although the German army is dislodged, it still cuts the Italian support. That means that the Austrian Fleet is not dislodged.
+
+# 6.D.22. TEST CASE, IMPOSSIBLE FLEET MOVE CAN NOT BE SUPPORTED
+
+# If a fleet tries moves to a land area it seems pointless to support the fleet, since the move will fail anyway. However, in such case, the support is also invalid for defense purposes.
+
+# Germany:
+# F Kiel - Munich
+# A Burgundy Supports F Kiel - Munich
+
+# Russia:
+# A Munich - Kiel
+# A Berlin Supports A Munich - Kiel
+# The German move from Kiel to Munich is illegal (fleets can not go to Munich). Therefore, the support from Burgundy fails and the Russian army in Munich will dislodge the fleet in Kiel. Note that the failing of the support is not explicitly mentioned in the rulebooks (the DPTG is more clear about this point). If you take the rulebooks very literally, you might conclude that the fleet in Munich is not dislodged, but this is an incorrect interpretation.
+# 6.D.23. TEST CASE, IMPOSSIBLE COAST MOVE CAN NOT BE SUPPORTED
+
+# Comparable with the previous test case, but now the fleet move is impossible for coastal reasons.
+
+# Italy:
+# F Gulf of Lyon - Spain(sc)
+# F Western Mediterranean Supports F Gulf of Lyon - Spain(sc)
+
+# France:
+# F Spain(nc) - Gulf of Lyon
+# F Marseilles Supports F Spain(nc) - Gulf of Lyon
+# The French move from Spain North Coast to Gulf of Lyon is illegal (wrong coast). Therefore, the support from Marseilles fails and the fleet in Spain is dislodged.
+
+# 6.D.24. TEST CASE, IMPOSSIBLE ARMY MOVE CAN NOT BE SUPPORTED
+
+# Comparable with the previous test case, but now an army tries to move into sea and the support is used in a beleaguered garrison.
+
+# France:
+# A Marseilles - Gulf of Lyon
+# F Spain(sc) Supports A Marseilles - Gulf of Lyon
+
+# Italy:
+# F Gulf of Lyon Hold
+
+# Turkey:
+# F Tyrrhenian Sea Supports F Western Mediterranean - Gulf of Lyon
+# F Western Mediterranean - Gulf of Lyon
+# The French move from Marseilles to Gulf of Lyon is illegal (an army can not go to sea). Therefore, the support from Spain fails and there is no beleaguered garrison. The fleet in the Gulf of Lyon is dislodged by the Turkish fleet in the Western Mediterranean.
+
+# 6.D.25. TEST CASE, FAILING HOLD SUPPORT CAN BE SUPPORTED
+
+# If an adjudicator fails on one of the previous three test cases, then the bug should be removed with care. A failing move can not be supported, but a failing hold support, because of some preconditions (unmatching order) can still be supported.
+
+# Germany:
+# A Berlin Supports A Prussia
+# F Kiel Supports A Berlin
+
+# Russia:
+# F Baltic Sea Supports A Prussia - Berlin
+# A Prussia - Berlin
+# Although the support of Berlin on Prussia fails (because of unmatching orders), the support of Kiel on Berlin is still valid. So, Berlin will not be dislodged.
+
+# 6.D.26. TEST CASE, FAILING MOVE SUPPORT CAN BE SUPPORTED
+
+# Similar as the previous test case, but now with an unmatched support to move.
+
+# Germany:
+# A Berlin Supports A Prussia - Silesia
+# F Kiel Supports A Berlin
+
+# Russia:
+# F Baltic Sea Supports A Prussia - Berlin
+# A Prussia - Berlin
+# Again, Berlin will not be dislodged.
+
+# 6.D.27. TEST CASE, FAILING CONVOY CAN BE SUPPORTED
+
+# Similar as the previous test case, but now with an unmatched convoy.
+
+# England:
+# F Sweden - Baltic Sea
+# F Denmark Supports F Sweden - Baltic Sea
+
+# Germany:
+# A Berlin Hold
+
+# Russia:
+# F Baltic Sea Convoys A Berlin - Livonia
+# F Prussia Supports F Baltic Sea
+# The convoy order in the Baltic Sea is unmatched and fails. However, the support of Prussia on the Baltic Sea is still valid and the fleet in the Baltic Sea is not dislodged.
+
+# 6.D.28. TEST CASE, IMPOSSIBLE MOVE AND SUPPORT
+
+# If a move is impossible then it can be treated as "illegal", which makes a hold support possible.
+
+# Austria:
+# A Budapest Supports F Rumania
+
+# Russia:
+# F Rumania - Holland
+
+# Turkey:
+# F Black Sea - Rumania
+# A Bulgaria Supports F Black Sea - Rumania
+# The move of the Russian fleet is impossible. But the question is, whether it is "illegal" (see issue 4.E.1). If the move is "illegal" it must be ignored and that makes the hold support of the army in Budapest valid and the fleet in Rumania will not be dislodged.
+
+# I prefer that the move is "illegal", which means that the fleet in the Black Sea does not dislodge the supported Russian fleet.
+
+# 6.D.29. TEST CASE, MOVE TO IMPOSSIBLE COAST AND SUPPORT
+
+# Similar to the previous test case, but now the move can be "illegal" because of the wrong coast.
+
+# Austria:
+# A Budapest Supports F Rumania
+
+# Russia:
+# F Rumania - Bulgaria(sc)
+
+# Turkey:
+# F Black Sea - Rumania
+# A Bulgaria Supports F Black Sea - Rumania
+# Again the move of the Russian fleet is impossible. However, some people might correct the coast (see issue 4.B.3). If the coast is not corrected, again the question is whether it is "illegal" (see issue 4.E.1). If the move is "illegal" it must be ignored and that makes the hold support of the army in Budapest valid and the fleet in Rumania will not be dislodged.
+
+# I prefer that unambiguous orders are not changed and that the move is "illegal". That means that the fleet in the Black Sea does not dislodge the supported Russian fleet.
+
+# 6.D.30. TEST CASE, MOVE WITHOUT COAST AND SUPPORT
+
+# Similar to the previous test case, but now the move can be "illegal" because of missing coast.
+
+# Italy:
+# F Aegean Sea Supports F Constantinople
+
+# Russia:
+# F Constantinople - Bulgaria
+
+# Turkey:
+# F Black Sea - Constantinople
+# A Bulgaria Supports F Black Sea - Constantinople
+# Again the order to the Russian fleet is with problems, because it does not specify the coast, while both coasts of Bulgaria are possible. If no default coast is taken (see issue 4.B.1), then also here it must be decided whether the order is "illegal" (see issue 4.E.1). If the move is "illegal" it must be ignored and that makes the hold support of the fleet in the Aegean Sea valid and the Russian fleet will not be dislodged.
+
+# I don't like default coasts and I prefer that the move is "illegal". That means that the fleet in the Black Sea does not dislodge the supported Russian fleet.
+
+# 6.D.31. TEST CASE, A TRICKY IMPOSSIBLE SUPPORT
+
+# A support order can be impossible for complex reasons.
+
+# Austria:
+# A Rumania - Armenia
+
+# Turkey:
+# F Black Sea Supports A Rumania - Armenia
+# Although the army in Rumania can move to Armenia and the fleet in the Black Sea can also go to Armenia, the support is still not possible. The reason is that the only possible convoy is through the Black Sea and a fleet can not convoy and support at the same time.
+
+# This is relevant for computer programs that show only the possible orders. In the list of possible orders, the support as given to the fleet in the Black Sea, should not be listed. Furthermore, if the fleet in the Black Sea gets a second order, then this may fail, because of double orders (although it can also be ruled differently, see issue 4.D.3). However, when the support order is considered "illegal" (see issue 4.E.1), then this impossible support must be ignored and the second order must be carried out.
+
+# I prefer that impossible orders are "illegal" and ignored. If there would be a second order for the fleet in the Black Sea, that order should be carried out.
+
+# 6.D.32. TEST CASE, A MISSING FLEET
+
+# The previous test cases contained an order that was impossible even when some other pieces on the board where changed. In this test case, the order is impossible, but only for that situation.
+
+# England:
+# F Edinburgh Supports A Liverpool - Yorkshire
+# A Liverpool - Yorkshire
+
+# France:
+# F London Supports A Yorkshire
+
+# Germany:
+# A Yorkshire - Holland
+# The German order to Yorkshire can not be executed, because there is no fleet in the North Sea. In other situations (where there is a fleet in the North Sea), the exact same order would be possible. It should be determined whether this is "illegal" (see issue 4.E.1) or not. If it is illegal, then the order should be ignored and the support of the French fleet in London succeeds. This means that the army in Yorkshire is not dislodged.
+
+# I prefer that impossible orders, even if it is only impossible for the current situation, are "illegal" and ignored. The army in Yorkshire is not dislodged.
+
+# 6.D.33. TEST CASE, UNWANTED SUPPORT ALLOWED
+
+# A self stand-off can be broken by an unwanted support.
+
+# Austria:
+# A Serbia - Budapest
+# A Vienna - Budapest
+
+# Russia:
+# A Galicia Supports A Serbia - Budapest
+
+# Turkey:
+# A Bulgaria - Serbia
+# Due to the Russian support, the army in Serbia advances to Budapest. This enables Turkey to capture Serbia with the army in Bulgaria.
+
+# 6.D.34. TEST CASE, SUPPORT TARGETING OWN AREA NOT ALLOWED
+
+# Support targeting the area where the supporting unit is standing, is illegal.
+# Germany:
+# A Berlin - Prussia
+# A Silesia Supports A Berlin - Prussia
+# F Baltic Sea Supports A Berlin - Prussia
+
+# Italy:
+# A Prussia Supports Livonia - Prussia
+
+# Russia:
+# A Warsaw Supports A Livonia - Prussia
+# A Livonia - Prussia
+# Russia and Italy wanted to get rid of the Italian army in Prussia (to build an Italian fleet somewhere else). However, they didn't want a possible German attack on Prussia to succeed. They invented this odd order of Italy. It was intended that the attack of the army in Livonia would have strength three, so it would be capable to prevent the possible German attack to succeed. However, the order of Italy is illegal, because a unit may only support to an area where the unit can go by itself. A unit can't go to the area it is already standing, so the Italian order is illegal and the German move from Berlin succeeds. Even if it would be legal, the German move from Berlin would still succeed, because the support of Prussia is cut by Livonia and Berlin.
+
+# 6.E. TEST CASES, HEAD TO HEAD BATTLES AND BELEAGUERED GARRISON
+
+# 6.E.1. TEST CASE, DISLODGED UNIT HAS NO EFFECT ON ATTACKERS AREA
+
+# An army can follow.
+
+# Germany:
+# A Berlin - Prussia
+# F Kiel - Berlin
+# A Silesia Supports A Berlin - Prussia
+
+# Russia:
+# A Prussia - Berlin
+# The army in Kiel will move to Berlin.
+
+# 6.E.2. TEST CASE, NO SELF DISLODGEMENT IN HEAD TO HEAD BATTLE
+
+# Self dislodgement is not allowed. This also counts for head to head battles.
+
+# Germany:
+# A Berlin - Kiel
+# F Kiel - Berlin
+# A Munich Supports A Berlin - Kiel
+# No unit will move.
+
+# 6.E.3. TEST CASE, NO HELP IN DISLODGING OWN UNIT
+
+# To help a foreign power to dislodge own unit in head to head battle is not possible.
+
+# Germany:
+# A Berlin - Kiel
+# A Munich Supports F Kiel - Berlin
+
+# England:
+# F Kiel - Berlin
+# No unit will move.
+
+# 6.E.4. TEST CASE, NON-DISLODGED LOSER HAS STILL EFFECT
+
+# If in an unbalanced head to head battle the loser is not dislodged, it has still effect on the area of the attacker.
+
+# Germany:
+# F Holland - North Sea
+# F Helgoland Bight Supports F Holland - North Sea
+# F Skagerrak Supports F Holland - North Sea
+
+# France:
+# F North Sea - Holland
+# F Belgium Supports F North Sea - Holland
+
+# England:
+# F Edinburgh Supports F Norwegian Sea - North Sea
+# F Yorkshire Supports F Norwegian Sea - North Sea
+# F Norwegian Sea - North Sea
+
+# Austria:
+# A Kiel Supports A Ruhr - Holland
+# A Ruhr - Holland
+# The French fleet in the North Sea is not dislodged due to the beleaguered garrison. Therefore, the Austrian army in Ruhr will not move to Holland.
+
+# 6.E.5. TEST CASE, LOSER DISLODGED BY ANOTHER ARMY HAS STILL EFFECT
+
+# If in an unbalanced head to head battle the loser is dislodged by a unit not part of the head to head battle, the loser has still effect on the place of the winner of the head to head battle.
+
+# Germany:
+# F Holland - North Sea
+# F Helgoland Bight Supports F Holland - North Sea
+# F Skagerrak Supports F Holland - North Sea
+
+# France:
+# F North Sea - Holland
+# F Belgium Supports F North Sea - Holland
+
+# England:
+# F Edinburgh Supports F Norwegian Sea - North Sea
+# F Yorkshire Supports F Norwegian Sea - North Sea
+# F Norwegian Sea - North Sea
+# F London Supports F Norwegian Sea - North Sea
+
+# Austria:
+# A Kiel Supports A Ruhr - Holland
+# A Ruhr - Holland
+# The French fleet in the North Sea is dislodged but not by the German fleet in Holland. Therefore, the French fleet can still prevent that the Austrian army in Ruhr will move to Holland. So, the Austrian move in Ruhr fails and the German fleet in Holland is not dislodged.
+
+# 6.E.6. TEST CASE, NOT DISLODGE BECAUSE OF OWN SUPPORT HAS STILL EFFECT
+
+# If in an unbalanced head to head battle the loser is not dislodged because the winner had help of a unit of the loser, the loser has still effect on the area of the winner.
+
+# Germany:
+# F Holland - North Sea
+# F Helgoland Bight Supports F Holland - North Sea
+
+# France:
+# F North Sea - Holland
+# F Belgium Supports F North Sea - Holland
+# F English Channel Supports F Holland - North Sea
+
+# Austria:
+# A Kiel Supports A Ruhr - Holland
+# A Ruhr - Holland
+# Although the German force from Holland to North Sea is one larger than the French force from North Sea to Holland, the French fleet in the North Sea is not dislodged, because one of the supports on the German movement is French. Therefore, the Austrian army in Ruhr will not move to Holland.
+
+# 6.E.7. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
+
+# An attempt to self dislodgement can be combined with a beleaguered garrison. Such self dislodgment is still not possible.
+
+# England:
+# F North Sea Hold
+# F Yorkshire Supports F Norway - North Sea
+
+# Germany:
+# F Holland Supports F Helgoland Bight - North Sea
+# F Helgoland Bight - North Sea
+
+# Russia:
+# F Skagerrak Supports F Norway - North Sea
+# F Norway - North Sea
+# Although the Russians beat the German attack (with the support of Yorkshire) and the two Russian fleets are enough to dislodge the fleet in the North Sea, the fleet in the North Sea is not dislodged, since it would not be dislodged if the English fleet in Yorkshire would not give support. According to the DPTG the fleet in the North Sea would be dislodged. The DPTG is incorrect in this case.
+
+# 6.E.8. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON AND HEAD TO HEAD BATTLE
+
+# Similar to the previous test case, but now the beleaguered fleet is also engaged in a head to head battle.
+
+# England:
+# F North Sea - Norway
+# F Yorkshire Supports F Norway - North Sea
+
+# Germany:
+# F Holland Supports F Helgoland Bight - North Sea
+# F Helgoland Bight - North Sea
+
+# Russia:
+# F Skagerrak Supports F Norway - North Sea
+# F Norway - North Sea
+# Again, none of the fleets move.
+
+# 6.E.9. TEST CASE, ALMOST SELF DISLODGEMENT WITH BELEAGUERED GARRISON
+
+# Similar to the previous test case, but now the beleaguered fleet is moving away.
+
+# England:
+# F North Sea - Norwegian Sea
+# F Yorkshire Supports F Norway - North Sea
+
+# Germany:
+# F Holland Supports F Helgoland Bight - North Sea
+# F Helgoland Bight - North Sea
+
+# Russia:
+# F Skagerrak Supports F Norway - North Sea
+# F Norway - North Sea
+# Both the fleet in the North Sea and the fleet in Norway move.
+
+# 6.E.10. TEST CASE, ALMOST CIRCULAR MOVEMENT WITH NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
+
+# Similar to the previous test case, but now the beleaguered fleet is in circular movement with the weaker attacker. So, the circular movement fails.
+
+# England:
+# F North Sea - Denmark
+# F Yorkshire Supports F Norway - North Sea
+
+# Germany:
+# F Holland Supports F Helgoland Bight - North Sea
+# F Helgoland Bight - North Sea
+# F Denmark - Helgoland Bight
+
+# Russia:
+# F Skagerrak Supports F Norway - North Sea
+# F Norway - North Sea
+# There is no movement of fleets.
+
+# 6.E.11. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON, UNIT SWAP WITH ADJACENT CONVOYING AND TWO COASTS
+
+# Similar to the previous test case, but now the beleaguered fleet is in a unit swap with the stronger attacker. So, the unit swap succeeds. To make the situation more complex, the swap is on an area with two coasts.
+
+# France:
+# A Spain - Portugal via Convoy
+# F Mid-Atlantic Ocean Convoys A Spain - Portugal
+# F Gulf of Lyon Supports F Portugal - Spain(nc)
+
+# Germany:
+# A Marseilles Supports A Gascony - Spain
+# A Gascony - Spain
+
+# Italy:
+# F Portugal - Spain(nc)
+# F Western Mediterranean Supports F Portugal - Spain(nc)
+# The unit swap succeeds. Note that due to the success of the swap, there is no beleaguered garrison anymore.
+
+# 6.E.12. TEST CASE, SUPPORT ON ATTACK ON OWN UNIT CAN BE USED FOR OTHER MEANS
+
+# A support on an attack on your own unit has still effect. It can prevent that another army will dislodge the unit.
+
+# Austria:
+# A Budapest - Rumania
+# A Serbia Supports A Vienna - Budapest
+
+# Italy:
+# A Vienna - Budapest
+
+# Russia:
+# A Galicia - Budapest
+# A Rumania Supports A Galicia - Budapest
+# The support of Serbia on the Italian army prevents that the Russian army in Galicia will advance. No army will move.
+
+# 6.E.13. TEST CASE, THREE WAY BELEAGUERED GARRISON
+
+# In a beleaguered garrison from three sides, the adjudicator may not let two attacks fail and then let the third succeed.
+
+# England:
+# F Edinburgh Supports F Yorkshire - North Sea
+# F Yorkshire - North Sea
+
+# France:
+# F Belgium - North Sea
+# F English Channel Supports F Belgium - North Sea
+
+# Germany:
+# F North Sea Hold
+
+# Russia:
+# F Norwegian Sea - North Sea
+# F Norway Supports F Norwegian Sea - North Sea
+# None of the fleets move. The German fleet in the North Sea is not dislodged.
+
+# 6.E.14. TEST CASE, ILLEGAL HEAD TO HEAD BATTLE CAN STILL DEFEND
+
+# If in a head to head battle, one of the units makes an illegal move, than that unit has still the possibility to defend against attacks with strength of one.
+
+# England:
+# A Liverpool - Edinburgh
+
+# Russia:
+# F Edinburgh - Liverpool
+# The move of the Russian fleet is illegal, but can still prevent the English army to enter Edinburgh. So, none of the units move.
+
+# 6.E.15. TEST CASE, THE FRIENDLY HEAD TO HEAD BATTLE
+
+# In this case both units in the head to head battle prevent that the other one is dislodged.
+
+# England:
+# F Holland Supports A Ruhr - Kiel
+# A Ruhr - Kiel
+
+# France:
+# A Kiel - Berlin
+# A Munich Supports A Kiel - Berlin
+# A Silesia Supports A Kiel - Berlin
+
+# Germany:
+# A Berlin - Kiel
+# F Denmark Supports A Berlin - Kiel
+# F Helgoland Bight Supports A Berlin - Kiel
+
+# Russia:
+# F Baltic Sea Supports A Prussia - Berlin
+# A Prussia - Berlin
+# None of the moves succeeds. This case is especially difficult for sequence based adjudicators. They will start adjudicating the head to head battle and continue to adjudicate the attack on one of the units part of the head to head battle. In this process, one of the sides of the head to head battle might be cancelled out. This happens in the DPTG. If this is adjudicated according to the DPTG, the unit in Ruhr or in Prussia will advance (depending on the order the units are adjudicated). This is clearly a bug in the DPTG.
+
+# 6.F. TEST CASES, CONVOYS
+
+# 6.F.1. TEST CASE, NO CONVOY IN COASTAL AREAS
+
+# A fleet in a coastal area may not convoy.
+
+# Turkey:
+# A Greece - Sevastopol
+# F Aegean Sea Convoys A Greece - Sevastopol
+# F Constantinople Convoys A Greece - Sevastopol
+# F Black Sea Convoys A Greece - Sevastopol
+# The convoy in Constantinople is not possible. So, the army in Greece will not move to Sevastopol.
+
+# 6.F.2. TEST CASE, AN ARMY BEING CONVOYED CAN BOUNCE AS NORMAL
+
+# Armies being convoyed bounce on other units just as armies that are not being convoyed.
+
+# England:
+# F English Channel Convoys A London - Brest
+# A London - Brest
+
+# France:
+# A Paris - Brest
+# The English army in London bounces on the French army in Paris. Both units do not move.
+
+# 6.F.3. TEST CASE, AN ARMY BEING CONVOYED CAN RECEIVE SUPPORT
+
+# Armies being convoyed can receive support as in any other move.
+
+# England:
+# F English Channel Convoys A London - Brest
+# A London - Brest
+# F Mid-Atlantic Ocean Supports A London - Brest
+
+# France:
+# A Paris - Brest
+# The army in London receives support and beats the army in Paris. This means that the army London will end in Brest and the French army in Paris stays in Paris.
+
+# 6.F.4. TEST CASE, AN ATTACKED CONVOY IS NOT DISRUPTED
+
+# A convoy can only be disrupted by dislodging the fleets. Attacking is not sufficient.
+
+# England:
+# F North Sea Convoys A London - Holland
+# A London - Holland
+
+# Germany:
+# F Skagerrak - North Sea
+# The army in London will successfully convoy and end in Holland.
+
+# 6.F.5. TEST CASE, A BELEAGUERED CONVOY IS NOT DISRUPTED
+
+# Even when a convoy is in a beleaguered garrison it is not disrupted.
+
+# England:
+# F North Sea Convoys A London - Holland
+# A London - Holland
+
+# France:
+# F English Channel - North Sea
+# F Belgium Supports F English Channel - North Sea
+
+# Germany:
+# F Skagerrak - North Sea
+# F Denmark Supports F Skagerrak - North Sea
+# The army in London will successfully convoy and end in Holland.
+
+# 6.F.6. TEST CASE, DISLODGED CONVOY DOES NOT CUT SUPPORT
+
+# When a fleet of a convoy is dislodged, the convoy is completely cancelled. So, no support is cut.
+
+# England:
+# F North Sea Convoys A London - Holland
+# A London - Holland
+
+# Germany:
+# A Holland Supports A Belgium
+# A Belgium Supports A Holland
+# F Helgoland Bight Supports F Skagerrak - North Sea
+# F Skagerrak - North Sea
+
+# France:
+# A Picardy - Belgium
+# A Burgundy Supports A Picardy - Belgium
+# The hold order of Holland on Belgium will sustain and Belgium will not be dislodged by the French in Picardy.
+
+# 6.F.7. TEST CASE, DISLODGED CONVOY DOES NOT CAUSE CONTESTED AREA
+
+# When a fleet of a convoy is dislodged, the landing area is not contested, so other units can retreat to that area.
+
+# England:
+# F North Sea Convoys A London - Holland
+# A London - Holland
+
+# Germany:
+# F Helgoland Bight Supports F Skagerrak - North Sea
+# F Skagerrak - North Sea
+# The dislodged English fleet can retreat to Holland.
+
+# 6.F.8. TEST CASE, DISLODGED CONVOY DOES NOT CAUSE A BOUNCE
+
+# When a fleet of a convoy is dislodged, then there will be no bounce in the landing area.
+
+# England:
+# F North Sea Convoys A London - Holland
+# A London - Holland
+
+# Germany:
+# F Helgoland Bight Supports F Skagerrak - North Sea
+# F Skagerrak - North Sea
+# A Belgium - Holland
+# The army in Belgium will not bounce and move to Holland.
+
+# 6.F.9. TEST CASE, DISLODGE OF MULTI-ROUTE CONVOY
+
+# When a fleet of a convoy with multiple routes is dislodged, the result depends on the rulebook that is used.
+
+# England:
+# F English Channel Convoys A London - Belgium
+# F North Sea Convoys A London - Belgium
+# A London - Belgium
+
+# France:
+# F Brest Supports F Mid-Atlantic Ocean - English Channel
+# F Mid-Atlantic Ocean - English Channel
+# The French fleet in Mid Atlantic Ocean will dislodge the convoying fleet in the English Channel. If the 1971 rules are used (see issue 4.A.1), this will disrupt the convoy and the army will stay in London. When the 1982 or 2000 rulebook is used (which I prefer) the army can still go via the North Sea and the convoy succeeds and the London army will end in Belgium.
+
+# 6.F.10. TEST CASE, DISLODGE OF MULTI-ROUTE CONVOY WITH FOREIGN FLEET
+
+# When the 1971 rulebook is used "unwanted" multi-route convoys are possible.
+
+# England:
+# F North Sea Convoys A London - Belgium
+# A London - Belgium
+
+# Germany:
+# F English Channel Convoys A London - Belgium
+
+# France:
+# F Brest Supports F Mid-Atlantic Ocean - English Channel
+# F Mid-Atlantic Ocean - English Channel
+# If the 1982 or 2000 rulebook is used (which I prefer), it makes no difference that the convoying fleet in the English Channel is German. It will take the convoy via the North Sea anyway and the army in London will end in Belgium. However, when the 1971 rules are used, the German convoy is "unwanted". According to the DPTG the German fleet should be ignored in the English convoy, since there is a convoy path with only English fleets. That means that the convoy is not disrupted and the English army in London will end in Belgium. See also issue 4.A.1.
+
+# 6.F.11. TEST CASE, DISLODGE OF MULTI-ROUTE CONVOY WITH ONLY FOREIGN FLEETS
+
+# When the 1971 rulebook is used, "unwanted" convoys can not be ignored in all cases.
+
+# England:
+# A London - Belgium
+
+# Germany:
+# F English Channel Convoys A London - Belgium
+
+# Russia:
+# F North Sea Convoys A London - Belgium
+
+# France:
+# F Brest Supports F Mid-Atlantic Ocean - English Channel
+# F Mid-Atlantic Ocean - English Channel
+# If the 1982 or 2000 rulebook is used (which I prefer), it makes no difference that the convoying fleets are not English. It will take the convoy via the North Sea anyway and the army in London will end in Belgium.
+
+# However, when the 1971 rules are used, the situation is different. Since both the fleet in the English Channel as the fleet in North Sea are not English, it can not be concluded that the German fleet is "unwanted". Therefore, one of the routes of the convoy is disrupted and that means that the complete convoy is disrupted. The army in London will stay in London. See also issue 4.A.1.
+
+# 6.F.12. TEST CASE, DISLODGED CONVOYING FLEET NOT ON ROUTE
+
+# When the rule is used that convoys are disrupted when one of the routes is disrupted (see issue 4.A.1), the convoy is not necessarily disrupted when one of the fleets ordered to convoy is dislodged.
+
+# England:
+# F English Channel Convoys A London - Belgium
+# A London - Belgium
+# F Irish Sea Convoys A London - Belgium
+
+# France:
+# F North Atlantic Ocean Supports F Mid-Atlantic Ocean - Irish Sea
+# F Mid-Atlantic Ocean - Irish Sea
+# Even when convoys are disrupted when one of the routes is disrupted (see issue 4.A.1), the convoy from London to Belgium will still succeed, since the dislodged fleet in the Irish Sea is not part of any route, although it can be reached from the starting point London.
+
+# 6.F.13. TEST CASE, THE UNWANTED ALTERNATIVE
+
+# This situation is not difficult to adjudicate, but it shows that even if someone wants to convoy, the player might not want an alternative route for the convoy.
+
+# England:
+# A London - Belgium
+# F North Sea Convoys A London - Belgium
+
+# France:
+# F English Channel Convoys A London - Belgium
+
+# Germany:
+# F Holland Supports F Denmark - North Sea
+# F Denmark - North Sea
+# If France and German are allies, England want to keep its army in London, to defend the island. An army in Belgium could easily be destroyed by an alliance of France and Germany. England tries to be friends with Germany, however France and Germany trick England.
+
+# The convoy of the army in London succeeds and the fleet in Denmark dislodges the fleet in the North Sea.
+
+# 6.F.14. TEST CASE, SIMPLE CONVOY PARADOX
+
+# The most common paradox is when the attacked unit supports an attack on one of the convoying fleets.
+
+# England:
+# F London Supports F Wales - English Channel
+# F Wales - English Channel
+
+# France:
+# A Brest - London
+# F English Channel Convoys A Brest - London
+# This situation depends on how paradoxes are handled (see issue (4.A.2). In case of the 'All Hold' rule (fully applied, not just as "backup" rule), both the movement of the English fleet in Wales as the France convoy in Brest are part of the paradox and fail. In all other rules of paradoxical convoys (including the Szykman rule which I prefer), the support of London is not cut. That means that the fleet in the English Channel is dislodged.
+
+# 6.F.15. TEST CASE, SIMPLE CONVOY PARADOX WITH ADDITIONAL CONVOY
+
+# Paradox rules only apply on the paradox core.
+
+# England:
+# F London Supports F Wales - English Channel
+# F Wales - English Channel
+
+# France:
+# A Brest - London
+# F English Channel Convoys A Brest - London
+
+# Italy:
+# F Irish Sea Convoys A North Africa - Wales
+# F Mid-Atlantic Ocean Convoys A North Africa - Wales
+# A North Africa - Wales
+# The Italian convoy is not part of the paradox core and should therefore succeed when the move of the fleet in Wales is successful. This is the case except when the 'All Hold' paradox rule is used (fully applied, not just as "backup" rule, see issue 4.A.2).
+
+# I prefer the Szykman rule, so I prefer that both the fleet in Wales as the army in North Africa succeed in moving.
+
+# 6.F.16. TEST CASE, PANDIN'S PARADOX
+
+# In Pandin's paradox, the attacked unit protects the convoying fleet by a beleaguered garrison.
+
+# England:
+# F London Supports F Wales - English Channel
+# F Wales - English Channel
+
+# France:
+# A Brest - London
+# F English Channel Convoys A Brest - London
+
+# Germany:
+# F North Sea Supports F Belgium - English Channel
+# F Belgium - English Channel
+# In all the different rules for resolving convoy disruption paradoxes (see issue 4.A.2), the support of London is not cut. That means that the fleet in the English Channel is not dislodged and none of the units succeed to move.
+
+# 6.F.17. TEST CASE, PANDIN'S EXTENDED PARADOX
+
+# In Pandin's extended paradox, the attacked unit protects the convoying fleet by a beleaguered garrison and the attacked unit can dislodge the unit that gives the protection.
+
+# England:
+# F London Supports F Wales - English Channel
+# F Wales - English Channel
+
+# France:
+# A Brest - London
+# F English Channel Convoys A Brest - London
+# F Yorkshire Supports A Brest - London
+
+# Germany:
+# F North Sea Supports F Belgium - English Channel
+# F Belgium - English Channel
+# When the 1971, 1982 or 2000 rule is used (see issue 4.A.2), the support of London is not cut. That means that the fleet in the English Channel is not dislodged. The convoy will succeed and dislodge the fleet in London. You may argue that this violates the dislodge rule, but the common interpretation is that the paradox convoy rules take precedence over the dislodge rule.
+
+# If the Simon Szykman alternative is used (which I prefer), the convoy fails and the fleet in London and the English Channel are not dislodged. When the 'All Hold' (fully applied, not just as "backup" rule) or the DPTG rule is used, the result is the same as the Simon Szykman alternative. The involved moves (the move of the German fleet in Belgium and the convoying army in Brest) fail.
+
+# 6.F.18. TEST CASE, BETRAYAL PARADOX
+
+# The betrayal paradox is comparable to Pandin's paradox, but now the attacked unit direct supports the convoying fleet. Of course, this will only happen when the player of the attacked unit is betrayed.
+
+# England:
+# F North Sea Convoys A London - Belgium
+# A London - Belgium
+# F English Channel Supports A London - Belgium
+
+# France:
+# F Belgium Supports F North Sea
+
+# Germany:
+# F Helgoland Bight Supports F Skagerrak - North Sea
+# F Skagerrak - North Sea
+# If the English convoy from London to Belgium is successful, then it cuts the France support necessary to hold the fleet in the North Sea (see issue 4.A.2).
+
+# The 1971 and 2000 ruling do not give an answer on this.
+
+# According to the 1982 ruling the French support on the North Sea will not be cut. So, the fleet in the North Sea will not be dislodged by the Germans and the army in London will dislodge the French army in Belgium.
+
+# If the Szykman rule is followed (which I prefer), the move of the army in London will fail and will not cut support. That means that the fleet in the North Sea will not be dislodged.
+
+# The 'All Hold' rule has the same result as the Szykman rule, but with a different reason. The move of the army in London and the move of the German fleet in Skagerrak will fail.
+
+# Since a failing convoy does not result in a consistent resolution, the DPTG gives the same result as the 'All Hold' rule.
+
+# 6.F.19. TEST CASE, MULTI-ROUTE CONVOY DISRUPTION PARADOX
+
+# The situation becomes more complex when the convoy has alternative routes.
+
+# France:
+# A Tunis - Naples
+# F Tyrrhenian Sea Convoys A Tunis - Naples
+# F Ionian Sea Convoys A Tunis - Naples
+
+# Italy:
+# F Naples Supports F Rome - Tyrrhenian Sea
+# F Rome - Tyrrhenian Sea
+# Now, two issues play a role. The ruling about disruption of convoys (issue 4.A.1) and the issue how paradoxes are resolved (issue 4.A.2).
+
+# If the 1971 rule is used about multi-route convoys (when one of the routes is disrupted, the convoy fails), this test case is just a simple paradox. For the 1971, 1982, 2000 and Szykman paradox rule, the support of the fleet in Naples is not cut and the fleet in Rome dislodges the fleet in the Tyrrhenian Sea. When the 'All Hold' rule is used, both the convoy of the army in Tunis as the move of the fleet in Rome will fail.
+
+# When the 1982 rule is used about multi-route convoy disruption, then convoys are disrupted when all routes are disrupted (this is the rule I prefer). With this rule, the situation becomes paradoxical. According to the 1971 and 1982 paradox rules, the support given by the fleet in Naples is not cut, that means that the fleet in the Tyrrhenian Sea is dislodged.
+
+# According to the 2000 ruling the fleet in the Tyrrhenian Sea is not "necessary" for the convoy and the support of Naples is cut and the fleet in the Tyrrhenian Sea is not dislodged.
+
+# If the Szykman rule is used (which I prefer), the 'All Hold' rule or the DPTG, then there is no paradoxical situation. The support of Naples is cut and the fleet in the Tyrrhenian Sea is not dislodged.
+
+# 6.F.20. TEST CASE, UNWANTED MULTI-ROUTE CONVOY PARADOX
+
+# The 1982 paradox rule allows some creative defense.
+
+# France:
+# A Tunis - Naples
+# F Tyrrhenian Sea Convoys A Tunis - Naples
+
+# Italy:
+# F Naples Supports F Ionian Sea
+# F Ionian Sea Convoys A Tunis - Naples
+
+# Turkey:
+# F Aegean Sea Supports F Eastern Mediterranean - Ionian Sea
+# F Eastern Mediterranean - Ionian Sea
+# Again, two issues play a role. The ruling about disruption of multi-route convoys (issue 4.A.1) and the issue how paradoxes are resolved (issue 4.A.2).
+
+# If the 1971 rule is used about multi-route convoys (when one of the routes is disrupted, the convoy fails), the Italian convoy order in the Ionian Sea is not part of the convoy, because it is a foreign unit (according to the DPTG). That means that the fleet in the Ionian Sea is not a 'convoying' fleet. In all rulings the support of Naples on the Ionian Sea is cut and the fleet in the Ionian Sea is dislodged by the Turkish fleet in the Eastern Mediterranean.
+
+# When the 1982 rule is used about multi-route convoy disruption, then convoys are disrupted when all routes are disrupted (this is the rule I prefer). With this rule, the situation becomes paradoxical. According to the 1971 and 1982 paradox rules, the support given by the fleet in Naples is not cut, that means that the fleet in the Ionian Sea is not dislodged.
+
+# According to the 2000 ruling the fleet in the Ionian Sea is not "necessary" and the support of Naples is cut and the fleet in the Ionian Sea is dislodged by the Turkish fleet in the Eastern Mediterranean.
+
+# If the Szykman rule, the 'All Hold' rule or DPTG is used, then there is no paradoxical situation. The support of Naples is cut and the fleet in the Ionian Sea is dislodged by the Turkish fleet in the Eastern Mediterranean.
+
+# As you can see, the 1982 rules allows the Italian player to save its fleet in the Ionian Sea with a trick. I do not consider this trick as normal tactical play. I prefer the Szykman rule as one of the rules that does not allow this trick. According to this rule the fleet in the Ionian Sea is dislodged.
+
+# 6.F.21. TEST CASE, DAD'S ARMY CONVOY
+
+# The 1982 paradox rule has as side effect that convoying armies do not cut support in some situations that are not paradoxical.
+
+# Russia:
+# A Edinburgh Supports A Norway - Clyde
+# F Norwegian Sea Convoys A Norway - Clyde
+# A Norway - Clyde
+
+# France:
+# F Irish Sea Supports F Mid-Atlantic Ocean - North Atlantic Ocean
+# F Mid-Atlantic Ocean - North Atlantic Ocean
+
+# England:
+# A Liverpool - Clyde via Convoy
+# F North Atlantic Ocean Convoys A Liverpool - Clyde
+# F Clyde Supports F North Atlantic Ocean
+# In all rulings, except the 1982 paradox ruling, the support of the fleet in Clyde on the North Atlantic Ocean is cut and the French fleet in the Mid-Atlantic Ocean will dislodge the fleet in the North Atlantic Ocean. This is the preferred way.
+
+# However, in the 1982 paradox rule (see issue 4.A.2), the support of the fleet in Clyde is not cut. That means that the English fleet in the North Atlantic Ocean is not dislodged.
+
+# As you can see, the 1982 rule allows England to save its fleet in the North Atlantic Ocean in a very strange way. Just the support of Clyde is insufficient (if there is no convoy, the support is cut). Only the convoy to the area occupied by own unit, can do the trick in this situation. The embarking of troops in the fleet deceives the enemy so much that it works as a magic cloak. The enemy is not able to dislodge the fleet in the North Atlantic Ocean any more. Of course, this will only work in comedies. I prefer the Szykman rule as one of the rules that does not allow this trick. According to this rule (and all other paradox rules), the fleet in the North Atlantic is just dislodged.
+
+# 6.F.22. TEST CASE, SECOND ORDER PARADOX WITH TWO RESOLUTIONS
+
+# Two convoys are involved in a second order paradox.
+
+# England:
+# F Edinburgh - North Sea
+# F London Supports F Edinburgh - North Sea
+
+# France:
+# A Brest - London
+# F English Channel Convoys A Brest - London
+
+# Germany:
+# F Belgium Supports F Picardy - English Channel
+# F Picardy - English Channel
+
+# Russia:
+# A Norway - Belgium
+# F North Sea Convoys A Norway - Belgium
+# Without any paradox rule, there are two consistent resolutions. The supports of the English fleet in London and the German fleet in Picardy are not cut. That means that the French fleet in the English Channel and the Russian fleet in the North Sea are dislodged, which makes it impossible to cut the support. The other resolution is that the supports of the English fleet in London the German fleet in Picardy are cut. In that case the French fleet in the English Channel and the Russian fleet in the North Sea will survive and will not be dislodged. This gives the possibility to cut the support.
+
+# The 1971 paradox rule and the 2000 rule (see issue 4.A.2) do not have an answer on this.
+
+# According to the 1982 rule, the supports are not cut which means that the French fleet in the English Channel and the Russian fleet in the North Sea are dislodged.
+
+# The Szykman (which I prefer), has the same result as the 1982 rule. The supports are not cut, the convoying armies fail to move, the fleet in Picardy dislodges the fleet in English Channel and the fleet in Edinburgh dislodges the fleet in the North Sea.
+
+# The DPTG rule has in this case the same result as the Szykman rule, because the failing of all convoys is a consistent resolution. So, the armies in Brest and Norway fail to move, while the fleets in Edinburgh and Picardy succeed to move.
+
+# When the 'All Hold' rule is used, the movement of the armies in Brest and Norway as the fleets in Edinburgh and Picardy will fail.
+
+# 6.F.23. TEST CASE, SECOND ORDER PARADOX WITH TWO EXCLUSIVE CONVOYS
+
+# In this paradox there are two consistent resolutions, but where the two convoys do not fail or succeed at the same time. This fact is important for the DPTG resolution.
+
+# England:
+# F Edinburgh - North Sea
+# F Yorkshire Supports F Edinburgh - North Sea
+
+# France:
+# A Brest - London
+# F English Channel Convoys A Brest - London
+
+# Germany:
+# F Belgium Supports F English Channel
+# F London Supports F North Sea
+
+# Italy:
+# F Mid-Atlantic Ocean - English Channel
+# F Irish Sea Supports F Mid-Atlantic Ocean - English Channel
+
+# Russia:
+# A Norway - Belgium
+# F North Sea Convoys A Norway - Belgium
+# Without any paradox rule, there are two consistent resolutions. In one resolution, the convoy in the English Channel is dislodged by the fleet in the Mid-Atlantic Ocean, while the convoy in the North Sea succeeds. In the other resolution, it is the other way around. The convoy in the North Sea is dislodged by the fleet in Edinburgh, while the convoy in the English Channel succeeds.
+
+# The 1971 paradox rule and the 2000 rule (see issue 4.A.2) do not have an answer on this.
+
+# According to the 1982 rule, the supports are not cut which means that the none of the units move.
+
+# The Szykman (which I prefer), has the same result as the 1982 rule. The convoying armies fail to move and the supports are not cut. Because of the failure to cut the support, no fleet succeeds to move.
+
+# When the 'All Hold' rule is used, the movement of the armies and the fleets all fail.
+
+# Since there is no consistent resolution where all convoys fail, the DPTG rule has the same result as the 'All Hold' rule. That means the movement of all units fail.
+
+# 6.F.24. TEST CASE, SECOND ORDER PARADOX WITH NO RESOLUTION
+
+# As first order paradoxes, second order paradoxes come in two flavors, with two resolutions or no resolution.
+
+# England:
+# F Edinburgh - North Sea
+# F London Supports F Edinburgh - North Sea
+# F Irish Sea - English Channel
+# F Mid-Atlantic Ocean Supports F Irish Sea - English Channel
+
+# France:
+# A Brest - London
+# F English Channel Convoys A Brest - London
+# F Belgium Supports F English Channel
+
+# Russia:
+# A Norway - Belgium
+# F North Sea Convoys A Norway - Belgium
+# When no paradox rule is used, there is no consistent resolution. If the French support in Belgium is cut, the French fleet in the English Channel will be dislodged. That means that the support of London will not be cut and the fleet in Edinburgh will dislodge the Russian fleet in the North Sea. In this way the support in Belgium is not cut! But if the support in Belgium is not cut, the Russian fleet in the North Sea will not be dislodged and the army in Norway can cut the support in Belgium.
+
+# The 1971 paradox rule and the 2000 rule (see issue 4.A.2) do not have an answer on this.
+
+# According to the 1982 rule, the supports are not cut which means that the French fleet in the English Channel will survive and but the Russian fleet in the North Sea is dislodged.
+
+# If the Szykman alternative is used (which I prefer), the supports are not cut and the convoying armies fail to move, which has the same result as the 1982 rule in this case.
+
+# When the 'All Hold' rule is used, the movement of the armies in Brest and Norway as the fleets in Edinburgh and the Irish Sea will fail.
+
+# Since there is no consistent resolution where all convoys fail, the DPTG has in this case the same result as the 'All Hold' rule.
+
+# 6.G. TEST CASES, CONVOYING TO ADJACENT PLACES
+
+# 6.G.1. TEST CASE, TWO UNITS CAN SWAP PLACES BY CONVOY
+
+# The only way to swap two units, is by convoy.
+
+# England:
+# A Norway - Sweden
+# F Skagerrak Convoys A Norway - Sweden
+
+# Russia:
+# A Sweden - Norway
+# In most interpretation of the rules, the units in Norway and Sweden will be swapped. However, if explicit adjacent convoying is used (see issue 4.A.3), then it is just a head to head battle.
+
+# I prefer the 2000 rules, so the units are swapped.
+
+# 6.G.2. TEST CASE, KIDNAPPING AN ARMY
+
+# Germany promised England to support to dislodge the Russian fleet in Sweden and it promised Russia to support to dislodge the English army in Norway. Instead, the joking German orders a convoy.
+
+# England:
+# A Norway - Sweden
+
+# Russia:
+# F Sweden - Norway
+
+# Germany:
+# F Skagerrak Convoys A Norway - Sweden
+# See issue 4.A.3.
+
+# When the 1982/2000 rulebook is used (which I prefer), England has no intent to swap and it is just a head to head battle were both units will fail to move. When explicit adjacent convoying is used (DPTG), the English move is not a convoy and again it just a head to head battle were both units will fail to move. In all other interpretations, the army in Norway will be convoyed and swap its place with the fleet in Sweden.
+
+# 6.G.3. TEST CASE, KIDNAPPING WITH A DISRUPTED CONVOY
+
+# When kidnapping of armies is allowed, a move can be sabotaged by a fleet that is almost certainly dislodged.
+
+# France:
+# F Brest - English Channel
+# A Picardy - Belgium
+# A Burgundy Supports A Picardy - Belgium
+# F Mid-Atlantic Ocean Supports F Brest - English Channel
+
+# England:
+# F English Channel Convoys A Picardy - Belgium
+# See issue 4.A.3. If a convoy always takes precedence over a land route (choice a), the move from Picardy to Belgium fails. It tries to convoy and the convoy is disrupted.
+
+# For choice b and c, there is no unit moving in opposite direction for the move of the army in Picardy. For this reason, the move for the army in Picardy is not by convoy and succeeds over land.
+
+# When the 1982 or 2000 rules are used (choice d), then it is not the "intent" of the French army in Picardy to convoy. The move from Picardy to Belgium is just a successful move over land.
+
+# When explicit adjacent convoying is used (DPTG, choice e), the order of the French army in Picardy is not a convoy order. So, it just ordered over land, and that move succeeds.
+
+# This is an excellent example why the convoy route should not automatically have priority over the land route. It would just be annoying for the attacker and this situation is without fun. I prefer the 1982 rule with the 2000 clarification. According to these rules the move from Picardy succeeds.
+
+# 6.G.4. TEST CASE, KIDNAPPING WITH A DISRUPTED CONVOY AND OPPOSITE MOVE
+
+# In the situation of the previous test case it was rather clear that the army didn't want to take the convoy. But what if there is an army moving in opposite direction?
+
+# France:
+# F Brest - English Channel
+# A Picardy - Belgium
+# A Burgundy Supports A Picardy - Belgium
+# F Mid-Atlantic Ocean Supports F Brest - English Channel
+
+# England:
+# F English Channel Convoys A Picardy - Belgium
+# A Belgium - Picardy
+# See issue 4.A.3. If a convoy always takes precedence over a land route (choice a), the move from Picardy to Belgium fails. It tries to convoy and the convoy is disrupted.
+
+# For choice b the convoy is also taken, because there is a unit in Belgium moving in opposite direction. This means that the convoy is disrupted and the move from Picardy to Belgium fails.
+
+# For choice c the convoy is not taken. Although, the unit in Belgium is moving in opposite direction, the army will not take a disrupted convoy. So, the move from Picardy to Belgium succeeds.
+
+# When the 1982 or 2000 rules are used (choice d), then it is not the "intent" of the French army in Picardy to convoy. The move from Picardy to Belgium is just a successful move over land.
+
+# When explicit adjacent convoying is used (DPTG, choice e), the order of the French army in Picardy is not a convoy order. So, it just ordered over land, and that move succeeds.
+
+# Again an excellent example why the convoy route should not automatically have priority over the land route. It would just be annoying for the attacker and this situation is without fun. I prefer the 1982 rule with the 2000 clarification. According to these rules the move from Picardy succeeds.
+
+# 6.G.5. TEST CASE, SWAPPING WITH INTENT
+
+# When one of the convoying fleets is of the same nationality of the convoyed army, the "intent" is to convoy.
+
+# Italy:
+# A Rome - Apulia
+# F Tyrrhenian Sea Convoys A Apulia - Rome
+
+# Turkey:
+# A Apulia - Rome
+# F Ionian Sea Convoys A Apulia - Rome
+# See issue 4.A.3. When the 1982/2000 rulebook is used (which I prefer), the convoy depends on the "intent". Since there is an own fleet in the convoy, the intent is to convoy and the armies in Rome and Apulia swap places.
+
+# For choices a, b and c of the issue there is also a convoy and the same swap takes place.
+
+# When explicit adjacent convoying is used (DPTG, choice e), then the Turkish army did not receive an order to move by convoy. So, it is just a head to head battle and both the army in Rome and Apulia will not move.
+
+# 6.G.6. TEST CASE, SWAPPING WITH UNINTENDED INTENT
+
+# The intent is questionable.
+
+
+# England:
+# A Liverpool - Edinburgh
+# F English Channel Convoys A Liverpool - Edinburgh
+
+# Germany:
+# A Edinburgh - Liverpool
+
+# France:
+# F Irish Sea Hold
+# F North Sea Hold
+
+# Russia:
+# F Norwegian Sea Convoys A Liverpool - Edinburgh
+# F North Atlantic Ocean Convoys A Liverpool - Edinburgh
+# See issue 4.A.3.
+
+# For choice a, b and c the English army in Liverpool will move by convoy and consequentially the two armies are swapped.
+
+# For choice d, the 1982/2000 rulebook (which I prefer), the convoy depends on the "intent". England intended to convoy via the French fleets in the Irish Sea and the North Sea. However, the French did not order the convoy. The alternative route with the Russian fleets was unintended. The English fleet in the English Channel (with the convoy order) is not part of this alternative route with the Russian fleets. Since England still "intent" to convoy, the move from Liverpool to Edinburgh should be via convoy and the two armies are swapped. Although, you could argue that this is not really according to the clarification of the 2000 rulebook.
+
+# When explicit adjacent convoying is used (DPTG, choice e), then the English army did not receive an order to move by convoy. So, it is just a head to head battle and both the army in Edinburgh and Liverpool will not move.
+
+# 6.G.7. TEST CASE, SWAPPING WITH ILLEGAL INTENT
+
+# Can the intent made clear with an impossible order?
+
+# England:
+# F Skagerrak Convoys A Sweden - Norway
+# F Norway - Sweden
+
+# Russia:
+# A Sweden - Norway
+# F Gulf of Bothnia Convoys A Sweden - Norway
+# See issue 4.A.3 and 4.E.1.
+
+# If for issue 4.A.3 choice a, b or c has been taken, then the army in Sweden moves by convoy and swaps places with the fleet in Norway.
+
+# However, if for issue 4.A.3 the 1982/2000 has been chosen (choice d), then the "intent" is important. The question is whether the fleet in the Gulf of Bothnia can express the intent. If the order for this fleet is considered illegal (see issue 4.E.1), then this order must be ignored and there is no intent to swap. In that case none of the units move.
+
+# If explicit convoying is used (DPTG, choice e of issue 4.A.3) then the army in Sweden will take the land route and none of the units move.
+
+# I prefer the 1982/2000 rule and that any orders that can't be valid are illegal. So, the order of the fleet in the Gulf of Bothnia is ignored and can not show the intent. There is no convoy, so no unit will move.
+
+# 6.G.8. TEST CASE, EXPLICIT CONVOY THAT ISN'T THERE
+
+# What to do when a unit is explicitly ordered to move via convoy and the convoy is not there?
+
+# France:
+# A Belgium - Holland via Convoy
+
+# England:
+# F North Sea - Helgoland Bight
+# A Holland - Kiel
+# The French army in Belgium intended to move convoyed with the English fleet in the North Sea. But the English changed their plans.
+
+# See issue 4.A.3.
+
+# If choice a, b or c has been taken, then the 'via Convoy' directive has no meaning and the army in Belgium will move to Holland.
+
+# If the 1982/2000 rulebook is used (choice d, which I prefer), the "via Convoy" has meaning, but only when there is both a land route and a convoy route. Since there is no convoy the "via Convoy" directive should be ignored. And the move from Belgium to Holland succeeds.
+
+# If explicit adjacent convoying is used (DPTG, choice e), then the unit can only go by convoy. Since there is no convoy, the move from Belgium to Holland fails.
+
+# 6.G.9. TEST CASE, SWAPPED OR DISLODGED?
+
+# The 1982 rulebook says that whether the move is over land or via convoy depends on the "intent" as shown by the totality of the orders written by the player governing the army (see issue 4.A.3). In this test case the English army in Norway will end in all cases in Sweden. But whether it is convoyed or not has effect on the Russian army. In case of convoy the Russian army ends in Norway and in case of a land route the Russian army is dislodged.
+
+# England:
+# A Norway - Sweden
+# F Skagerrak Convoys A Norway - Sweden
+# F Finland Supports A Norway - Sweden
+
+# Russia:
+# A Sweden - Norway
+# See issue 4.A.3.
+
+# For choice a, b and c the move of the army in Norway is by convoy and the armies in Norway and Sweden are swapped.
+
+# If the 1982 rulebook is used with the clarification of the 2000 rulebook (choice d, which I prefer), the intent of the English player is to convoy, since it ordered the fleet in Skagerrak to convoy. Therefore, the armies in Norway and Sweden are swapped.
+
+# When explicit adjacent convoying is used (DTPG, choice e), then the unit in Norway did not receive an order to move by convoy and the land route should be considered. The Russian army in Sweden is dislodged.
+
+# 6.G.10. TEST CASE, SWAPPED OR AN HEAD TO HEAD BATTLE?
+
+# Can a dislodged unit have effect on the attackers area, when the attacker moved by convoy?
+
+# England:
+# A Norway - Sweden via Convoy
+# F Denmark Supports A Norway - Sweden
+# F Finland Supports A Norway - Sweden
+
+# Germany:
+# F Skagerrak Convoys A Norway - Sweden
+
+# Russia:
+# A Sweden - Norway
+# F Barents Sea Supports A Sweden - Norway
+
+# France:
+# F Norwegian Sea - Norway
+# F North Sea Supports F Norwegian Sea - Norway
+# Since England ordered the army in Norway to move explicitly via convoy and the army in Sweden is moving in opposite direction, only the convoyed route should be considered regardless of the rulebook used. It is clear that the army in Norway will dislodge the Russian army in Sweden. Since the strength of three is in all cases the strongest force.
+
+# The army in Sweden will not advance to Norway, because it can not beat the force in the Norwegian Sea. It will be dislodged by the army from Norway.
+
+# The more interesting question is whether French fleet in the Norwegian Sea is bounced by the Russian army from Sweden. This depends on the interpretation of issue 4.A.7. If the rulebook is taken literally (choice a), then a dislodged unit can not bounce a unit in the area where the attacker came from. This would mean that the move of the fleet in the Norwegian Sea succeeds However, if choice b is taken (which I prefer), then a bounce is still possible, when there is no head to head battle. So, the fleet in the Norwegian Sea will fail to move.
+
+# 6.G.11. TEST CASE, A CONVOY TO AN ADJACENT PLACE WITH A PARADOX
+
+# In this case the convoy route is available when the land route is chosen and the convoy route is not available when the convoy route is chosen.
+
+# England:
+# F Norway Supports F North Sea - Skagerrak
+# F North Sea - Skagerrak
+
+# Russia:
+# A Sweden - Norway
+# F Skagerrak Convoys A Sweden - Norway
+# F Barents Sea Supports A Sweden - Norway
+# See issue 4.A.2 and 4.A.3.
+
+# If for issue 4.A.3, choice b, c or e has been taken, then the move from Sweden to Norway is not a convoy and the English fleet in Norway is dislodged and the fleet in Skagerrak will not be dislodged.
+
+# If choice a or d (1982/2000 rule) has been taken for issue 4.A.3, then the move from Sweden to Norway must be treated as a convoy. At that moment the situation becomes paradoxical. When the 'All Hold' rule is used, both the army in Sweden as the fleet in the North Sea will not advance. In all other paradox rules the English fleet in the North Sea will dislodge the Russian fleet in Skagerrak and the army in Sweden will not advance.
+
+# I prefer the 1982 rule with the 2000 rulebook clarification concerning the convoy to adjacent places and I prefer the Szykman rule for paradox resolving. That means that according to these preferences the fleet in the North Sea will dislodge the Russian fleet in Skagerrak and the army in Sweden will not advance.
+
+# 6.G.12. TEST CASE, SWAPPING TWO UNITS WITH TWO CONVOYS
+
+# Of course, two armies can also swap by when they are both convoyed.
+
+# England:
+# A Liverpool - Edinburgh via Convoy
+# F North Atlantic Ocean Convoys A Liverpool - Edinburgh
+# F Norwegian Sea Convoys A Liverpool - Edinburgh
+
+# Germany:
+# A Edinburgh - Liverpool via Convoy
+# F North Sea Convoys A Edinburgh - Liverpool
+# F English Channel Convoys A Edinburgh - Liverpool
+# F Irish Sea Convoys A Edinburgh - Liverpool
+# The armies in Liverpool and Edinburgh are swapped.
+
+# 6.G.13. TEST CASE, SUPPORT CUT ON ATTACK ON ITSELF VIA CONVOY
+
+# If a unit is attacked by a supported unit, it is not possible to prevent dislodgement by trying to cut the support. But what, if a move is attempted via a convoy?
+
+# Austria:
+# F Adriatic Sea Convoys A Trieste - Venice
+# A Trieste - Venice via Convoy
+
+# Italy:
+# A Venice Supports F Albania - Trieste
+# F Albania - Trieste
+# First it should be mentioned that if for issue 4.A.3 choice b or c is taken, then the move from Trieste to Venice is just a move over land, because the army in Venice is not moving in opposite direction. In that case, the support of Venice will not be cut as normal.
+
+# In any other choice for issue 4.A.3, it should be decided whether the Austrian attack is considered to be coming from Trieste or from the Adriatic Sea. If it comes from Trieste, the support in Venice is not cut and the army in Trieste is dislodged by the fleet in Albania. If the Austrian attack is considered to be coming from the Adriatic Sea, then the support is cut and the army in Trieste will not be dislodged. See also issue 4.A.4.
+
+# First of all, I prefer the 1982/2000 rules for adjacent convoying. This means that I prefer the move from Trieste uses the convoy. Furthermore, I think that the two Italian units are still stronger than the army in Trieste. Therefore, I prefer that the support in Venice is not cut and that the army in Trieste is dislodged by the fleet in Albania.
+
+# 6.G.14. TEST CASE, BOUNCE BY CONVOY TO ADJACENT PLACE
+
+# Similar to test case 6.G.10, but now the other unit is taking the convoy.
+
+# England:
+# A Norway - Sweden
+# F Denmark Supports A Norway - Sweden
+# F Finland Supports A Norway - Sweden
+
+# France:
+# F Norwegian Sea - Norway
+# F North Sea Supports F Norwegian Sea - Norway
+
+# Germany:
+# F Skagerrak Convoys A Sweden - Norway
+
+# Russia:
+# A Sweden - Norway via Convoy
+# F Barents Sea Supports A Sweden - Norway
+# Again the army in Sweden is bounced by the fleet in the Norwegian Sea. The army in Norway will move to Sweden and dislodge the Russian army.
+
+# The final destination of the fleet in the Norwegian Sea depends on how issue 4.A.7 is resolved. If choice a is taken, then the fleet advances to Norway, but if choice b is taken (which I prefer) the fleet bounces and stays in the Norwegian Sea.
+
+# 6.G.15. TEST CASE, BOUNCE AND DISLODGE WITH DOUBLE CONVOY
+
+# Similar to test case 6.G.10, but now both units use a convoy and without some support.
+
+# England:
+# F North Sea Convoys A London - Belgium
+# A Holland Supports A London - Belgium
+# A Yorkshire - London
+# A London - Belgium via Convoy
+
+# France:
+# F English Channel Convoys A Belgium - London
+# A Belgium - London via Convoy
+# The French army in Belgium is bounced by the army from Yorkshire. The army in London move to Belgium, dislodging the unit there.
+
+# The final destination of the army in the Yorkshire depends on how issue 4.A.7 is resolved. If choice a is taken, then the army advances to London, but if choice b is taken (which I prefer) the army bounces and stays in Yorkshire.
+
+# 6.G.16. TEST CASE, THE TWO UNIT IN ONE AREA BUG, MOVING BY CONVOY
+
+# If the adjudicator is not correctly implemented, this may lead to a resolution where two units end up in the same area.
+# England:
+# A Norway - Sweden
+# A Denmark Supports A Norway - Sweden
+# F Baltic Sea Supports A Norway - Sweden
+# F North Sea - Norway
+
+# Russia:
+# A Sweden - Norway via Convoy
+# F Skagerrak Convoys A Sweden - Norway
+# F Norwegian Sea Supports A Sweden - Norway
+# See decision details 5.B.6. If the 'PREVENT STRENGTH' is incorrectly implemented, due to the fact that it does not take into account that the 'PREVENT STRENGTH' is only zero when the unit is engaged in a head to head battle, then this goes wrong in this test case. The 'PREVENT STRENGTH' of Sweden would be zero, because the opposing unit in Norway successfully moves. Since, this strength would be zero, the fleet in the North Sea would move to Norway. However, although the 'PREVENT STRENGTH' is zero, the army in Sweden would also move to Norway. So, the final result would contain two units that successfully moved to Norway.
+
+# Of course, this is incorrect. Norway will indeed successfully move to Sweden while the army in Sweden ends in Norway, because it is stronger then the fleet in the North Sea. This fleet will stay in the North Sea.
+
+# 6.G.17. TEST CASE, THE TWO UNIT IN ONE AREA BUG, MOVING OVER LAND
+
+# Similar to the previous test case, but now the other unit moves by convoy.
+# England:
+# A Norway - Sweden via Convoy
+# A Denmark Supports A Norway - Sweden
+# F Baltic Sea Supports A Norway - Sweden
+# F Skagerrak Convoys A Norway - Sweden
+# F North Sea - Norway
+
+# Russia:
+# A Sweden - Norway
+# F Norwegian Sea Supports A Sweden - Norway
+# Sweden and Norway are swapped, while the fleet in the North Sea will bounce.
+
+# 6.G.18. TEST CASE, THE TWO UNIT IN ONE AREA BUG, WITH DOUBLE CONVOY
+
+# Similar to the previous test case, but now both units move by convoy.
+# England:
+# F North Sea Convoys A London - Belgium
+# A Holland Supports A London - Belgium
+# A Yorkshire - London
+# A London - Belgium
+# A Ruhr Supports A London - Belgium
+
+# France:
+# F English Channel Convoys A Belgium - London
+# A Belgium - London
+# A Wales Supports A Belgium - London
+# Belgium and London are swapped, while the army in Yorkshire fails to move to London.
+
+# 6.H. TEST CASES, RETREATING
+
+# 6.H.1. TEST CASE, NO SUPPORTS DURING RETREAT
+
+# Supports are not allowed in the retreat phase.
+
+# Austria:
+# F Trieste Hold
+# A Serbia Hold
+
+# Turkey:
+# F Greece Hold
+
+# Italy:
+# A Venice Supports A Tyrolia - Trieste
+# A Tyrolia - Trieste
+# F Ionian Sea - Greece
+# F Aegean Sea Supports F Ionian Sea - Greece
+# The fleet in Trieste and the fleet in Greece are dislodged. If the retreat orders are as follows:
+
+# Austria:
+# F Trieste - Albania
+# A Serbia Supports F Trieste - Albania
+
+# Turkey:
+# F Greece - Albania
+# The Austrian support order is illegal. Both dislodged fleets are disbanded.
+
+# 6.H.2. TEST CASE, NO SUPPORTS FROM RETREATING UNIT
+
+# Even a retreating unit can not give support.
+
+# England:
+# A Liverpool - Edinburgh
+# F Yorkshire Supports A Liverpool - Edinburgh
+# F Norway Hold
+
+# Germany:
+# A Kiel Supports A Ruhr - Holland
+# A Ruhr - Holland
+
+# Russia:
+# F Edinburgh Hold
+# A Sweden Supports A Finland - Norway
+# A Finland - Norway
+# F Holland Hold
+# The English fleet in Norway and the Russian fleets in Edinburgh and Holland are dislodged. If the following retreat orders are given:
+
+# England:
+# F Norway - North Sea
+
+# Russia:
+# F Edinburgh - North Sea
+# F Holland Supports F Edinburgh - North Sea
+# Although the fleet in Holland may receive an order, it may not support (it is disbanded). The English fleet in Norway and the Russian fleet in Edinburgh bounce and are disbanded.
+
+# 6.H.3. TEST CASE, NO CONVOY DURING RETREAT
+
+# Convoys during retreat are not allowed.
+
+# England:
+# F North Sea Hold
+# A Holland Hold
+
+# Germany:
+# F Kiel Supports A Ruhr - Holland
+# A Ruhr - Holland
+# The English army in Holland is dislodged. If England orders the following in retreat:
+
+# England:
+# A Holland - Yorkshire
+# F North Sea Convoys A Holland - Yorkshire
+# The convoy order is illegal. The army in Holland is disbanded.
+
+# 6.H.4. TEST CASE, NO OTHER MOVES DURING RETREAT
+
+# Of course you may not do any other move during a retreat. But look if the adjudicator checks for it.
+
+# England:
+# F North Sea Hold
+# A Holland Hold
+
+# Germany:
+# F Kiel Supports A Ruhr - Holland
+# A Ruhr - Holland
+# The English army in Holland is dislodged. If England orders the following in retreat:
+
+# England:
+# A Holland - Belgium
+# F North Sea - Norwegian Sea
+# The fleet in the North Sea is not dislodge, so the move is illegal.
+
+# 6.H.5. TEST CASE, A UNIT MAY NOT RETREAT TO THE AREA FROM WHICH IT IS ATTACKED
+
+# Well, that would be of course stupid. Still, the adjudicator must be tested on this.
+
+# Russia:
+# F Constantinople Supports F Black Sea - Ankara
+# F Black Sea - Ankara
+
+# Turkey:
+# F Ankara Hold
+# Fleet in Ankara is dislodged and may not retreat to Black Sea.
+
+# 6.H.6. TEST CASE, UNIT MAY NOT RETREAT TO A CONTESTED AREA
+
+# Stand off prevents retreat to the area.
+
+# Austria:
+# A Budapest Supports A Trieste - Vienna
+# A Trieste - Vienna
+
+# Germany:
+# A Munich - Bohemia
+# A Silesia - Bohemia
+
+# Italy:
+# A Vienna Hold
+# The Italian army in Vienna is dislodged. It may not retreat to Bohemia.
+
+# 6.H.7. TEST CASE, MULTIPLE RETREAT TO SAME AREA WILL DISBAND UNITS
+
+# There can only be one unit in an area.
+
+# Austria:
+# A Budapest Supports A Trieste - Vienna
+# A Trieste - Vienna
+
+# Germany:
+# A Munich Supports A Silesia - Bohemia
+# A Silesia - Bohemia
+
+# Italy:
+# A Vienna Hold
+# A Bohemia Hold
+# If Italy orders the following for retreat:
+
+# Italy:
+# A Bohemia - Tyrolia
+# A Vienna - Tyrolia
+# Both armies will be disbanded.
+
+# 6.H.8. TEST CASE, TRIPLE RETREAT TO SAME AREA WILL DISBAND UNITS
+
+# When three units retreat to the same area, then all three units are disbanded.
+
+# England:
+# A Liverpool - Edinburgh
+# F Yorkshire Supports A Liverpool - Edinburgh
+# F Norway Hold
+
+# Germany:
+# A Kiel Supports A Ruhr - Holland
+# A Ruhr - Holland
+
+# Russia:
+# F Edinburgh Hold
+# A Sweden Supports A Finland - Norway
+# A Finland - Norway
+# F Holland Hold
+# The fleets in Norway, Edinburgh and Holland are dislodged. If the following retreat orders are given:
+
+# England:
+# F Norway - North Sea
+
+# Russia:
+# F Edinburgh - North Sea
+# F Holland - North Sea
+# All three units are disbanded.
+
+# 6.H.9. TEST CASE, DISLODGED UNIT WILL NOT MAKE ATTACKERS AREA CONTESTED
+
+# An army can follow.
+
+# England:
+# F Helgoland Bight - Kiel
+# F Denmark Supports F Helgoland Bight - Kiel
+
+# Germany:
+# A Berlin - Prussia
+# F Kiel Hold
+# A Silesia Supports A Berlin - Prussia
+
+# Russia:
+# A Prussia - Berlin
+# The fleet in Kiel can retreat to Berlin.
+
+# 6.H.10. TEST CASE, NOT RETREATING TO ATTACKER DOES NOT MEAN CONTESTED
+
+# An army can not retreat to the place of the attacker. The easiest way to program that, is to mark that place as "contested". However, this is not correct. Another army may retreat to that place.
+
+# England:
+# A Kiel Hold
+
+# Germany:
+# A Berlin - Kiel
+# A Munich Supports A Berlin - Kiel
+# A Prussia Hold
+
+# Russia:
+# A Warsaw - Prussia
+# A Silesia Supports A Warsaw - Prussia
+# The armies in Kiel and Prussia are dislodged. The English army in Kiel can not retreat to Berlin, but the army in Prussia can retreat to Berlin. Suppose the following retreat orders are given:
+
+# England:
+# A Kiel - Berlin
+
+# Germany:
+# A Prussia - Berlin
+# The English retreat to Berlin is illegal and fails (the unit is disbanded). The German retreat to Berlin is successful and does not bounce on the English unit.
+
+# 6.H.11. TEST CASE, RETREAT WHEN DISLODGED BY ADJACENT CONVOY
+
+# If a unit is dislodged by an army via convoy, the question arises whether the dislodged army can retreat to the original place of the convoyed army. This is only relevant in case the convoy was to an adjacent place.
+
+# France:
+# A Gascony - Marseilles via Convoy
+# A Burgundy Supports A Gascony - Marseilles
+# F Mid-Atlantic Ocean Convoys A Gascony - Marseilles
+# F Western Mediterranean Convoys A Gascony - Marseilles
+# F Gulf of Lyon Convoys A Gascony - Marseilles
+
+# Italy:
+# A Marseilles Hold
+# If for issue 4.A.3 choice b or c has been taken, then the army in Gascony will not move with the use of the convoy, because the army in Marseilles does not move in opposite direction. This immediately means that the army in Marseilles may not move to Gascony when it dislodged by the army there.
+
+# For all other choices of issue 4.A.3, the army in Gascony takes a convoy and does not pass the border of Gascony with Marseilles (it went a complete different direction). Now, the result depends on which rule is used for retreating (see issue 4.A.5).
+
+# I prefer the 1982/2000 rule for convoying to adjacent places. This means that the move of Gascony happened by convoy. Furthermore, I prefer that the army in Marseilles may retreat to Gascony.
+
+# 6.H.12. TEST CASE, RETREAT WHEN DISLODGED BY ADJACENT CONVOY WHILE TRYING TO DO THE SAME
+
+# The previous test case can be made more extra ordinary, when both armies tried to move by convoy.
+
+# England:
+# A Liverpool - Edinburgh via Convoy
+# F Irish Sea Convoys A Liverpool - Edinburgh
+# F English Channel Convoys A Liverpool - Edinburgh
+# F North Sea Convoys A Liverpool - Edinburgh
+
+# France:
+# F Brest - English Channel
+# F Mid-Atlantic Ocean Supports F Brest - English Channel
+
+# Russia:
+# A Edinburgh - Liverpool via Convoy
+# F Norwegian Sea Convoys A Edinburgh - Liverpool
+# F North Atlantic Ocean Convoys A Edinburgh - Liverpool
+# A Clyde Supports A Edinburgh - Liverpool
+# If for issue 4.A.3 choice c has been taken, then the army in Liverpool will not try to move by convoy, because the convoy is disrupted. This has as consequence that army will just advance to Edinburgh by using the land route.
+
+# For all other choices of issue 4.A.3, both the army in Liverpool as in Edinburgh will try to move by convoy. The army in Edinburgh will succeed. The army in Liverpool will fail, because of the disrupted convoy. It is dislodged by the army of Edinburgh. Now, the question is whether the army in Liverpool may retreat to Edinburgh. The result depends on which rule is used for retreating (see issue 4.A.5).
+
+# I prefer the 1982/2000 rule for convoying to adjacent places. This means that the army in Liverpool tries the disrupted convoy. Furthermore, I prefer that the army in Liverpool may retreat to Edinburgh.
+
+# 6.H.13. TEST CASE, NO RETREAT WITH CONVOY IN MAIN PHASE
+
+# The places where a unit may retreat to, must be calculated during the main phase. Care should be taken that a convoy ordered in the main phase can not be used in the retreat phase.
+
+# England:
+# A Picardy Hold
+# F English Channel Convoys A Picardy - London
+
+# France:
+# A Paris - Picardy
+# A Brest Supports A Paris - Picardy
+# The dislodged army in Picardy can not retreat to London.
+
+# 6.H.14. TEST CASE, NO RETREAT WITH SUPPORT IN MAIN PHASE
+
+# Comparable to the previous test case, a support given in the main phase can not be used in the retreat phase.
+
+# England:
+# A Picardy Hold
+# F English Channel Supports A Picardy - Belgium
+
+# France:
+# A Paris - Picardy
+# A Brest Supports A Paris - Picardy
+# A Burgundy Hold
+
+# Germany:
+# A Munich Supports A Marseilles - Burgundy
+# A Marseilles - Burgundy
+# After the main phase the following retreat orders are given: England: A Picardy - Belgium France: A Burgundy - Belgium
+
+# Both the army in Picardy and Burgundy are disbanded.
+
+# 6.H.15. TEST CASE, NO COASTAL CRAWL IN RETREAT
+
+# You can not go to the other coast from where the attacker came from.
+
+# England:
+# F Portugal Hold
+
+# France:
+# F Spain(sc) - Portugal
+# F Mid-Atlantic Ocean Supports F Spain(sc) - Portugal
+# The English fleet in Portugal is destroyed and can not retreat to Spain(nc).
+
+# 6.H.16. TEST CASE, CONTESTED FOR BOTH COASTS
+
+# If a coast is contested, the other is not available for retreat.
+
+# France:
+# F Mid-Atlantic Ocean - Spain(nc)
+# F Gascony - Spain(nc)
+# F Western Mediterranean Hold
+
+# Italy:
+# F Tunis Supports F Tyrrhenian Sea - Western Mediterranean
+# F Tyrrhenian Sea - Western Mediterranean
+# The French fleet in the Western Mediterranean can not retreat to Spain(sc).
+
+# 6.I. TEST CASES, BUILDING
+
+# 6.I.1. TEST CASE, TOO MANY BUILD ORDERS
+
+# Check how program reacts when someone orders too many builds.
+
+# Germany may build one:
+
+# Germany:
+# Build A Warsaw
+# Build A Kiel
+# Build A Munich
+# Program should not build all three, but handle it in an other way. See issue 4.D.4.
+
+# I prefer that the build orders are just handled one by one until all allowed units are build. According to this preference, the build in Warsaw fails, the build in Kiel succeeds and the build in Munich fails.
+
+# 6.I.2. TEST CASE, FLEETS CAN NOT BE BUILD IN LAND AREAS
+
+# Physical this is possible, but it is still not allowed.
+
+# Russia has one build and Moscow is empty.
+
+# Russia:
+# Build F Moscow
+# See issue 4.C.4. Some game masters will change the order and build an army in Moscow.
+
+# I prefer that the build fails.
+
+# 6.I.3. TEST CASE, SUPPLY CENTER MUST BE EMPTY FOR BUILDING
+
+# You can't have two units in a sector. So, you can't build when there is a unit in the supply center.
+
+# Germany may build a unit but has an army in Berlin. Germany orders the following:
+
+# Germany:
+# Build A Berlin
+# Build fails.
+
+# 6.I.4. TEST CASE, BOTH COASTS MUST BE EMPTY FOR BUILDING
+
+# If a sector is occupied on one coast, the other coast can not be used for building.
+
+# Russia may build a unit and has a fleet in St Petersburg(sc). Russia orders the following:
+
+# Russia:
+# Build A St Petersburg(nc)
+# Build fails.
+
+# 6.I.5. TEST CASE, BUILDING IN HOME SUPPLY CENTER THAT IS NOT OWNED
+
+# Building a unit is only allowed when supply center is a home supply center and is owned. If not owned, build fails.
+
+# Russia captured Berlin in Fall. Left Berlin. Germany can not build in Berlin.
+
+# Germany:
+# Build A Berlin
+# Build fails.
+
+# 6.I.6. TEST CASE, BUILDING IN OWNED SUPPLY CENTER THAT IS NOT A HOME SUPPLY CENTER
+
+# Building a unit is only allowed when supply center is a home supply center and is owned. If it is not a home supply center, the build fails.
+
+# Germany owns Warsaw, Warsaw is empty and Germany may build one unit.
+
+# Germany:
+# Build A Warsaw
+# Build fails.
+
+# 6.I.7. TEST CASE, ONLY ONE BUILD IN A HOME SUPPLY CENTER
+
+# If you may build two units, you can still only build one in a supply center.
+
+# Russia owns Moscow, Moscow is empty and Russia may build two units.
+
+# Russia:
+# Build A Moscow
+# Build A Moscow
+# The second build should fail.
+
+# 6.J. TEST CASES, CIVIL DISORDER AND DISBANDS
+
+# 6.J.1. TEST CASE, TOO MANY REMOVE ORDERS
+
+# Check how program reacts when someone orders too disbands.
+
+# France has to disband one and has an army in Paris and Picardy.
+
+# France:
+# Remove F Gulf of Lyon
+# Remove A Picardy
+# Remove A Paris
+# Program should not disband both Paris and Picardy, but should handle it in a different way. See also issue 4.D.6.
+
+# I prefer that the disband orders are handled one by one. According to the preference, the removal of the fleet in the Gulf of Lyon fails (no fleet), the removal of the army in Picardy succeeds and the removal of the army in Paris fails (too many disbands).
+
+# 6.J.2. TEST CASE, REMOVING THE SAME UNIT TWICE
+
+# If you have to remove two units, you can always try to trick the computer by removing the same unit twice.
+
+# France has to disband two and has an army in Paris.
+
+# France:
+# Remove A Paris
+# Remove A Paris
+# Program should remove army in Paris and remove another unit by using the civil disorder rules.
+
+# 6.J.3. TEST CASE, CIVIL DISORDER TWO ARMIES WITH DIFFERENT DISTANCE
+
+# When a player forgets to disband a unit, the civil disorder rules must be applied. When two armies have different distance from the home supply centers, then the army with the greatest distance has to be removed.
+
+# Russia has to remove one.
+# Russia has armies in Livonia and Sweden.
+# Russia does not order a disband.
+# The army in Sweden is removed.
+# 6.J.4. TEST CASE, CIVIL DISORDER TWO ARMIES WITH EQUAL DISTANCE
+
+# If two armies have equal distance from the home supply centers, then alphabetical order is used.
+
+# Russia has to remove one.
+# Russia has armies in Livonia and Ukraine.
+# Russia does not order a disband.
+# Both armies have distance one. The Livonia army is removed, because it appears first in alphabetical order.
+
+# 6.J.5 TEST CASE, CIVIL DISORDER TWO FLEETS WITH DIFFERENT DISTANCE
+
+# If two fleets have different distance from the home supply centers, then the fleet with the greatest distance has to be removed. Note that fleets can not go over land.
+
+# Russia has to remove one.
+# Russia has fleets in Skagerrak and Berlin.
+# Russia does not order a disband.
+# The distance of the fleet in Berlin is three (the fleet can not go to Warsaw), the fleet in Skaggerrak has distance two (via Norway). So, the fleet in Berlin has to be removed.
+
+# 6.J.6. TEST CASE, CIVIL DISORDER TWO FLEETS WITH EQUAL DISTANCE
+
+# Alphabetical order is used, when two fleets have equal distance to the home supply centers.
+
+# Russia has to remove one.
+# Russia has fleets in Berlin and Helgoland Bight.
+# Russia does not order a disband.
+# The distances of both fleets to one of the home supply centers is three. The fleet in the Berlin is removed, because it appears first in alphabetical order. This also tests whether fleets can not go over land. If they could go over land, the distance of Berlin would be two (going to Warsaw) and the fleet in the Helgoland Bight would have incorrectly be removed.
+
+# 6.J.7. TEST CASE, CIVIL DISORDER TWO FLEETS AND ARMY WITH EQUAL DISTANCE
+
+# In removal, the fleet has precedence over an army. In this case there are two fleets, to make the test more complex.
+
+# Russia has to remove one.
+# Russia has an army in Bohemia, a fleet in Skagerrak and a fleet in the North Sea.
+# Russia does not order a disband.
+# The distances of the army and the fleets to one of the home supply centers are two. The fleets take precedence above the army (although the army is alphabetical first). The fleet in the North Sea is alphabetical first, compared to Skagerrak and has to be removed.
+
+# 6.J.8. TEST CASE, CIVIL DISORDER A FLEET WITH SHORTER DISTANCE THEN THE ARMY
+
+# If the fleet has a shorter distance than the army, the army is removed.
+
+# Russia has to remove one.
+# Russia has an army in Tyrolia and a fleet in the Baltic Sea.
+# Russia does not order a disband.
+# The distances of the army to Warsaw is three while the distance of the fleet is two. So, the army is removed.
+
+# 6.J.9. TEST CASE, CIVIL DISORDER MUST BE COUNTED FROM BOTH COASTS
+
+# Distance must be calculated from both coasts.
+
+# Russia has to remove one.
+# Russia has an army in Tyrolia and a fleet in the Baltic Sea.
+# Russia does not order a disband.
+# The distance of the fleet to St Petersburg(nc) is three but to St Petersburg(sc) is two. So, the army in Tyrolia must be removed.
+
+# Russia has to remove one.
+# Russia has an army in Tyrolia and a fleet in Skagerrak.
+# Russia does not order a disband.
+# The distance of the fleet to St Petersburg(sc) is three but to St Petersburg(nc) is two. So, the army in Tyrolia must be removed.
+
+# 6.J.10. TEST CASE, CIVIL DISORDER COUNTING CONVOYING DISTANCE
+
+# For armies the distance must be calculated by taking land areas, coastal areas as sea areas.
+
+# Italy has to remove one.
+# Italy has a fleet in the Ionian Sea and armies in Greece and Silesia.
+# Italy does not order a disband.
+# The distance from Greece to one of the Italian home supply center is three over land. However, using a convoy the distance is one or two (depending how you count, see issue 4.D.8). Anyway, the army in Silesia has to be removed.
+
+# 6.J.11. TEST CASE, CIVIL DISORDER COUNTING DISTANCE WITHOUT CONVOYING FLEET
+
+# If there is no convoying fleet the result depends on the interpretation of the rules.
+
+# Italy has to remove one.
+# Italy has armies in Greece and Silesia.
+# Italy does not order a disband.
+# The distance from Greece to one of the Italian home supply centers is one, two or three (depending how you count, see issue 4.D.8).
+
+# I prefer that sea areas just add one to the distance. According to this preference, the distance is two and the army in Silesia has to be removed.
+
+# 7. COLONIAL VARIANT
+
+# The rulebook of the second print of the colonial variant is used as source for these test case. Note that the regular rules in the Colonial rulebook are not based on the 1982 rules as you might expect, but on the 1971 rules.
+
+# The errata published by Avalon Hill is used as additional source (The General, Volume 30, Number 4). The exact text of this errata is as follows:
+
+# Errata published by Avalon Hill
+
+# Map Addition: Kyoto is starting Colony for Japan. There should be a white circled dot in Kyoto.
+
+# Map Change: Constantinople is a province of Turkey. It should be printed in the same white colour as the rest of Turkey.
+
+# The correct abbreviation for the Andaman Sea is "AND.S" as per Rule 13.0; the abbreviation found on the conference map is incorrect.
+
+# Rule Change: 9.11: Delete "China may not enter Hong Kong until
+
+# the turn after another power has occupied it at the end of a counting move (even-numbered turns)."
+
+# 9.34: Delete "A EGY S SUD"
+
+# 9.35: Change "Turkey A EGY S British F RS-MED" to "Turkey F EGY S British F RS-MED"
+
+# Clarifications: TRANS-SIBERIAN RAILROAD
+
+# 9.21 Only the Russian player may use the TSR. The Russian player may not allow another power to use it.
+
+# 9.23 This rule restricts the attack capability of units using the TSR
+
+# A unit using the TSR may attack:
+# (1) a province that is unoccupied at the start of the turn. Normal rules of conflict would apply,
+# (2) a province that is occupied at the start of the turn but was made empty during the current turn as a result of that unit moving out. Normal rules of conflict would apply, or
+# (3) a province that is occupied at the start of the turn, but if the unit remains in place then the attack will be unsuccessful (even with support) and the unit will have to stop in the nearest empty province along the line of the railroad before the enemy-occupied province (e.g. An army in Moscow with orders A MOS-TSR-VLA with an enemy unit holding in Vladivostok results in the Moscow army stopping in Irkutsk --the order is legal, in the hope that the province will be vacated, but unsuccessful).
+
+# Note: So long as an enemy unit remains in place it may not be successfully attacked that turn by a unit using the TSR. This still applies even if that enemy unit is attacked by a third power that turn and forced to retreat, for example: Russia A MOS-TSR-VLA China A VLA HOLD Japan A SEO-VLA, F OS S A SEO-VLA
+
+# The Russian unit stops in Irkutsk. The Chinese unit retreats (not to Irkutsk or Seoul). The Japanese unit from Seoul takes Vladivostok.
+
+# 9.241 The presence of a foreign power in a province along the line of the TSR blocks its use beyond that point. However, if the unit later moves off this province thus unblocking the line, the TSR may again function normally, that is, control of the province reverts to Russia (it is assumed the partisans rebuild the line).
+
+# EXCEPTION: If a supply center on the line of the TSR (Moscow, Omsk, Vladivostok) is captured by an enemy power and later vacated, ownership remains with that power and the TSR is out at that point until Russia is able to recapture the province. Only then is the line "open" again. For example, if China owns Omsk but has vacated it, a Russian unit using the TSR from Vladivostok could move to Omsk, but no further that turn.
+
+# 9.25 A curious example of this rule applies if an enemy unit attacks from one province to another along the line of the TSR at the same time that a Russian unit is railed through these provinces in the same direction such as:
+
+# Russia A VLA-TSR-OMSK China A KRA-OMSK
+
+# This results in a standoff in Omsk. The Chinese unit stays in Krasnoyarsk and the Russian unit stays in Irkutsk. The logic being that Krasnoyarsk is left empty by the Chinese at the time the Russian unit moves through. Thus both units attack Omsk and cause a standoff. NOTE: The above result would also have occurred if the Russian unit had been ordered to Perm or Moscow because the same standoff would still occur in Omsk.
+
+# SUGGESTED ADDITION TO MAP The island of Sakhalin is contained entirely within the Okhotsk Sea and a unit there cannot be eliminated, so it is suggested that a - land bridge - arrow should connect Otaru and Sakhalin thus allowing a supported attack from Otaru and Okhotsk Sea to take Sakhalin.
+
+# CEBU Cebu is one space containing both land and sea. It can be occupied by either an army or a fleet. An army can use the - land bridges - to move from Manila to Cebu and Cebu to Davao (and vice versa). The game spaces adjacent to Cebu are: Manila, Middle Pacific, Lower Pacific, Davao, Sulu Sea and Luzon Strait.
+
+# Trans-Siberian Railroad
+
+# Q. In the following situation, where do A Mos and A Omsk end up? Russian orders: A Mos-TSR-Vla, A Omsk-Kra, A Vla-Seo; Chinese orders: A Mac-Irk.
+# A. The standoff in Kra means that A Omsk does not move and A Mos stops in Perm.
+
+# Q. If Russia orders A Mos-TRS-Vla and China orders A Mac-Irk and A Mon-Kra, what happens?
+# A. A Mon-Kra fails, A Mac-Irk succeeds, A Mos stops in Omsk.
+
+# Additional assumptions
+
+# The additional rules and the errata do not explain everything. Therefore the following assumptions are made in the resolutions of the test cases (note, these are disputable):
+
+# A move with the Trans-Siberian Railroad can bounce on a Russian unit.
+# This is not obvious, since a Russian army can rail through another Russian army. This follows implicitly from an example in the errata.
+# A Russian army can rail through another Russian army as long it is not dislodged. The army railing through will not be part of a beleaguered garrison.
+# A Russian army using the Trans-Siberian Railroad can only receive support on the final part of the move.
+# Since there is no notation for support on other parts of the move, it is assumed that this is not possible.
+# A move with the Trans-Siberian Railroad can not cut support.
+# According to the errata an attack will be unsuccessful when a unit stays in place. So, it is assumed that it can not cut support.
+# When a unit is ordered to go with the Trans-Siberian Railroad and the first place the unit has to pass contains another unit moving in the opposite direction, then the Trans-Siberian Railroad order should be treated as a normal move to the first place the unit wanted to pass, but without the ability dislodging the other unit.
+# So, in such case there is just a head to head battle (without the ability to dislodge by the unit using the Trans-Siberian Railroad).
+# In case of a paradoxical situation which includes a move with the Trans-Siberian Railroad, at least the last part of the move that is part of the paradoxical situation fails, but is still capable of bouncing other units.
+# When this rule is applied it may result that earlier parts of the move with the Trans-Siberian railroad also fail.
+# The Trans-Siberian Railroad can not be used during retreat.
+# When two units are ordered to use the Trans-Siberian Railroad, they both hold (able to receive a hold support).
+# Only one unit can get permission to go through to the Suez Canal.
+# This means that if there is an explicit permission and a possible implicit permission, the implicit permission is denied. If there are two possible implicit permissions, then both permissions are denied.
+# In case of a paradoxical situation which includes the Suez Canal, the move through the Suez Canal fails and the fleet moving through the Suez Canal does not have any effect on its ordered destination.
+# This is an extension of the Szykman rule for resolving paradoxes.
+# In case there is combination of the Trans-Siberian Railroad, the Suez Canal and a possibly disrupted convoy in a paradox, all paradox rules should be applied at the same time
+# So, there is no priority for the paradox rules for the Trans-Siberian Railroad, the Suez Canal and disrupted convoys.
+# The Sakhalin story
+
+# On the first print of the Colonial variant map there is no land bridge between Sakhalin and Otaru and there is no land bridge between Sakhalin Vladivostok. This introduces the problem that a unit in Sakhalin can not be dislodged, because Sakhalin has only one neighbor (Okhotsk Sea). Since this area has also a supply center, the area can supply itself.
+
+# In the second print of the Colonial variant map and in the errata, Avalon Hill "corrected" this problem by adding a land bridge between Sakhalin and Otaru. However, this introduced a new problem. Two units in Sakhalin and Otaru can support each other and supply there selves forever. And some argue that this situation is even worse then the original problem.
+
+# There are several ways to solve this problems. One of the most common played versions is the "Moulmein Convention". In that convention there is a second additional land bridge between Otaru and Akita. However, according to Peter Hawes, the lead designer of the Colonial variant, the original design contained a land bridge between Sakhalin and Vladivostok (and no land bridge between Sakhalin and Otaru). Avalon Hill omitted this land bridge by mistake. You should realize that this is a large change to the map and Avalon Hill never made an errata in this direction. Some people argue that a land bridge between Sakhalin and Vladivostok is very bad, because Japan can be denied any build in the first build turn. However, that this is not different from the standard game where at least England and Russia can be denied any build in the first build turn.
+
+# I prefer the land bridge between Sakhalin and Vladivostok. I think that the many land bridges in the Moulmein Convention destroys the interesting geographical situation in that area and makes it too easy for Japan to defend. A common complaint is that Japan is too strong (to only way to beat Japan is to start bashing it from the start of the game). With the land bridge between Sakhalin and Vladivostok, Russia has to make a difficult choice. It can take Sakhalin at the first turn (with a rather useless army on Sakhalin) or try to move the army in the direction of Seoul and Fusan. I think that this makes the situation much more interesting and gives a better balance to the game.
+
+# 7.A. TEST CASES, HONG KONG OPTIONAL RULE
+
+# 7.A.1 TEST CASE, HONG KONG IS NOT A SUPPLY CENTER FOR CHINA
+
+# Move Chinese army to Hong Kong in fall. China should not have the right to build a unit for the Hong Kong supply center.
+
+# 7.A.2. TEST CASE, HONG KONG IS A SUPPLY CENTER FOR OTHER COUNTRIES
+
+# We know it is for Britain. But for France? Move French army to Hong Kong in fall. France should have the right to build a unit for the additional Hong Kong supply center.
+
+# 7.A.3. TEST CASE, HONG KONG DOES NOT COUNT FOR VICTORY FOR CHINA
+
+# Set victory condition to 30 (long game). Let China own 29 supply centers which does not include Hong Kong. Let China own Hong Kong. China has not won yet.
+
+# 7.B. TEST CASE, TRANS SIBERIAN RAILROAD OPTIONAL RULE
+
+# 7.B.1. TEST CASE, TSR BOUNCING ON ARMY OF OTHER COUNTRY
+
+# Along the railroad, the army can bounce.
+
+# Russia:
+# A Moscow - TSR - Irkutsk
+
+# Turkey:
+# A Orenburg - Omsk
+# Armies will bounce in Omsk. The Russian army will end in Perm and the Turkish army will stay in Orenburg.
+
+# 7.B.2. TEST CASE, TSR CAN NOT PASS A SUPPORTED ARMY
+
+# If along the railroad, another armies move in with support, the army will bounce.
+
+# Russia:
+# A Moscow - TSR - Irkutsk
+
+# Turkey:
+# A Orenburg - Omsk
+# A Akmolinsk Supports A Orenburg - Omsk
+# The Russian army will end in Perm and the Turkish will move to Omsk.
+
+# 7.B.3. TEST CASE, TSR CAN MOVE THROUGH RUSSIAN ARMY
+
+# If along the railroad, a Russian army is holding, the army using the TSR should move through the army.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Omsk Hold
+# Army should pass through the army in Omsk and end in Vladivostok.
+
+# 7.B.4, TEST CASE, TSR BOUNCES ON RUSSIAN ARMY
+
+# If along the railroad, a Russian army is moving in, the army using the TSR will not move through the army, but will bounce on it.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Akmolinsk - Omsk
+# Both armies bounces in Omsk. The army in Moscow will end in Perm and the army in Akmolinsk will stay in Akmolinsk.
+
+# 7.B.5. TEST CASE, BOUNCING WHILE PASSING THROUGH A RUSSIAN ARMY
+
+# If an army using the TSR is passing through another Russian, but can not go further, it should not end with two units in the same sector.
+
+# Russia:
+# A Moscow - TSR -Vladivostok
+# A Omsk Hold
+
+# China:
+# A Mongolia - Krasnoyarsk
+# The Russian army and the Chinese army bounce in Krasnoyarsk. The Russian army will end in Perm and the Chinese army will stay in Mongolia.
+
+# 7.B.6. TEST CASE, TSR CAN PASS WHEN TWO ARMIES BOUNCE
+
+# When two armies bounce on one of the sectors on the TSR, the army using the TSR can still pass.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Semipalatinsk - Krasnoyarsk
+
+# China:
+# A Mongolia - Krasnoyarsk
+# The Russian and Chinese army bounce in Krasnoyarsk. This makes it possible that the army using the TSR ends in Vladivostok.
+
+# 7.B.7. TEST CASE, TSR CAN PASS WHEN TWO ARMIES WITH EQUAL SUPPORT BOUNCE
+
+# Comparable with the previous test case, but now the bouncing armies have support.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+
+# China:
+# A Manchuria Supports A Seoul - Vladivostok
+# A Seoul - Vladivostok
+
+# Japan:
+# F Okhotsk Sea - Vladivostok
+# F Sea of Japan Supports F Okhotsk Sea - Vladivostok
+# Since the Japanese fleet and the Chinese army bounce in Vladivostok, the army from Moscow can slip through and end in Vladivostok.
+
+# 7.B.8. TEST CASE, TSR BOUNCES WHEN OTHER FORCES ARE UNBALANCED
+
+# Comparable with the previous test case, but now the two other moving units are unbalanced and the TSR can not take advantage of that.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Manchuria Supports A Moscow - Vladivostok
+
+# China:
+# A Seoul - Vladivostok
+
+# Japan:
+# F Okhotsk Sea - Vladivostok
+# F Sea of Japan Supports F Okhotsk Sea - Vladivostok
+# Now the Russian army from Moscow bounces with the fleet from Japan. And the Russian army will end in Irkutsk
+
+# 7.B.9. TEST CASE, TSR CAN PASS TRHOUGH AS LONG AS RUSSIAN ARMY HOLDS
+
+# When an army using the TSR passes through another Russian army on the railroad, and that army holds, it will pass as long as the Russian holds. Even when it is under attack. The army using the TSR is not part of a beleaguered garrison.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Krasnoyarsk Hold
+
+# China:
+# A Mongolia - Krasnoyarsk
+# The army from Moscow will not bounce on the army from Mongolia, because the army in Krasnoyarsk is defending the place.
+
+# 7.B.10. TEST CASE, TSR CAN PASS EVEN WHEN RUSSIAN ARMY IS MOVING AWAY
+
+# When an army using the TSR passes through another Russian army on the railroad, and that army tries to move away, it can still have benefit from the army moving away, when that army bounces.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Krasnoyarsk - Semipalatinsk
+
+# China:
+# A Mongolia - Krasnoyarsk
+# A Urumchi - Semipalatinsk
+# The army in Krasnoyarsk bounces in Semipalatinsk and remains in Krasnoyarsk, it can still help the army from Moscow passing through Krasnoyarsk. The army from Moscow will end in Vladivostok.
+
+# 7.B.11. TEST CASE, TSR CAN ONLY BOUNCE ONCE
+
+# When an army using the TSR bounces, it has no effect on the remaining part of the move.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+
+# China:
+# A Mongolia - Krasnoyarsk
+# A Manchuria - Irkutsk
+# The Russian army will bounce in Krasnoyarsk and end in Omsk. The Chinese army in Mongolia will bounce and stay in Mongolia. The army in Manchuria will just move to Irkutsk.
+
+# 7.B.12. TEST CASE, COMPLEX BOUNCE WITH TSR
+
+# The adjudicator can easily choke on a bounce of the departure of the TSR.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Perm - Orenburg
+
+# Britain:
+# A Tashkent - Orenburg
+# A Akmolinsk - Omsk
+
+# Turkey:
+# A Baku - Moscow
+# The army from Moscow can pass through Perm, but will bounce on the British army in Omsk. It can not end in Perm, because the army in Perm bounces also. The army has to stay in Moscow. This means that the move of Turkey will fail.
+
+# 7.B.13. TEST CASE, A MOVE WITH THE TSR CAN NOT DISLODGE UNIT
+
+# A move with the TSR is not an attack, so it can not dislodge a unit.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Irkutsk Supports A Moscow - Vladivostok
+
+# China:
+# A Vladivostok Hold
+# Although the support from Irkutsk is possible, the Chinese army in Vladivostok is not dislodged.
+
+# 7.B.14. TEST CASE, A MOVE WITH THE TSR CAN NOT CUT SUPPORT
+
+# A move with the TSR is not an attack, so it can not cut support.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Seoul Hold
+
+# China:
+# A Vladivostok Supports A Manchuria - Seoul
+# A Manchuria - Seoul
+# The support of Vladivostok is not cut. So, the Russian army in Seoul is dislodged.
+
+# 7.B.15. TEST CASE, A MOVE WITH THE TSR CAN RECEIVE A SUPPORT TO WIN A BATTLE
+
+# Although a move with the TSR is not an attack and can not dislodge a unit, it can win a battle when the sector is initially empty. Note, that a move with the TSR can only receive support on the last part of the move.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Irkutsk Supports A Moscow - Vladivostok
+
+# Japan:
+# F Okhotsk Sea - Vladivostok
+# The Russian move with the TSR succeeds and ends in Vladivostok. The Japanese fleet will stay in the Okhotsk Sea.
+
+# 7.B.16. TEST CASE, A MOVE WITH THE TSR CAN PREVENT DISLODGEMENT
+
+# Although a move with the TSR is not an attack and can not dislodge a unit, it can prevent that it is dislodged by another unit.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Manchuria Supports A Moscow - Vladivostok
+
+# Japan:
+# F Okhotsk Sea - Vladivostok
+# F Sea of Japan Supports F Okhotsk Sea - Vladivostok
+
+# China:
+# A Vladivostok Hold
+# The Russian move with the TSR prevents that the Japanese fleet in the Okhotsk Sea will dislodge the Chinese fleet in Vladivostok.
+
+# 7.B.17. TEST CASE, CIRCULAR MOVEMENT WITH THE TSR IS POSSIBLE
+
+# Well, look if the adjudicator can handle circular movement.
+
+# Russia:
+# A Omsk Hold
+# A Krasnoyarsk - TSR - Moscow
+
+# China:
+# A Perm - Orenburg
+# A Orenburg - Akmolinsk
+# A Akmolinsk - Krasnoyarsk
+
+# Turkey:
+# A Odessa - Moscow
+# The Russian army in Krasnoyarsk will bounce in Moscow on the Turkish army. But the Russian army and the Chinese armies can still make a circular movement. All Chinese armies will move and the Russian army will end in Perm.
+
+# 7.B.18. TEST CASE, TSR CAN NOT PASS AN UNOWNED SUPPLY CENTER
+
+# It must recapture supply center first (Avalon Hill errata).
+
+# Omsk is not owned by Russia.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# Move will end in Omsk.
+
+# 7.B.19. TEST CASE, TSR MAY LEAVE AN UNOWNED SUPPLY CENTER
+
+# An army may leave an unowned supply center on TSR. This will probably only occur when Russia cooperates with another power and does not want to take over the supply center.
+
+# Omsk is not owned by Russia.
+
+# Russia:
+# A Omsk - TSR - Vladivostok
+# Move will end in Vladivostok.
+
+# 7.B.20. TEST CASE, TSR CAN PASS AN UNOWNED SUPPLY CENTER WHEN ANOTHER ARMY IS HOLDING
+
+# If an army is holding an unowned supply center, the TSR does not need to stop there.
+
+# Omsk is not owned by Russia.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Omsk Hold
+# Army in Moscow will end in Vladivostok.
+# 7.B.21. TEST CASE, TSR CAN NOT PASS AN UNOWNED SUPPLY CENTER WHEN ARMY IS MOVING AWAY
+
+# When another army holding the unowned supply center moves away, the TSR should recapture it.
+
+# Omsk is not owned by Russia.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Omsk - Akmolinsk
+# Army in Moscow must stop in Omsk to capture the supply center.
+
+# 7.B.22. TEST CASE, TSR CAN PASS AN UNOWNED SUPPLY CENTER WHEN ARMY MOVING AWAY BOUNCES
+
+# Well when the army bounces, the TSR can just go on.
+
+# Omsk is not owned by Russia.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Omsk - Akmolinsk
+
+# Britain:
+# A Tashkent - Akmolinsk
+# The army from Moscow does not need to stop in Omsk, since the army there bounces. The army from Moscow ends in Vladivostok.
+
+# 7.B.23. TEST CASE, SIMPLE TWO ARMY TSR PARADOX
+
+# A Russian army can rail through another army. But when that army moves, it bounces.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Omsk - Krasnoyarsk
+# The part from Perm to Omsk and Omsk to Krasnoyarsk is part of the paradoxical situation. The part from Omsk to Krasnoyarsk fails, but is still able to bounce the army that comes from Omsk. This means that the TSR move ends in Perm and the army Omsk stays in Omsk
+
+# 7.B.24. TEST CASE, COMPLEX TSR PARADOX
+
+# This paradox involves more armies.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+
+# Britain:
+# A Perm - Orenburg
+# A Orenburg - Akmolinsk
+# A Akmolinsk - Krasnoyarsk
+
+# China:
+# A Manchuria - Irkutsk
+# Whether the army Moscow can reach Krasnoyarsk is part of the paradoxical situation. According to the paradox rule, the part from Omsk to Krasnoyarsk fails, but is still able to bounce the British army in Akmolinsk. When this is decided, we continue with the normal rules. The move from Perm to Orenburg will fail and that means that the army in Moscow can not pass Perm and will stay in Moscow. The Chinese move from Manchuria to Irkutsk is not part of the paradoxical situation. This move will succeed.
+
+# 7.B.25. TEST CASE, TSR SUPPLY CENTER PARADOX
+
+# The need to recapture the supply center can cause a paradox.
+
+# Omsk is not owned by Russia.
+
+# Russia:
+# A Moscow - TSR - Vladivostok
+# A Omsk - Akmolinsk
+# A Krasnoyarsk Hold
+
+# China:
+# A Akmolinsk - Semipalatinsk
+# A Semipalatinsk - Urumchi
+# A Urumchi - Mongolia
+# A Mongolia - Irkutsk
+# There are two resolutions to this set of orders in which all rules are obeyed. You can say that all Chinese armies move and the Russian army in Omsk moves. In this way the TSR has to stop in Omsk to recapture the Supply center. The other resolution is that the army in Omsk does not move. In that case, the TSR can bounce in Irkutsk with the Chinese army. And this will indeed cause the army in Omsk not to move. The paradox rule says the last part of the paradoxical situation (the part from Krasnoyrask to Irkutsk) fails but is still able to bounce another army. So, all Chinese armies will not move and the Russian army in Moscow will end in Perm.
+
+# 7.B.26. TEST CASE, BALANCED HEAD TO HEAD BATTLE WITH TSR
+
+# Look if the adjudicator can handle this.
+
+# Russia:
+# A Moscow - TSR - Omsk
+# A Perm - Moscow
+# Both armies fail to move.
+
+# 7.B.27. TEST CASE, UNBALANCED HEAD TO HEAD BATTLE WITH TSR
+
+# Now the army is attacked in is departure place.
+
+# Russia:
+# A Moscow - TSR - Omsk
+
+# Britain:
+# A Perm - Moscow
+# A Orenburg - Perm
+# A Baku Supports A Perm - Moscow
+
+# The British army in Perm will dislodge the army in Moscow and the army in Orenburg will advance to Perm (not bounced).
+
+# 7.B.28. TEST CASE, SUPPORTED HEAD TO HEAD BATTLE WITH TSR
+
+# A supported head to head battle must also be handled correctly.
+
+# Britain:
+# A Perm - Moscow
+# A Orenburg Supports A Perm - Moscow
+
+# Russia:
+# A Moscow - TSR - Perm
+# A Omsk Supports A Moscow - Perm
+# No unit will move.
+
+# 7.B.29. TEST CASE, TSR CAN'T DISLODGE IN HEAD TO HEAD BATTLE
+
+# Although the TSR can win a head to head battle, it can not dislodge a unit.
+
+# Britain:
+# A Perm - Moscow
+
+# Russia:
+# A Moscow - TSR - Perm
+# A Omsk Supports A Moscow - Perm
+# No unit will move.
+
+# 7.B.30. TEST CASE, DEPARTURE PLACE DISLODGE WITH SUPPORT FROM ARMY ON TSR
+
+# Now, the support is coming from the army that is on the TSR.
+
+# Russia:
+# A Moscow - TSR - Omsk
+
+# Britain:
+# A Perm Supports A Orenburg - Moscow
+# A Orenburg - Moscow
+# The British army in Orenburg will dislodge the army in Moscow.
+
+# 7.B.31. TEST CASE, TSR PARADOX WITH DEPARTING TRAIN
+
+# Whether the train leaves or not, can cause a paradox.
+
+# Russia:
+# A Moscow - TSR - Krasnoyarsk
+# A Perm Hold
+# A Orenburg - Moscow
+# A Omsk - Orenburg
+
+# Britain:
+# A Akmolinsk - Omsk
+# If the army in Omsk stays, the TSR can slip trough and end in Krasnoyarsk. But in that case the other Russian armies can advance end the army in Omsk does not stay. If the army in Omsk leaves, the TSR bounces on the British army. The army has to stay in Moscow. This makes it impossible that the army in Omsk leaves. According to the paradox rule, the last part of the paradoxical situation (that is the part from Perm to Omsk) fails but is still able to bounce another army. So, the army in Moscow stays in Moscow and the British army in Akmolinks stays in Akmolinsk.
+
+# 7.B.32. TEST CASE, NO RETREAT WITH TSR
+
+# It is not allowed to use a convoy during retreat. Assume the same for the Trans-Siberian Railroad.
+
+# Russia:
+# A Moscow Hold
+
+# Turkey:
+# A Odessa - Moscow
+# A Baku Supports A Odessa - Moscow
+# Army in Moscow is dislodged. When Russia retreats as follows:
+
+# A Moscow TSR Vladivostok
+# This is illegal and the army in Moscow is disbanded.
+
+# 7.B.33. TEST CASE, ONLY ONE UNIT CAN USE THE TSR
+
+# A short circuit occurs when two units are starting to use the Trans-Siberian Railroad.
+
+# Russia:
+# A Moscow - TSR - Omsk
+# A Vladivostok - TSR - Krasnoyarsk
+# Both moves fail (they can receive support to hold).
+
+# 7.B.34. TEST CASE, ONLY RUSSIA MAY USE THE TSR
+
+# Other countries are not able to control this advanced technology.
+
+# Turkey:
+# A Moscow - TSR - Perm
+# The move fails (without the attempt to use the Trans-Siberian Railroad, the move would succeed).
+
+# 7.C. TEST CASES, SUEZ CANAL OPTIONAL RULE
+
+# 7.C.1. TEST CASE, FLEET CAN NOT TAKE SUEZ CANAL IF NOT PERMITTED
+
+# The fleet that wants to use the Suez Canal must have permission.
+
+# Turkey:
+# A Egypt Hold
+
+# Russia:
+# F Mediterranean Sea - Red Sea
+# The move of the Russian fleet fails, because it has no permission.
+
+# 7.C.2. TEST CASE, FLEET CAN TAKE SUEZ CANAL IF PERMITTED
+
+# The fleet that wants to use the Suez Canal must have permission.
+
+# Turkey:
+# A Egypt Hold
+# SC F Mediterranean Sea - Red Sea
+
+# Russia:
+# F Mediterranean Sea - Red Sea
+# The move of the Russian fleet succeeds.
+
+# 7.C.3. TEST CASE, IMPLICIT PERMISSION FOR OWN UNIT
+
+# It is not necessary to give permission to own unit.
+
+# Turkey:
+# A Egypt Hold
+# F Mediterranean Sea - Red Sea
+# The move of the Turkish fleet succeeds.
+
+# 7.C.4. TEST CASE, EXPLICIT PERMISSION DENIES IMPLICIT PERMISSION
+
+# Only one unit gets permission. That means that when a unit is given permission, own units do not get permission.
+
+# Russia:
+# F Egypt Supports F Mediterranean Sea - Red Sea
+# F Mediterranean Sea - Red Sea
+# SC F Red Sea - Mediterranean Sea
+
+# Britain:
+# F Mecca Supports F Aden - Red Sea
+# F Aden - Red Sea
+
+# Turkey:
+# F Red Sea - Mediterranean Sea
+# Since Russia gives explicit permission to the Turkish fleet, the permission to its own fleet in the Mediterranean Sea is denied. That means that the move Mediterranean Sea to the Red Sea fails and that there is no beleaguered garrison in the Red Sea. The British fleet in Aden will dislodge the Turkish fleet in the Red Sea.
+
+# 7.C.5. TEST CASE, ONLY ONE IMPLICIT PERMISSION
+
+# When both own units try to move through the canal, none of them gets permission.
+
+# Russia:
+# F Egypt Supports F Mediterranean Sea - Red Sea
+# F Mediterranean Sea - Red Sea
+# F Red Sea - Mediterranean Sea
+
+# Britain:
+# F Mecca Supports F Aden - Red Sea
+# F Aden - Red Sea
+# Both the move from Mediterranean Sea to Red Sea as the move from Red Sea to Mediterranean fail, because they don't get permission (only one unit can get permission). That means that the fleet in the Red Sea is not part of a beleaguered garrison and will be dislodged by the British fleet in Aden.
+
+# 7.C.6. TEST CASE, NO HEAD TO HEAD BATTLE THROUGH CANAL
+
+# Since only one unit can get permission a head to head battle through the canal is not possible.
+
+# Turkey:
+# F Egypt Supports F Mediterranean Sea - Red Sea
+# F Mediterranean Sea - Red Sea
+
+# Britain:
+# F Red Sea - Mediterranean Sea
+# F Syria Supports F Red Sea - Mediterranean Sea
+# The British fleet in the Red Sea does not have permission and that move fails. So, there is no head to head battle. The attack from the Turkish fleet in the Mediterranean Sea on the Red Sea is just two to one and will dislodge the English fleet in the Red Sea.
+
+# 7.C.7. TEST CASE, CIRCULAR MOVEMENT THROUGH THE CANAL
+
+# Circular movement with a move through the canal is possible.
+
+# Turkey:
+# F Egypt Hold
+# F Mediterranean Sea - Red Sea
+# F Red Sea - Mecca
+# A Mecca - Syria
+# F Syria - Mediterranean Sea
+# All units except the unit in Egypt will advance.
+
+# 7.C.8. TEST CASE, SUEZ CANAL MOVE OUT PARADOX
+
+# If the Egyptian fleet just follows the fleet using the Suez Canal, you have a paradox.
+
+# Turkey:
+# F Mediterranean Sea - Red Sea
+# F Egypt - Mediterranean Sea
+# If the fleet in the Mediterranean Sea moves, the fleet in Egypt can also moves, which makes the move of the Mediterranean Sea impossible. In case of a paradox the Suez Canal move fails. So, both units hold. Note that in this case it is insufficient to use a paradox rule that says that only the support is not cut (comparable to the 1971 rule with possible disrupted convoys, see issue 4.A.2).
+
+# 7.C.9. TEST CASE, SCHWARZ'S FIRST SUEZ CANAL PARADOX
+
+# A more complex move out paradox.
+
+# Britain:
+# A Egypt - Mecca
+# A Syria Supports A Egypt - Mecca
+# F Mediterranean Sea - Red Sea
+
+# Turkey:
+# A Arabia - Mecca
+# F Red Sea Supports A Arabia - Mecca
+# If the support in the Red Sea is cut, the army in Egypt can move out. But when it moves out, the support in the Red Sea can not be cut. When the paradox rule is used, the fleet in Mediterranean Sea fails to move and does not have any effect on the Red Sea. That means that there is still a bounce in Mecca and the army in Egypt and Arabia will fail to move.
+
+# 7.C.10. TEST CASE, SCHWARZ'S SECOND SUEZ CANAL PARADOX
+
+# In this paradox, the army in Egypt does not move out, but can be dislodged.
+
+# Russia:
+# F Mediterranean Sea - Red Sea
+# F Egypt Hold
+
+# Britain:
+# F Red Sea Supports A Sudan - Egypt
+# A Sudan - Egypt
+
+# Turkey:
+# A Syria - Egypt
+# A Mecca Supports A Syria - Egypt
+# When the support of the Red Sea is cut, the fleet in Egypt will be dislodged. But, when the fleet in Egypt is dislodged, the support can not be cut. According to the paradox rule, the fleet in the Mediterranean Sea will not advance and not cut support. This means that the fleet in Egypt is not dislodged.
+
+# 7.C.11. TEST CASE, SCHWARZ'S THIRD SUEZ CANAL PARADOX
+
+# This case is similar to the previous case, but now the fleet in the Red Sea is completely dislodged if the fleet in the Mediterranean is allowed through the canal.
+
+# Russia:
+# F Mediterranean Sea - Red Sea
+# F Egypt Hold
+# F Eritrea Supports F Mediterranean Sea - Red Sea
+
+# Britain:
+# F Red Sea Supports A Sudan - Egypt
+# A Sudan - Egypt
+
+# Turkey:
+# A Syria - Egypt
+# A Mecca Supports A Syria - Egypt
+# This should be handled similar to the previous test case. The fleet in the Mediterranean Sea will fail to move and not cut support. That means that the fleet in the Red Sea will not be dislodged and can give support. The fleet in Egypt will not be dislodged. Note that in this case it is insufficient to use a paradox rule that says that only the support is not cut (comparable to the 1971 rule with possible disrupted convoys, see issue 4.A.2). If only the support would not be cut, then the fleet in the Red Sea is dislodged, but still gives valid support. This violates the dislodge rule.
+
+# 7.C.12. TEST CASE, SCHWARZ'S PARADOX ADAPTED TO TWO RESOLUTIONS
+
+# The Schwarz paradoxes have all in common that there are no consistent resolutions. This adapted version has two consistent resolutions.
+
+# Russia:
+# F Mediterranean Sea - Red Sea
+# F Egypt Hold
+
+# Britain:
+# F Red Sea Supports A Sudan - Egypt
+# A Sudan - Egypt
+# One consistent resolution is that the fleet in the Mediterranean Sea cuts the support of the Red Sea. In this way the fleet in Egypt is not dislodged. The other resolution is that the fleet in the Mediterranean Sea does not cut support of the Red Sea, which means that the fleet in Egypt is dislodged by the army in Sudan. Since it is dislodged, the fleet in the Mediterranean indeed fails to cut the support in the Red Sea.
+
+# When the paradox rule is used, then the fleet in the Mediterranean Sea fails to move and does not cut the support in the Red Sea. That means that the fleet in Egypt is dislodged by the army in Sudan.
+
+# 7.C.13. TEST CASE, SUEZ CANAL DISRUPTED CONVOY PARADOX WITH TWO RESOLUTIONS
+
+# The Suez canal paradoxes can be combined with convoys that are possibly disrupted.
+
+# Turkey:
+# A Egypt Hold
+# F Mecca Supports F Mediterranean Sea - Red Sea
+# F Mediterranean Sea - Red Sea
+
+# Britain:
+# F Red Sea Convoys A Aden - Egypt
+# A Sudan Supports A Aden - Egypt
+# A Aden - Egypt
+# There are two resolutions that are consistent with the rules. The Egyptian army is dislodged or the fleet in the Red Sea is dislodged.
+
+# If the 1982 rule is used (see issue 4.A.2) for resolving disrupted convoy paradoxes, then there is nothing for this rule to apply. In that case only the paradox rule for the Suez Canal has to be applied. That means that the fleet in the Mediterranean Sea will fail to move. The army in Aden convoys to Egypt, dislodging the army in Egypt.
+
+# When the Szykman rule is used (which I prefer) or the 'All Hold' rule, then the convoy from Aden to Egypt is part of the paradoxical situation. Therefore, this convoy fails. So, both the fleet in the Mediterranean Sea as well as the army in Aden do not move.
+
+# 7.C.14. TEST CASE, SUEZ CANAL DISRUPTED CONVOY PARADOX WITH NO RESOLUTION
+
+# Comparable with the previous test case, but now there is no resolution that is consistent with the rules.
+
+# Turkey:
+# A Egypt - Sudan
+# F Mecca Supports F Mediterranean Sea - Red Sea
+# F Mediterranean Sea - Red Sea
+
+# Britain:
+# F Red Sea Convoys A Aden - Sudan
+# A Aden - Sudan
+# If the British fleet in the Red Sea is dislodged by the Turkish fleet in the Mediterranean Sea, then the Turkish army in Egypt will not bounce on the convoying army in Aden. But in that case, the fleet in the Mediterranean Sea may not move. But if it not moves, the army in Egypt will bounce on the army in Aden.
+
+# If the 1982 rule is used (see issue 4.A.2) for resolving disrupted convoy paradoxes, then there is nothing for this rule to apply. In that case only the paradox rule for the Suez Canal has to be applied. That means that the fleet in the Mediterranean Sea will fail to move and not cut support. The army in Aden bounces on the army from Egypt in Sudan. So, both armies will fail to move.
+
+# If the Szykman rule is used (which I prefer), then the convoy will also fail to move and have no effect on Sudan. That means that the army in Egypt can move to Sudan.
+
+# If the 'All Hold' rule is used, then the army in Egypt is part of the paradox and should also hold. That means that none of the units will move.
+
+# 7.D. TEST CASES, TRANS-SIBERIAN RAILROAD AND SUEZ CANAL COMBINED ISSUES
+
+# 7.D.1. TEST CASES, CIRCULAR MOVEMENT WITH TSR, CONVOY AND SUEZ CANAL
+
+# A gigantic circular movement is possible.
+
+# Britain:
+# F Gulf of Aden Convoys A Eritrea - Vladivostok
+# F Red Sea - Eritrea
+# F West Indian Ocean Convoys A Eritrea - Vladivostok
+# A Eritrea - Vladivostok
+
+# China:
+# F Sea of Japan Convoys A Eritrea - Vladivostok
+
+# France:
+# F South China Sea Convoys A Eritrea - Vladivostok
+# F Sunda Sea Convoys A Eritrea - Vladivostok
+
+# Japan:
+# F East China Sea Convoys A Eritrea - Vladivostok
+# F Yellow Sea Convoys A Eritrea - Vladivostok
+
+# Turkey:
+# A Armenia - Angora
+# A Baku - Armenia
+# A Egypt Hold
+# F Mediterranean Sea - Red Sea
+# A Moscow - Baku
+# F Angora - Mediterranean Sea
+
+# Holland:
+# F Java Sea Convoys A Eritrea - Vladivostok
+# F Southeast Indian Ocean Convoys A Eritrea - Vladivostok
+
+# Russia:
+# A Irkutsk Hold
+# A Vladivostok - TSR - Moscow
+# A Perm Hold
+# A Omsk Hold
+# A Krasnoyarsk Hold
+# All units ordered to move, will do so.
+
+# 7.D.2. TEST CASE, KRUIJSWIJK'S PARADOX
+
+# A paradox that contains the Suez Canal, the Trans-Siberian Railroad and a possible disrupted convoy, is possible.
+
+# Britain:
+# F Gulf of Aden Convoys A Sudan - Manchuria
+# F Red Sea Convoys A Sudan - Manchuria
+# A Sudan - Manchuria
+# F West Indian Ocean Convoys A Sudan - Manchuria
+
+# China:
+# A Manchuria Supports A Mongolia - Irkutsk
+# A Mongolia - Irkutsk
+
+# France:
+# F South China Sea Convoys A Sudan - Manchuria
+# F Sunda Sea Convoys A Sudan - Manchuria
+
+# Japan:
+# F East China Sea Convoys A Sudan - Manchuria
+# F Yellow Sea Convoys A Sudan - Manchuria
+
+# Turkey:
+# A Armenia - Baku
+# A Baku - Moscow
+# A Egypt - Syria
+# F Mecca Supports F Mediterranean Sea - Red Sea
+# F Mediterranean Sea - Red Sea
+# A Syria - Armenia
+
+# Holland:
+# F Java Sea Convoys A Sudan - Manchuria
+# F Southeast Indian Ocean Convoys A Sudan - Manchuria
+
+# Russia:
+# A Irkutsk Hold
+# A Vladivostok - Moscow
+# If the British fleet is dislodged in the Red Sea, the Convoy from Sudan to Mancharia will fail. That means that the support of Mancharia is not cut and the Russian army in Irkutsk is dislodged. This prevents that the army in Vladivostok will not go to Moscow for a bounce on the Turkish army in Baku. So, all Turkish armies will move, including the army in Egypt. But if the army in Egypt moves, the fleet in the Mediterranean Sea is not allowed to go to the Red Sea to dislodge the British fleet. etc. etc.
+
+# Well, judge this whatever you like.
+
+# 8. ICE VARIANT
+
+# Some variants have 'ice' sectors. You can not move to an ice sector in fall or in winter (retreat). Nor can you give support in fall.
+
+# This is used in variant Loeb9.
+
+# 8.A. TEST CASE, MOVE TO AN ICE SECTOR
+
+# Move in winter to ice sector should fail.
+
+# Loeb9 in fall:
+
+# Norway:
+# F Norwegian Sea - Arctic Ocean
+# Move fails.
+
+# 8.B. TEST CASE, MOVE FROM AN ICE SECTOR
+
+# Move in winter from ice sector should fail.
+
+# Loeb9 in fall:
+
+# Norway:
+# F Arctic Ocean - Norwegian Sea
+# Move fails.
+
+# 8.C. TEST CASE, SUPPORT FROM AN ICE SECTOR
+
+# Support from an ice sector should fail in fall.
+
+# Loeb9 in fall:
+
+# Norway:
+# F Arctic Ocean Supports F Norwegian Sea - North Atlantic Ocean
+# F Norwegian Sea - North Atlantic Ocean
+
+# England:
+# F North Atlantic Ocean Hold
+# English fleet in North Atlantic Ocean should not be dislodged.
+
+# 8.D. TEST CASE, NO RETREAT TO AN ICE SECTOR
+
+# Retreat to an ice sector in autumn should fail.
+
+# Loeb9 in fall:
+
+# England:
+# F North Atlantic Ocean - Norwegian Sea
+# F North Sea Supports F North Atlantic Ocean - Norwegian Sea
+
+# Norway:
+# F Norwegian Sea Hold
+# Fleet of Norway is dislodged. It can not retreat to the Artic Sea.
+
+# 8.E. TEST CASE, NO CONVOY IN ICE SECTOR
+
+# A convoy in fall in an ice sector should fail.
+
+# Loeb9 in fall:
+
+# England:
+# A Liverpool - Siberia
+# F North Atlantic Ocean Convoys A Liverpool - Siberia
+# F Arctic Ocean Convoys A Liverpool - Siberia
+# Convoy fails and army stays in Liverpool.
+
+# 9. CONVOYING COASTAL AREA VARIANT
+
+# Some variants have coastal sectors in which convoying is allowed (for instance in Ancient Mediterranean). This introduces some difficulty in the rules, since convoys can now be disrupted by normal army movement or convoyed armies.
+
+# To execute these test cases, the standard map should be adapted. The areas Denmark and Sweden are made convoyable coasts. Berlin and Denmark are connected for fleets. That means that fleets can move from Berlin to Denmark and vice versa, but armies can not.
+
+# 9.A. TEST CASE, DISLODGING OWN CONVOY
+
+# You can argue that your own convoy can be dislodged.
+
+# Denmark changed in convoyable coastal area and Berlin and Denmark are connected for fleets:
+
+# England:
+# F Denmark Convoys A Berlin - Denmark
+
+# Germany:
+# A Kiel Supports A Berlin - Denmark
+
+# Russia:
+# A Berlin - Denmark
+# Dislodging your own convoy is not possible. The English convoy order is illegal because it convoys to itself.
+
+# 9.B. TEST CASE, CONVOYING TO OWN AREA WITH A LOOP
+
+# You may argue that in the previous test case there was no legal convoyable path. Since Berlin - Denmark - Denmark contains a move from Denmark to Denmark. This can be changed by an additional convoying fleet
+
+# Denmark changed in convoyable coastal area and Berlin and Denmark are connected for fleets:
+
+# England:
+# F Denmark Convoys A Berlin - Denmark
+
+# Germany:
+# A Kiel Supports A Berlin - Denmark
+
+# Russia:
+# A Berlin - Denmark
+# F Skagerrak Convoys A Berlin - Denmark
+# Now there is a convoy path Berlin - Denmark - Skagerrak - Denmark. Still, dislodging your own convoy is not possible. The English convoy order is illegal because it convoys to itself.
+
+# 9.C. TEST CASE, CONVOY DISRUPTED BY ARMY
+
+# Convoys can be disrupted by armies.
+
+# Sweden changed in convoyable coastal area:
+
+# Germany:
+# A Denmark - St Petersburg
+# F Sweden Convoys A Denmark - St Petersburg
+# F Gulf of Bothnia Convoys A Denmark - St Petersburg
+
+# Russia:
+# A Finland - Sweden
+# A Norway Supports A Finland - Sweden
+# The German convoy is disrupted by the Russian army in Finland. Therefore, the German move to St Petersburg fails.
+
+# 9.D. TEST CASE, CONVOY DISRUPTED BY CONVOYING ARMY
+
+# Convoys can be disrupted by convoys.
+
+# Sweden changed in convoyable coastal area:
+
+# Germany:
+# A Denmark - Finland
+# F Sweden Convoys A Denmark - Finland
+
+# Russia:
+# F Gulf of Bothnia Convoys A St Petersburg - Sweden
+# F Norway Supports A St Petersburg - Sweden
+# A St Petersburg - Sweden
+# The German convoy is disrupted by the Russian convoy. Therefore, the German move to Finland fails.
+
+# 9.E. TEST CASE, TWO DISRUPTED CONVOYS PARADOX
+
+# With the possible that a convoy can disrupt another convoy directly (without support cut) a new paradox is possible. Two convoys that disrupt each other directly.
+
+# Denmark and Sweden changed in convoyable coastal areas:
+
+# Germany:
+# A Kiel - Sweden
+# F Denmark Convoys A Kiel - Sweden
+# F Skagerrak Supports A Kiel - Sweden
+
+# Russia:
+# F Sweden Convoys A Finland - Denmark
+# A Finland - Denmark
+# F Baltic Sea Supports A Finland - Denmark
+# The German convoy disrupts the Russian convoy and the Russian convoy disrupts the German convoy.
+
+# This can not be resolved with the 1971, the 1982 or 2000 rulebook (see also issue 4.A.2).
+
+# When the Szykman (which I prefer) rule is used, both convoys fail. The 'All Hold' rule has the same result since there are no other units that move.
+
+# 9.F. TEST CASE, DISRUPTED CONVOY SUPPORT PARADOX WITH NO RESOLUTION
+
+# It is also possible that a convoy disrupts another convoys, while that convoy cuts the support targeting the convoy from which it is attacked.
+
+# Sweden changed in convoyable coastal area:
+
+# Germany:
+# A Denmark - Finland
+# F Sweden Convoys A Denmark - Finland
+# A Norway Supports A Denmark - Finland
+
+# Russia:
+# F Gulf of Bothnia Convoys A St Petersburg - Sweden
+# A St Petersburg - Sweden
+# F Baltic Sea Supports A St Petersburg - Sweden
+
+# England:
+# F Finland Supports F Livonia - Gulf of Bothnia
+# F Livonia - Gulf of Bothnia
+# The result depends on which paradox rule is used (see issue 4.A.2). If the 1971 or 2000 rulebook is used, then there is no resolution.
+
+# If the 1982 rulebook is used, the support of Finland is not cut. That means that the fleet in the Gulf of Bothnia is dislodged by the English fleet in Livonia. Since, this disrupts the Russian convoy starting in St Petersburg, the Russian army in St Petersburg will stay and the German fleet in Sweden is not dislodged.
+
+# If the Szykman rule is used (which I prefer), both convoys are part of the paradoxical situation. So, the German army in Denmark and the Russian army in St Petersburg will not move. They have both no effect on the place where they supposed to move to. That means that the English support in Sweden is not cut and the Russian fleet in the Gulf of Bothnia is dislodged by the English fleet in Livonia.
+
+# If the 'All Hold' rule is used, then the tree moves fail. So, the German army in Denmark, the Russian army in St Petersburg and the English fleet in Livonia all stay. So, the Russian fleet in the Gulf of Bothnia is not dislodged.
+
+# 9.G. TEST CASE, DISRUPTED CONVOY SUPPORT PARADOX WITH TWO RESOLUTIONS
+
+# The previous test case did not have a resolution that follows all normal rules. It can be changed in such way that there are two possible resolutions.
+
+# Sweden changed in convoyable coastal area:
+
+# Germany:
+# A Denmark - Finland
+# F Sweden Convoys A Denmark - Finland
+# A Norway Supports A Denmark - Finland
+# F Baltic Sea Supports F Livonia - Gulf of Bothnia
+# F Livonia - Gulf of Bothnia
+
+# Russia:
+# F Gulf of Bothnia Convoys A St Petersburg - Sweden
+# A St Petersburg - Sweden
+# F Finland Supports F Gulf of Bothnia
+# F Skagerrak Supports A St Petersburg - Sweden
+# There are two resolutions. The German army in Denmark advances to Finland, cutting the support of the Russian fleet. The Russian fleet in the Gulf of Bothnia is dislodged, such that the fleet in Sweden will not be dislodged. The other resolution is that the army in St Petersburg dislodges the fleet in Sweden. This prevents that the support of the fleet in Finland is cut, such that the fleet in the Gulf of Bothnia will not be dislodged.
+
+# The results depends on which paradox rule is used (see issue 4.A.2). When the 1971 or 2000 rulebook is used, there is no resolution.
+
+# When the 1982 rulebook is used, then the support of the Russian fleet in Finland is not cut. That means that the Russian fleet in the Gulf of Bothnia is not dislodged and that the convoy from St Petersburg to Sweden is successful, dislodging the German fleet there. The German fleet in Livonia will stay.
+
+# When the Szykman rule is used (which I prefer), both convoys fail and the support of the Russian fleet in Finland is not cut. This means that the fleet in the Gulf of Bothnia is not dislodged. So, no unit will move.
+
+# When the 'All Hold' rule is used, then the army in Denmark, the army in St Petersburg and the fleet in Livonia will not move. So, no unit will move and no unit will be dislodged.
+
+# 10. DIFFICULT PASSABLE BORDER VARIANT
+
+# In some variants armies can move between two sectors but with one support less. If no support is given, then the move can not cut support. Support can not be given over this corridor.
+
+# 10.A. TEST CASE, SUPPORT CAN NOT BE CUT OVER DIFFICULT PASSABLE BORDER
+
+# If an army is passing a difficult passable border without any support, then it can not cut support.
+
+# In Loeb9:
+
+# Italy:
+# A Naples - Sicily
+# F Tyrrhenian Sea Hold
+
+# Turkey:
+# F Sicily Supports F Ionian Sea - Tyrrhenian Sea
+# F Ionian Sea - Tyrrhenian Sea
+# The support is not cut and the fleet in Tyrrhenian Sea is dislodged.
+
+# 10.B. TEST CASE, MOVE OVER DIFFICULT PASSABLE BORDER WITH SUPPORTS CUT SUPPORTS
+
+# If the move receives support, then it can cut support.
+
+# In Loeb9:
+
+# Italy:
+# A Naples - Sicily
+# F Ionian Sea Supports A Naples - Sicily
+# F Tunis Supports F Rome - Tyrrhenian Sea
+# F Rome - Tyrrhenian Sea
+
+# Spain:
+# F Sicily Supports F Tyrrhenian Sea
+# F Tyrrhenian Sea Hold
+# The support of Sicily is cut and the fleet in Tyrrhenian Sea is dislodged.
+
+# 10.C. TEST CASE, MOVE OVER DIFFICULT PASSABLE BORDER CAN NOT BOUNCE WITH NORMAL MOVE
+
+# A move over difficult passable border can not prevent another unit to move into the sector.
+
+# In Loeb9:
+
+# Spain:
+# A Cordoba - North Africa
+
+# Italy:
+# A Tunis - North Africa
+# Spanish move of army fails. The move of Italy succeeds.
+
+# 10.D. TEST CASE, TWO MOVES OVER DIFFICULT PASSABLE BORDER CAN BOUNCE
+
+# When two armies over a difficult passable border enter the same sector, they bounce. Test whether the adjudicator can handle this bounce with zero power.
+
+# In Loeb9 with a changed map that has a difficult passable border between North Africa and Tunis:
+
+# Spain:
+# A Cordoba - North Africa
+
+# Italy:
+# A Tunis - North Africa
+# Both armies bounce.
+
+# 10.E. TEST CASE, SUPPORT CAN NOT BE GIVEN OVER DIFFICULT PASSABLE BORDER
+
+# If the border is difficult to pass, it is impossible to give support over this border.
+
+# In Loeb9:
+
+# Italy:
+# A Naples Supports F Tyrrhenian Sea - Sicily
+# F Tyrrhenian Sea - Sicily
+
+# Turkey:
+# F Sicily Hold
+# The army in Sicily should not be dislodged.
+
+# 10.F. TEST CASE, SUPPORT PARADOX
+
+# There is no known real paradox with the difficult passable borders. However, in this test case the question is which of the supports is cut.
+
+# In Loeb9 with edited map that has a difficult passable border between Sicily and Tunis:
+
+# Italy:
+# A Sicily - Tunis
+# A North Africa Supports A Sicily - Tunis
+
+# Spain:
+# A Cordoba - North Africa
+# A Tunis Supports A Cordoba - North Africa
+# Program should not come in an infinite loop. All armies should hold. Preferable, the adjudicator reports a symmetric cut of supports. That means both supports are cut or both supports are not cut.
+
+# 10.G. TEST CASE, ALMOST PARADOX
+
+# The previous test case extended with an additional fleet that prevents the paradox.
+
+# In Loeb9 with edited map that has a difficult passable border between Sicily and Tunis:
+
+# Italy:
+# A Sicily - Tunis
+# A North Africa Supports A Sicily - Tunis
+
+# Spain:
+# A Cordoba - North Africa
+# A Tunis Supports A Cordoba - North Africa
+# F Western Mediterranean Supports A Cordoba - North Africa
+# Army in Cordoba should advance.
+
+# Now test the same with an Italian fleet to see if there is no arbitrary decision in the adjudicator:
+
+# In Loeb9 with edited map that has a difficult passable border between Sicily and Tunis:
+
+# Italy:
+# A Sicily - Tunis
+# A North Africa Supports A Sicily - Tunis
+# F Western Mediterranean Supports A Sicily - Tunis
+
+# Spain:
+# A Cordoba - North Africa
+# A Tunis Supports A Cordoba - North Africa
+# Now the army in Sicily should advance.
+
+# 10.H. TEST CASE, CIRCULAR MOVEMENT WITH DIFFICULT PASSABLE BORDER
+
+# Adjudicator may choke on a circular movement when one of the borders is difficult passable.
+
+# In Loeb9:
+
+# Italy:
+# F Sicily - Tyrrhenian Sea
+# F Tyrrhenian Sea - Naples
+# A Naples - Sicily
+# All units move.
+
+# 10.I. TEST CASE, CIRCULAR MOVEMENT WITH BOUNCE
+
+# Adjudicator may choke on a circular movement when one of the borders is difficult passable and the unit using this border is bounced.
+
+# In Loeb9:
+
+# Italy:
+# F Sicily - Tyrrhenian Sea
+# F Tyrrhenian Sea - Naples
+# A Naples - Sicily
+
+# Turkey:
+# F Ionian Sea - Sicily
+# No unit moves.
+
+# 10.J. TEST CASE, CIRCULAR MOVEMENT CAN NOT BE DISRUPTED BY ARMY USING DIFFICULT PASSABLE BORDER
+
+# When a circular movement is attacked by an army over a difficult passable order, the circular movement will just go on.
+
+# In Loeb9:
+
+# Italy:
+# A North Africa - Tunis
+# F Western Mediterranean - North Africa
+# F Tunis - Western Mediterranean
+
+# Spain:
+# A Cordoba - North Africa
+# The Spanish army in Cordoba will not move and not disrupt the moves of Italy. The Italian moves all succeed.
+
+# 10.K. TEST CASE, DIFFICULT PASSABLE BORDER DURING RETREAT
+
+# A difficult passable border is also difficult passable during retreat. That means that when two armies retreat to the same sector and one of the armies is using a difficult passable border, the army using the normal border has a successful retreat.
+
+# In Loeb9:
+
+# Italy:
+# F Tyrrhenian Sea Hold
+# A Naples Hold
+
+# Turkey:
+# A Apulia - Naples
+# F Ionian Sea Supports A Apulia - Naples
+
+# Spain:
+# F Western Mediterranean Supports F Gulf of Lyon - Tyrrhenian Sea
+# F Gulf of Lyon - Tyrrhenian Sea
+# Both Italian units are dislodged. If they both retreat to Sicily, then the fleet in the Tyrrhenian Sea should advance and the army in Naples is disbanded.
+
+# 10.L. TEST CASE, DIFFICULT PASSABLE BORDER IS PROPERTY OF BORDER NOT OF SECTOR
+
+# Adjudicators may mark the two adjacent sectors difficult passable, but this is an incorrect situation.
+
+# In Loeb9 with edited map that has a difficult passable border between Sicily and Tunis:
+
+# Italy:
+# F Western Mediterranean Supports A Tunis - North Africa
+# A Tunis - North Africa
+
+# Spain:
+# A North Africa Hold
+# Army in Tunis should advance.
+
+# 10.M. TEST CASE, USING CONVOY INSTEAD OF DIFFICULT PASSABLE BORDER
+
+# A difficult passable border can be by-passed by a convoy.
+
+# In Loeb9:
+
+# Italy:
+# A Naples - Sicily via Convoy
+# F Tyrrhenian Sea Convoys A Naples - Sicily
+# F Ionian Sea Supports A Naples - Sicily
+
+# Turkey:
+# A Sicily Hold
+# Since the move from Naples to Sicily is via convoy, the Turkish army in Sicily is dislodged.
+
+# 10.N. TEST CASE, USING CONVOY INSTEAD OF DIFFICULT PASSABLE BORDER CUTS SUPPORT
+
+# If a difficult passable border is by-passed by a convoy, then it cuts support.
+
+# In Loeb9:
+
+# Italy:
+# A Naples - Sicily
+# F Tyrrhenian Sea Convoys A Naples - Sicily
+# F Ionian Sea Hold
+
+# Turkey:
+# F Sicily Supports F Aegean Sea - Ionian Sea
+# F Aegean Sea - Ionian Sea
+# Since the army in Naples is using a convoy, the support of the fleet in Sicily is cut. That means that the Italian fleet in the Ionian See is not dislodged.
+
+# 10.O. TEST CASE, SUPPORT ON ATTACK ON OWN ARMY OVER DIFFICULT PASSABLE BORDER DOES NOT CUT SUPPORT
+
+# A movement over a difficult passable border does not cut support. But what if the movement was supported by an army of the same power of the army that is attacked? I think it should still not cut support.
+
+# In Loeb9:
+
+# Italy:
+# A Naples - Sicily
+# F Ionian Sea Hold
+
+# Spain:
+# F Tyrrhenian Sea Supports A Naples - Sicily
+# F Sicily Supports F Ionian Sea
+
+# Turkey:
+# F Greece Supports F Aegean Sea - Ionian Sea
+# F Aegean Sea - Ionian Sea
+# The support of Sicilia is not cut, that means that the fleet in the Ionian Sea is not dislodged.
+
+# 11. BUILD IN ANY SUPPLY CENTER VARIANT
+
+# Some variants allow building of units in any supply center that is owned. The Chaos variant uses this rule.
+
+# 11.A. TEST CASE, CIVIL DISORDER
+
+# Since there is no notion of 'home supply center', the 'civil disorder' rules changes. It is expected that any owned supply center is treated as home supply center.
+
+# Chaos:
+
+# Berlin owns Naples as only supply center.
+
+# Berlin power has a unit in Prussia and Apulia.
+
+# In Civil disorder the unit in Prussia should be removed.
+
+# 12. 1898 VARIANT
+
+# In the 1898 variant all powers start with one unit. The home supply centers have to be captured first, before it is allowed to build there. The problem with this variant is that the home supply centers, the starting units and the starting owning supply centers are not the same anymore. It should be possible to distinguish those in the data files that describe the variant.
+
+# 12.A. TEST CASE, HOME SUPPLY CENTER HAS TO BE CAPTURED FIRST
+
+# The home supply centers should not be marked owned when the game is started.
+
+# 1898:
+
+# Germany did not yet captured Munich, but may build one.
+
+# Germany:
+# Build A Munich
+# Build fails.
+
+# 12.B. TEST CASE, BUILD IN NON-STARTING POSITION ALLOWED
+
+# Builds are restricted to the home supply centers and not to the starting positions of the units.
+
+# 1898:
+
+# Germany owns Munich, Munich is empty and Germany may build one.
+
+# Germany:
+# Build A Munich
+# Build succeeds.
+
+# 12.C. TEST CASE, COUNTRIES CAN STILL ONLY BUILD IN HOME SUPPLY CENTERS
+
+# The notion of home supply center still exists. That means that builds in other supply centers are not allowed.
+
+# 1898:
+
+# Germany owns Warsaw, Warsaw is empty and Germany may build one.
+
+# Germany:
+# Build A Warsaw
+# Build fails.
+
+# 12.D. TEST CASE, CIVIL DISORDER STILL BASED ON HOME SUPPLY CENTERS
+
+# When a unit has to be removed according to the civil disorder rules, then the distance should still be calculated from the home supply centers and not to the owned or starting supply centers.
+
+# 1898:
+
+# Russia owns St Petersburg and has a fleet in the Black Sea and the Norwegian Sea.
+
+# Russia has to remove one unit but does not order anything.
+
+# The fleet in the Norwegian Sea is removed.
