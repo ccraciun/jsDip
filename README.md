@@ -2,7 +2,9 @@
 NOTE: This is currently in development, so the readme is developer-focused.
 
 # Prerequisites
+- Node `apt-get install nodejs`
 - Gulp (JS task runner) `npm install -g gulp`
+- Bower `npm intall -g bower`
 - Ruby's SASS (for css compilation) `gem install sass`
 
 # Setup

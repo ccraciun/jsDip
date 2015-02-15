@@ -447,17 +447,17 @@
             "#F": ["Rumania", "Sevastopol", "Armenia", "Ankara", "Constantinople", "Bulgaria__ec"]
         },
         "Bohemia": {
-            "#A": ["Munich", "Silesia", "Galicia", "Vienna", "Tyrolia"],
+            "#A": ["Munich", "Silesia", "Galicia", "Vienna", "Tyrolia"]
         },
         "Brest": {
             "#A": ["Picardy", "Gascony", "Paris"],
             "#F": ["Mid-Atlantic_Ocean", "English_Channel", "Picardy", "Gascony"]
         },
         "Budapest": {
-            "#A": ["Vienna", "Galicia", "Rumania", "Serbia", "Trieste"],
+            "#A": ["Vienna", "Galicia", "Rumania", "Serbia", "Trieste"]
         },
         "Bulgaria": {
-            "#A": ["Greece", "Constantinople", "Serbia", "Rumania"],
+            "#A": ["Greece", "Constantinople", "Serbia", "Rumania"]
         },
         "Bulgaria__ec": {
             "#F": ["Constantinople", "Black_Sea", "Rumania"]
@@ -466,7 +466,7 @@
             "#F": ["Greece", "Aegean_Sea", "Constantinople"]
         },
         "Burgundy": {
-            "#A": ["Marseilles", "Gascony", "Paris", "Picardy", "Belgium", "Ruhr", "Munich"],
+            "#A": ["Marseilles", "Gascony", "Paris", "Picardy", "Belgium", "Ruhr", "Munich"]
         },
         "Clyde": {
             "#A": ["Edinburgh", "Liverpool"],
@@ -495,7 +495,7 @@
             "#F": ["Sweden", "St_Petersburg__sc", "Gulf_of_Bothnia"]
         },
         "Galicia": {
-            "#A": ["Warsaw", "Ukraine", "Rumania", "Budapest", "Vienna", "Bohemia", "Silesia"],
+            "#A": ["Warsaw", "Ukraine", "Rumania", "Budapest", "Vienna", "Bohemia", "Silesia"]
         },
         "Gascony": {
             "#A": ["Paris", "Burgundy", "Marseilles", "Spain", "Brest"],
@@ -548,10 +548,10 @@
             "#F": ["North_Atlantic_Ocean", "Irish_Sea", "English_Channel", "Brest", "Gascony", "Spain__nc", "Portugal", "Spain__sc", "North_Africa", "Western_Mediterranean"]
         },
         "Moscow": {
-            "#A": ["St_Petersburg", "Livonia", "Warsaw", "Ukraine", "Sevastopol"],
+            "#A": ["St_Petersburg", "Livonia", "Warsaw", "Ukraine", "Sevastopol"]
         },
         "Munich": {
-            "#A": ["Burgundy", "Ruhr", "Kiel", "Berlin", "Silesia", "Bohemia", "Tyrolia"],
+            "#A": ["Burgundy", "Ruhr", "Kiel", "Berlin", "Silesia", "Bohemia", "Tyrolia"]
         },
         "North_Africa": {
             "#A": ["Tunis"],
@@ -575,7 +575,7 @@
             "#F": ["North_Atlantic_Ocean", "Barents_Sea", "Norway", "North_Sea", "Clyde", "Edinburgh"]
         },
         "Paris": {
-            "#A": ["Brest", "Picardy", "Burgundy", "Gascony"],
+            "#A": ["Brest", "Picardy", "Burgundy", "Gascony"]
         },
         "Picardy": {
             "#A": ["Burgundy", "Paris", "Brest", "Belgium"],
@@ -598,30 +598,30 @@
             "#F": ["Tuscany", "Tyrrhenian_Sea", "Naples"]
         },
         "Ruhr": {
-            "#A": ["Burgundy", "Belgium", "Holland", "Kiel", "Munich"],
+            "#A": ["Burgundy", "Belgium", "Holland", "Kiel", "Munich"]
         },
         "Rumania": {
             "#A": ["Serbia", "Budapest", "Galicia", "Ukraine", "Sevastopol", "Bulgaria"],
             "#F": ["Sevastopol", "Black_Sea", "Bulgaria__ec"]
         },
         "Serbia": {
-            "#A": ["Trieste", "Budapest", "Rumania", "Bulgaria", "Greece", "Albania"],
+            "#A": ["Trieste", "Budapest", "Rumania", "Bulgaria", "Greece", "Albania"]
         },
         "Sevastopol": {
             "#A": ["Ukraine", "Moscow", "Rumania", "Armenia"],
             "#F": ["Rumania", "Black_Sea", "Armenia"]
         },
         "Silesia": {
-            "#A": ["Munich", "Berlin", "Prussia", "Warsaw", "Galicia", "Bohemia"],
+            "#A": ["Munich", "Berlin", "Prussia", "Warsaw", "Galicia", "Bohemia"]
         },
         "Skagerrak": {
             "#F": ["North_Sea", "Norway", "Denmark", "Sweden"]
         },
         "Smyrna": {
-            "#A": ["Syria", "Constantinople", "Ankara", "Armenia"],
+            "#A": ["Syria", "Constantinople", "Ankara", "Armenia"]
         },
         "Spain": {
-            "#A": ["Gascony", "Portugal", "Marseilles"],
+            "#A": ["Gascony", "Portugal", "Marseilles"]
         },
         "Spain__nc": {
             "#F": ["Gascony", "Mid-Atlantic_Ocean", "Portugal"]
@@ -630,7 +630,7 @@
             "#F": ["Portugal", "Western_Mediterranean", "Gulf_of_Lyon", "Marseilles", "Mid-Atlantic_Ocean"]
         },
         "St_Petersburg": {
-            "#A": ["Finland", "Livonia", "Norway", "Moscow"],
+            "#A": ["Finland", "Livonia", "Norway", "Moscow"]
         },
         "St_Petersburg__nc": {
             "#F": ["Barents_Sea", "Norway"]
@@ -659,27 +659,27 @@
             "#F": ["Rome", "Tyrrhenian_Sea", "Gulf_of_Lyon", "Piedmont"]
         },
         "Tyrolia": {
-            "#A": ["Munich", "Bohemia", "Vienna", "Trieste", "Venice", "Piedmont"],
+            "#A": ["Munich", "Bohemia", "Vienna", "Trieste", "Venice", "Piedmont"]
         },
         "Tyrrhenian_Sea": {
             "#F": ["Western_Mediterranean", "Gulf_of_Lyon", "Tuscany", "Rome", "Naples", "Ionian_Sea", "Tunis"]
         },
         "Ukraine": {
-            "#A": ["Rumania", "Galicia", "Warsaw", "Moscow", "Sevastopol"],
+            "#A": ["Rumania", "Galicia", "Warsaw", "Moscow", "Sevastopol"]
         },
         "Venice": {
             "#A": ["Tyrolia", "Tuscany", "Rome", "Piedmont", "Apulia", "Trieste"],
             "#F": ["Apulia", "Adriatic_Sea", "Trieste"]
         },
         "Vienna": {
-            "#A": ["Tyrolia", "Bohemia", "Galicia", "Budapest", "Trieste"],
+            "#A": ["Tyrolia", "Bohemia", "Galicia", "Budapest", "Trieste"]
         },
         "Wales": {
             "#A": ["Liverpool", "London", "Yorkshire"],
             "#F": ["Liverpool", "Irish_Sea", "English_Channel", "London"]
         },
         "Warsaw": {
-            "#A": ["Silesia", "Prussia", "Livonia", "Moscow", "Ukraine", "Galicia"],
+            "#A": ["Silesia", "Prussia", "Livonia", "Moscow", "Ukraine", "Galicia"]
         },
         "Western_Mediterranean": {
             "#F": ["Mid-Atlantic_Ocean", "Spain__sc", "Gulf_of_Lyon", "Tyrrhenian_Sea", "Tunis", "North_Africa"]
