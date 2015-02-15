@@ -3,6 +3,7 @@
 // generated on 2014-12-21 using generator-gulp-webapp 0.2.0
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
+var mocha = require('gulp-mocha');
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
@@ -130,4 +131,9 @@ gulp.task('build', ['jshint', 'html', 'images', 'fonts', 'extras'], function () 
 
 gulp.task('default', ['clean'], function () {
   gulp.start('build');
+});
+
+gulp.task('test', function () {
+    return gulp.src('test/spec/*.js', {read: false})
+        .pipe(mocha({reporter: 'nyan'}));
 });

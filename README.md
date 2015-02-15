@@ -15,6 +15,7 @@ Run `gulp serve` for a browser preview. It autoupdates as you make
 changes to html/js/css!
 
 # Testing
+- For backend/unit tests, `gulp test` should run mocha
 - (setup): run `bower install` in the `/test` folder
 - Run `gulp serve`
 - Load `http://localhost:9000/test/`
