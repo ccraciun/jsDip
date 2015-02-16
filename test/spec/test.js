@@ -1,4 +1,5 @@
 /* global describe, it */
+var should = require('should');
 
 (function () {
     'use strict';
