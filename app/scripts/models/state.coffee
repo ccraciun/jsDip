@@ -1,9 +1,9 @@
-
 class State
   constructor: (info) ->
     # Extending a class as constructor?
     for key, value of info
       @[key] = value
+    @date = new Date info.date
 
   counts: =>
     if !@_counts?

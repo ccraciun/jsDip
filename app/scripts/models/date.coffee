@@ -1,8 +1,9 @@
 class Date
-  constructor: (year, season, phase, defs) ->
+  constructor: (date, defs) ->
     @year = date.year
     @season = date.season
     @phase = date.phase
+    @base = date.base
     @defs = defs
 
   get_next = (arr, it) ->
