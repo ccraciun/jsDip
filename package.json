@@ -21,6 +21,7 @@
     "gulp-livereload": "^2.0.0",
     "gulp-load-plugins": "^0.7.1",
     "gulp-minify-html": "^0.1.6",
+    "gulp-mocha": "~2.0.0",
     "gulp-plumber": "^0.6.3",
     "gulp-ruby-sass": "^0.7.1",
     "gulp-size": "^1.1.0",
@@ -33,8 +34,9 @@
     "opn": "^1.0.0",
     "serve-index": "^1.1.4",
     "serve-static": "^1.4.0",
+    "should": "~5.0.0",
     "wiredep": "^2.0.0",
-    "gulp-mocha": "~2.0.0",
-    "should": "~5.0.0"
+    "js-yaml": "~3.2.6",
+    "underscore": "~1.7.0"
   }
 }

@@ -9,6 +9,9 @@ var should = require('should');
             it('should describe truth as true.', function () {
               true.should.be.true;
             });
+            it('should describe false as not true.', function () {
+              false.should.not.be.true;
+            });
         });
     });
 })();
