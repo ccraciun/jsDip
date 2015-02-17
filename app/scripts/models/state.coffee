@@ -5,7 +5,7 @@ root.State = class State
     # TODO(cosmic): Be explicit about what we're taking from info object!
     for key, value of info
       @[key] = value
-    @date = new Date info.date
+    @date = new GameDate info.date
 
   counts: =>
     if !@_counts?

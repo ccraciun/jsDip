@@ -1,11 +1,10 @@
 root = exports ? this
 
-root.Date = class Date
+root.GameDate = class GameDate
   constructor: (date, defs) ->
     @year = date.year
     @season = date.season
     @phase = date.phase
-    @base = date.base
     @defs = defs ? date.defs
 
   get_next = (arr, it) ->
@@ -15,6 +14,7 @@ root.Date = class Date
     return arr[idx+1]
 
   next: (defs) =>
+    # TODO(cosmic): Tests?
     defs = defs ? @defs
     year = @year
     season = @season
@@ -31,8 +31,8 @@ root.Date = class Date
       # Finally get phase, since we changed seasons.
       phase = defs.phases[season][0]
 
-    return new Date {'year': year, \
-                     'season': season, \
-                     'phase': phase, \
-                     'base': @base, \
-                     'defs': defs}
+    return new GameDate {
+      'year': year,
+      'season': season,
+      'phase': phase,
+      'defs': defs }
