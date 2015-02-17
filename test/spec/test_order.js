@@ -8,14 +8,14 @@ var order = require('../../app/scripts/models/order');
 (function () {
     'use strict';
 
-    var parsesOrder = function (ordr) {
-        console.log('parsing ' + ordr);
+    var parsesOrder = function (ordr, answer) {
         var parsed = order.Order.fromString(ordr);
-        console.log('parsed ' + JSON.stringify(parsed, null, 4));
-        return parsed;
+        if (answer !== undefined) {
+            parsed.should.eql(answer);
+        }
     };
 
-    describe('Parses order', function () {
+    describe('Parses all orders', function () {
         var doc = yaml.safeLoad(fs.readFileSync('test/data/rule_tests.yml', 'utf8'));
         for (var testnum in doc) {
             for (var nation in doc[testnum].orders) {
@@ -24,6 +24,16 @@ var order = require('../../app/scripts/models/order');
                     it('should parse order ' + ordr, fun);
                 }
             }
+        }
+    });
+
+    describe('Correctly parses orders', function() {
+        var doc = yaml.safeLoad(fs.readFileSync('test/data/orders_parsed.yml', 'utf8'));
+        for (var testnum in doc) {
+            var ordr = doc[testnum].order;
+            var parsed = doc[testnum].parsed;
+            var fun = _.partial(parsesOrder, ordr, parsed);
+            it('should correctly parse order ' + ordr, fun);
         }
     });
 })();
