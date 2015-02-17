@@ -1,4 +1,6 @@
-class Date
+root = exports ? this
+
+root.Date = class Date
   constructor: (date, defs) ->
     @year = date.year
     @season = date.season
@@ -18,18 +20,19 @@ class Date
     season = @season
     phase = get_next defs.phases[@season] @phase
 
-    if phase
-      # Season and year stay the same.
-      return new Date year, season, phase, defs
+    unless phase?
+      # New season.
+      season = get_next defs.seasons, @season
+      if !season
+        # New year.
+        season = defs.seasons[0]
+        year = year + 1
 
-    # New season.
-    season = get_next defs.seasons, @season
-    if !season
-      # New year.
-      season = defs.seasons[0]
-      year = year + 1
+      # Finally get phase, since we changed seasons.
+      phase = defs.phases[season][0]
 
-    # Finally get phase, since we changed seasons.
-    phase = defs.phases[season][0]
-
-    return new Date year, season, phase, defs
+    return new Date {'year': year, \
+                     'season': season, \
+                     'phase': phase, \
+                     'base': @base, \
+                     'defs': defs}
