@@ -4,7 +4,7 @@ class Date
     @season = date.season
     @phase = date.phase
     @base = date.base
-    @defs = defs
+    @defs = defs ? date.defs
 
   get_next = (arr, it) ->
     idx = arr.indexOf it
@@ -13,7 +13,7 @@ class Date
     return arr[idx+1]
 
   next: (defs) =>
-    defs = defs || @defs
+    defs = defs ? @defs
     year = @year
     season = @season
     phase = get_next defs.phases[@season] @phase
