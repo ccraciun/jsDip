@@ -1,4 +1,9 @@
 {
+    "startDate": {
+      "year": 1900,
+      "season": "Spring",
+      "phase": "Movement"
+    },
     "belligerents": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
     ],

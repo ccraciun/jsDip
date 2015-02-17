@@ -1,9 +1,8 @@
 ﻿{
     "date": {
-        "year": 0,
+        "year": 1900,
         "season": "Winter",
         "phase": "Adjustment"
-        "base": 1900
     },
     "active": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"

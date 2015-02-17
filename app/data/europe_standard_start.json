@@ -1,9 +1,8 @@
 ﻿{
     "date": {
-        "year": 0,
+        "year": 1901,
         "season": "Spring",
         "phase": "Movement",
-        "base": 1901,
     },
     "active": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
