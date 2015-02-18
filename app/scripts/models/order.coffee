@@ -36,11 +36,11 @@ root.Order = class Order
         unit = unt.Unit.fromString parts[0].trim()
         child = Order.fromString parts[1].trim()
         if child.unit == unit
-          fail = "Invalid support: unit can't support itself. " + (fail ? '')
+          fail = (fail ? []).push "Invalid support: unit can't support itself."
         if child.action in ['build', 'convoy']
-          fail = "Invalid support: #{child.str} not a supportable order. " + (fail ? '')
+          fail = (fail ? []).push "Invalid support: #{child.str} not a supportable order."
         if child.fail
-          fail = child.fail + (fail ? '')
+          fail = (fail ? []).push child.fail
 
       # (unit) convoy (unit) - (destination)
       else if (parts = str.split(/convoys?/i)).length > 1
@@ -50,9 +50,9 @@ root.Order = class Order
         src = child.unit.loc
         dst = child.dst
         if child.action != 'move'
-          fail = "Invalid convoy: could not parse #{child.str} as move. "
+          fail = (fail ? []).push "Invalid convoy: could not parse #{child.str} as move."
         if child.fail
-          fail = child.fail + (fail ? '')
+          fail = (fail ? []).push child.fail
 
       # (unit) - (destination)
       else if (parts = str.split '-').length > 1
@@ -66,7 +66,7 @@ root.Order = class Order
         action = 'hold'
         unit = unt.Unit.fromString str
     catch error
-      fail = (fail ? '') + error
+      fail = (fail ? []).push error
 
     return new Order {'unit': unit, \
                       'action': action, \

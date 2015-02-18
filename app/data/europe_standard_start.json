@@ -4,7 +4,7 @@
         "season": "Spring",
         "phase": "Movement",
     },
-    "active": [
+    "activePowers": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
     ],
     "SCs": {

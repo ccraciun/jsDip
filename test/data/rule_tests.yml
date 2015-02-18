@@ -14,12 +14,16 @@
 # Order should fail.
 ###################################
 - orders:
-    england:
+    England:
       F North Sea - Picardy: false
-  preconditions:
-    england:
-      fleets:
-      - North Sea
+  state:
+    date:
+      phase: Movement
+    activePowers: [England]
+    forces:
+      England:
+        fleets:
+        - North Sea
 
 ###################################
 # 6.A.2. TEST CASE, MOVE ARMY TO SEA
@@ -31,12 +35,16 @@
 # Order should fail.
 ###################################
 - orders:
-    england:
+    England:
       A Liverpool - Irish Sea: false
-  preconditions:
-    england:
-      armies:
-      - Liverpool
+  state:
+    date:
+      phase: Movement
+    activePowers: [England]
+    forces:
+      England:
+        armies:
+        - Liverpool
 
 ###################################
 # 6.A.3. TEST CASE, MOVE FLEET TO LAND
@@ -48,12 +56,16 @@
 # Order should fail.
 ###################################
 - orders:
-    germany:
+    Germany:
       F Kiel - Munich: false
-  preconditions:
-    germany:
-      fleets:
-      - Kiel
+  state:
+    date:
+      phase: Movement
+    activePowers: [Germany]
+    forces:
+      Germany:
+        fleets:
+        - Kiel
 
 ###################################
 # 6.A.4. TEST CASE, MOVE TO OWN SECTOR
@@ -65,12 +77,16 @@
 # Program should not crash.
 ###################################
 - orders:
-    germany:
+    Germany:
       F Kiel - Kiel: false
-  preconditions:
-    germany:
-      fleets:
-      - Kiel
+  state:
+    date:
+      phase: Movement
+    activePowers: [Germany]
+    forces:
+      Germany:
+        fleets:
+        - Kiel
 
 ###################################
 # 6.A.5. TEST CASE, MOVE TO OWN SECTOR WITH CONVOY
@@ -88,25 +104,29 @@
 # The move of the army in Yorkshire is illegal. This makes the support of Liverpool also illegal and without the support, the Germans have a stronger force. The army in London dislodges the army in Yorkshire.
 ###################################
 - orders:
-    england:
+    England:
       A Liverpool Supports A Yorkshire - Yorkshire: false
       A Yorkshire - Yorkshire: false
       F North Sea Convoys A Yorkshire - Yorkshire: false
-    germany:
+    Germany:
       A Wales Supports F London - Yorkshire: true
       F London - Yorkshire: true
-  preconditions:
-    england:
-      armies:
-      - Yorkshire
-      - Liverpool
-      fleets:
-      - North Sea
-    germany:
-      armies:
-      - Wales
-      fleets:
-      - London
+  state:
+    date:
+      phase: Movement
+    activePowers: [Germany, England]
+    forces:
+      England:
+        armies:
+        - Yorkshire
+        - Liverpool
+        fleets:
+        - North Sea
+      Germany:
+        armies:
+        - Wales
+        fleets:
+        - London
 
 ###################################
 # 6.A.6. TEST CASE, ORDERING A UNIT OF ANOTHER COUNTRY
@@ -120,12 +140,16 @@
 # Order should fail.
 ###################################
 - orders:
-    germany:
+    Germany:
       F London - North Sea: false
-  preconditions:
-    england:
-      fleets:
-      - London
+  state:
+    date:
+      phase: Movement
+    activePowers: [Germany, England]
+    forces:
+      England:
+        fleets:
+        - London
 
 ###################################
 # 6.A.7. TEST CASE, ONLY ARMIES CAN BE CONVOYED
@@ -138,14 +162,18 @@
 # Move from London to Belgium should fail.
 ###################################
 - orders:
-    england:
+    England:
       F London - Belgium: false
       F North Sea Convoys A London - Belgium: false
-  preconditions:
-    england:
-      fleets:
-      - London
-      - North Sea
+  state:
+    date:
+      phase: Movement
+    activePowers: [Germany, England]
+    forces:
+      England:
+        fleets:
+        - London
+        - North Sea
 
 ###################################
 # 6.A.8. TEST CASE, SUPPORT TO HOLD YOURSELF IS NOT POSSIBLE
@@ -161,19 +189,23 @@
 # The army in Trieste should be dislodged.
 ###################################
 - orders:
-    austria:
+    Austria:
       F Trieste Supports F Trieste: false
-    italy:
+    Italy:
       A Tyrolia Supports A Venice - Trieste: true
       A Venice - Trieste: true
-  preconditions:
-    austria:
-      fleets:
-      - Trieste
-    italy:
-      armies:
-      - Venice
-      - Tyrolia
+  state:
+    date:
+      phase: Movement
+    activePowers: [Austria, Italy]
+    forces:
+      Austria:
+        fleets:
+        - Trieste
+      Italy:
+        armies:
+        - Venice
+        - Tyrolia
 
 ###################################
 # 6.A.9. TEST CASE, FLEETS MUST FOLLOW COAST IF NOT ON SEA
@@ -185,12 +217,16 @@
 # Move fails. An army can go from Rome to Venice, but a fleet can not.
 ###################################
 - orders:
-    italy:
+    Italy:
       F Rome - Venice: false
-  preconditions:
-    italy:
-      fleets:
-      - Rome
+  state:
+    date:
+      phase: Movement
+    activePowers: [Austria, Italy]
+    forces:
+      Italy:
+        fleets:
+        - Rome
 
 ###################################
 # 6.A.10. TEST CASE, SUPPORT ON UNREACHABLE DESTINATION NOT POSSIBLE
@@ -206,20 +242,24 @@
 # The support of Rome is illegal, because Venice can not be reached from Rome by a fleet. Venice is not dislodged.
 ###################################
 - orders:
-    austria:
+    Austria:
       A Venice Hold: true
-    italy:
+    Italy:
       A Apulia - Venice: false
       F Rome Supports A Apulia - Venice: false
-  preconditions:
-    austria:
-      armies:
-      - Venice
-    italy:
-      armies:
-      - Apulia
-      fleets:
-      - Rome
+  state:
+    date:
+      phase: Movement
+    activePowers: [Austria, Italy]
+    forces:
+      Austria:
+        armies:
+        - Venice
+      Italy:
+        armies:
+        - Apulia
+        fleets:
+        - Rome
 
 ###################################
 # 6.A.11. TEST CASE, SIMPLE BOUNCE
@@ -234,17 +274,21 @@
 # The two units bounce.
 ###################################
 - orders:
-    austria:
+    Austria:
       A Vienna - Tyrolia: false
-    italy:
+    Italy:
       A Venice - Tyrolia: false
-  preconditions:
-    austria:
-      armies:
-      - Vienna
-    italy:
-      armies:
-      - Venice
+  state:
+    date:
+      phase: Movement
+    activePowers: [Austria, Italy]
+    forces:
+      Austria:
+        armies:
+        - Vienna
+      Italy:
+        armies:
+        - Venice
 
 ###################################
 # 6.A.12. TEST CASE, BOUNCE OF THREE UNITS
@@ -262,22 +306,26 @@
 # The three units bounce.
 ###################################
 - orders:
-    austria:
+    Austria:
       A Vienna - Tyrolia: false
-    germany:
+    Germany:
       A Munich - Tyrolia: false
-    italy:
+    Italy:
       A Venice - Tyrolia: false
-  preconditions:
-    austria:
-      armies:
-      - Vienna
-    germany:
-      armies:
-      - Munich
-    italy:
-      armies:
-      - Venice
+  state:
+    date:
+      phase: Movement
+    activePowers: [Austria, Italy, Germany]
+    forces:
+      Austria:
+        armies:
+        - Vienna
+      Germany:
+        armies:
+        - Munich
+      Italy:
+        armies:
+        - Venice
 
 ###################################
 # 6.B. TEST CASES, COASTAL ISSUES

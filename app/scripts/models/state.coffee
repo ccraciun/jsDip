@@ -1,11 +1,13 @@
 root = exports ? this
 
+gd = require './date'
+
 root.State = class State
   constructor: (info) ->
     # TODO(cosmic): Be explicit about what we're taking from info object!
-    for key, value of info
-      @[key] = value
-    @date = new GameDate info.date
+    for key, val of info when val? and key in ['activePowers', 'SCs', 'forces']
+      @[key] = val
+    @date = new gd.GameDate info.date
 
   counts: =>
     if !@_counts?
