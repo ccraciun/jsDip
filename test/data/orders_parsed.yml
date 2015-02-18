@@ -1,0 +1,80 @@
+# Test cases transcribed from http://web.inter.nl.net/users/L.B.Kruijswijk
+
+- order:
+    "F North Sea - Picardy"
+  parsed:
+    unit:
+      type: F
+      loc: North Sea
+    action: move
+    dst: Picardy
+    str: F North Sea - Picardy
+
+- order:
+    "A Liverpool - Irish Sea"
+  parsed:
+    unit:
+      type: A
+      loc: Liverpool
+    action: move
+    dst: Irish Sea
+    str: A Liverpool - Irish Sea
+
+- order:
+    "F Kiel - Kiel"
+  parsed:
+    unit:
+      type: F
+      loc: Kiel
+    action: move
+    dst: Kiel
+    str: F Kiel - Kiel
+
+- order:
+    "F North Sea Convoys A Yorkshire - London"
+  parsed:
+    unit:
+      type: F
+      loc: North Sea
+    action: convoy
+    child:
+      unit:
+        type: A
+        loc: Yorkshire
+      action: move
+      dst: London
+      str: A Yorkshire - London
+    src: Yorkshire
+    dst: London
+    str: F North Sea Convoys A Yorkshire - London
+
+- order:
+    "A Wales Supports F London - Yorkshire"
+  parsed:
+    unit:
+      type: A
+      loc: Wales
+    action: support
+    child:
+      unit:
+        type: F
+        loc: London
+      action: move
+      dst: Yorkshire
+      str: F London - Yorkshire
+    str: A Wales Supports F London - Yorkshire
+
+- order:
+    "A Tyrolia Supports A Venice"
+  parsed:
+    unit:
+      type: A
+      loc: Tyrolia
+    action: support
+    str: A Tyrolia Supports A Venice
+    child:
+      unit:
+        type: A
+        loc: Venice
+      action: hold
+      str: A Venice

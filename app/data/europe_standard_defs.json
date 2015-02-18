@@ -1,13 +1,17 @@
 {
+    "startDate": {
+      "year": 1900,
+      "season": "Spring",
+      "phase": "Movement"
+    },
     "belligerents": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
     ],
     "seasons": ["Spring", "Autumn", "Winter"],
-    "adjustment_seasons": ["Winter"],
     "phases": {
         "Spring": ["Movement", "Retreat"],
         "Autumn": ["Movement", "Retreat"],
-        "Winter": ["Winter"]
+        "Winter": ["Adjustment"]
     },
     "headquarters": {
         "Austria": ["Budapest", "Trieste", "Vienna"],
