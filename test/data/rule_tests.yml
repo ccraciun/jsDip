@@ -24,6 +24,7 @@
       England:
         fleets:
         - North Sea
+  testCaseID: 6.A.1
 
 ###################################
 # 6.A.2. TEST CASE, MOVE ARMY TO SEA
@@ -45,6 +46,7 @@
       England:
         armies:
         - Liverpool
+  testCaseID: 6.A.2
 
 ###################################
 # 6.A.3. TEST CASE, MOVE FLEET TO LAND
@@ -66,6 +68,7 @@
       Germany:
         fleets:
         - Kiel
+  testCaseID: 6.A.3
 
 ###################################
 # 6.A.4. TEST CASE, MOVE TO OWN SECTOR
@@ -87,6 +90,7 @@
       Germany:
         fleets:
         - Kiel
+  testCaseID: 6.A.4
 
 ###################################
 # 6.A.5. TEST CASE, MOVE TO OWN SECTOR WITH CONVOY
@@ -127,6 +131,7 @@
         - Wales
         fleets:
         - London
+  testCaseID: 6.A.5
 
 ###################################
 # 6.A.6. TEST CASE, ORDERING A UNIT OF ANOTHER COUNTRY
@@ -150,6 +155,7 @@
       England:
         fleets:
         - London
+  testCaseID: 6.A.6
 
 ###################################
 # 6.A.7. TEST CASE, ONLY ARMIES CAN BE CONVOYED
@@ -174,6 +180,7 @@
         fleets:
         - London
         - North Sea
+  testCaseID: 6.A.7
 
 ###################################
 # 6.A.8. TEST CASE, SUPPORT TO HOLD YOURSELF IS NOT POSSIBLE
@@ -206,6 +213,7 @@
         armies:
         - Venice
         - Tyrolia
+  testCaseID: 6.A.8
 
 ###################################
 # 6.A.9. TEST CASE, FLEETS MUST FOLLOW COAST IF NOT ON SEA
@@ -227,6 +235,7 @@
       Italy:
         fleets:
         - Rome
+  testCaseID: 6.A.9
 
 ###################################
 # 6.A.10. TEST CASE, SUPPORT ON UNREACHABLE DESTINATION NOT POSSIBLE
@@ -260,6 +269,7 @@
         - Apulia
         fleets:
         - Rome
+  testCaseID: 6.A.10
 
 ###################################
 # 6.A.11. TEST CASE, SIMPLE BOUNCE
@@ -289,6 +299,7 @@
       Italy:
         armies:
         - Venice
+  testCaseID: 6.A.11
 
 ###################################
 # 6.A.12. TEST CASE, BOUNCE OF THREE UNITS
@@ -326,6 +337,7 @@
       Italy:
         armies:
         - Venice
+  testCaseID: 6.A.12
 
 ###################################
 # 6.B. TEST CASES, COASTAL ISSUES

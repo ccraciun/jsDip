@@ -11,11 +11,11 @@ var dfs = require('../../app/scripts/models/defs');
 (function () {
     'use strict';
 
-    describe('Judges orders', function () {
+    describe('Judge', function () {
         var doc = yaml.safeLoad(fs.readFileSync('test/data/rule_tests.yml', 'utf8'));
         var defs = new dfs.Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
         for (var testnum in doc) {
-            describe('Testcase ' + testnum, function () {
+            describe('for Testcase ' + doc[testnum].testCaseID, function () {
                 var state = new st.State(doc[testnum].state);
 
                 var orders = {};
@@ -26,22 +26,20 @@ var dfs = require('../../app/scripts/models/defs');
                         order.test_expectedSuccess = doc[testnum].orders[nation][orderStr];
                         orders[nation].push(order);
                     }
-                    console.log(doc[testnum].orders[nation]);
-                    console.log(orders[nation]);
                 }
 
                 var judge = new jg.Judge(defs);
 
                 orders = judge.judge(state, orders);
 
-                it('should judge correctly', function () {
-                    for (var nation in orders) {
-                        for (var orderNum in orders[nation]) {
-                            order = orders[nation][orderNum];
-                            order.test_expectedSuccess.should.equal(!order.fail);
-                        }
+                for (var nation in orders) {
+                    for (var orderNum in orders[nation]) {
+                        order = orders[nation][orderNum];
+                        it('should judge order ' + order.str + ' correctly', function () {
+                            (!!order.fail).should.equal(!order.test_expectedSuccess);
+                        });
                     }
-                });
+                }
             });
         }
     });
