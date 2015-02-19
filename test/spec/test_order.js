@@ -8,9 +8,13 @@ var order = require('../../app/scripts/models/order');
 (function () {
     'use strict';
 
-    var parsesOrder = function (ordr, answer) {
+    var parsesOrder = function (ordr, ans) {
         var parsed = order.Order.fromString(ordr);
-        if (answer !== undefined) {
+        if (ans !== undefined) {
+            if (ans.child) {
+                ans.child = new order.Order(ans.child);
+            }
+            var answer = new order.Order(ans);
             parsed.should.eql(answer);
         }
     };

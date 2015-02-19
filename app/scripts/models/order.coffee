@@ -3,6 +3,7 @@ root = exports ? this
 unt = require './unit'
 
 # TODO(cosmic): Locations need a class for normalization.
+
 root.Order = class Order
   constructor: (order) ->
     # @unit Actor unit.
@@ -12,9 +13,23 @@ root.Order = class Order
     # @str String from which order was created (if any).
     # @child Support and convoy actions need to be lent to a specific order.
     #        In particular, we can support holds, but convoy child orders should be moves.
-    # @fail Does order fail, and if so, why?
-    for key, val of order when val? and key in ['unit', 'action', 'src', 'dst', 'str', 'child', 'fail']
+    # @result Result of order in ('fail', 'success', undefined).
+    # @whyFail If order fails, list of reasons why.
+    for key, val of order when val? and key in ['unit', 'action', 'src', 'dst', 'str', 'child', 'status', 'whyFail']
       @[key] = val
+
+  failOrder: (why) =>
+    @result = 'fails'
+    @whyFail = (@whyFail ? []).push why
+
+  finishOrder: =>
+    @result = if @whyFail then 'fail' else @result ? 'success'
+
+  fails: =>
+    return @result == 'fail'
+
+  succeeds: =>
+    return @result == 'success'
 
   @fromString: (str) ->
     # TODO(cosmic): Pull all order failure logic out of this class!
@@ -36,11 +51,11 @@ root.Order = class Order
         unit = unt.Unit.fromString parts[0].trim()
         child = Order.fromString parts[1].trim()
         if child.unit == unit
-          fail = (fail ? []).push "Invalid support: unit can't support itself."
+          whyFail = (whyFail ? []).push "Invalid support: unit can't support itself."
         if child.action in ['build', 'convoy']
-          fail = (fail ? []).push "Invalid support: #{child.str} not a supportable order."
-        if child.fail
-          fail = (fail ? []).push child.fail
+          whyFail = (whyFail ? []).push "Invalid support: #{child.str} not a supportable order."
+        if child.whyFail
+          whyFail = (whyFail ? []) + child.whyFail
 
       # (unit) convoy (unit) - (destination)
       else if (parts = str.split(/convoys?/i)).length > 1
@@ -50,9 +65,9 @@ root.Order = class Order
         src = child.unit.loc
         dst = child.dst
         if child.action != 'move'
-          fail = (fail ? []).push "Invalid convoy: could not parse #{child.str} as move."
-        if child.fail
-          fail = (fail ? []).push child.fail
+          whyFail = (whyFail ? []).push "Invalid convoy: could not parse #{child.str} as move."
+        if child.whyFail
+          whyFail = (whyFail ? []) + child.whyFail
 
       # (unit) - (destination)
       else if (parts = str.split '-').length > 1
@@ -66,7 +81,10 @@ root.Order = class Order
         action = 'hold'
         unit = unt.Unit.fromString str
     catch error
-      fail = (fail ? []).push error
+      whyFail = (whyFail ? []).push error
+
+    if whyFail?
+      status = 'fails'
 
     return new Order {'unit': unit, \
                       'action': action, \
@@ -74,4 +92,5 @@ root.Order = class Order
                       'dst': dst, \
                       'child': child, \
                       'str': str, \
-                      'fail': fail}
+                      'status': status,
+                      'whyFail': whyFail}

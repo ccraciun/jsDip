@@ -14,16 +14,10 @@ root.Judge = class Judge
       'Adjustment': @judgeAdjustment
     }
 
-
-  failOrder = (order, reason) ->
-    # Convenience method to fail an order for a reason.
-    order.fail = (order.fail ? []).push reason
-    order.status = 'resolved'
-
   judgeNaive: (state, orders) =>
     for power, powerOrders of orders
-      for order of powerOrders
-        order.status = 'resolved'
+      for _, order of powerOrders
+        order.finishOrder()
 
   judgeAdjustment: (state, orders) =>
     for power, powerOrders of orders
@@ -31,28 +25,25 @@ root.Judge = class Judge
       for order of powerOrders
         if order.action = 'build'
           if adjustment < 1
-            failOrder order, "No adjustments left to build."
+            order.failOrder "No adjustments left to build."
           if order.unit.loc not in @defs.headquarters[power]
-            failOrder order, "Can only build in headquarters."
+            order.failOrder "Can only build in headquarters."
           if state.forceAt(order.unit.loc)?
-            failOrder order, "Can't build if unit is present."
+            order.failOrder "Can't build if unit is present."
           unless defs.adjacent[order.unit.loc][order.unit.type]
-            failOrder order, "Can't build unit that can't legally move."
-          unless order.fail
+            order.failOrder "Can't build unit that can't legally move."
+          unless order.fails()
             adjustment--
-            order.fail = []
-            order.status = 'resolved'
         else if order.action = 'disband'
           unless adjustment < 0
-            failOrder order, "Can only disband if forced."
+            order.failOrder "Can only disband if forced."
           unless state.forceAt(order.unit.loc)?
-            failOrder order, "Can't disband nonpresent unit."
+            order.failOrder "Can't disband nonpresent unit."
           unless state.forceAt(order.unti.loc).power == power
-            failOrder order, "Can't disband non owned unit."
-          unless order.fail
+            order.failOrder "Can't disband non owned unit."
+          unless order.fails()
             adjustment++
-            order.fail = []
-            order.status = 'resolved'
+        order.finishOrder()
 
       if adjustment < 0
         units = _.shuffle(state.forces[power].armies + state.forces[power].fleets)
@@ -60,8 +51,7 @@ root.Judge = class Judge
           order = new ord.Order {
             'unit': new unt.Unit({'loc': unit}),
             'action': 'disband'}
-          order.fail = false
-          order.status = 'resolved'
+          order.finishOrder()
           powerOrders.push(order)
 
   judge: (state, orders) =>

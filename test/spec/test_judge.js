@@ -23,7 +23,7 @@ var dfs = require('../../app/scripts/models/defs');
                     orders[nation] = [];
                     for (var orderStr in doc[testnum].orders[nation]) {
                         var order = ord.Order.fromString(orderStr);
-                        order.test_expectedSuccess = doc[testnum].orders[nation][orderStr];
+                        order.test_expectedSucceeds = doc[testnum].orders[nation][orderStr];
                         orders[nation].push(order);
                     }
                 }
@@ -32,11 +32,11 @@ var dfs = require('../../app/scripts/models/defs');
 
                 orders = judge.judge(state, orders);
 
-                for (var nation in orders) {
+                for (nation in orders) {
                     for (var orderNum in orders[nation]) {
-                        order = orders[nation][orderNum];
-                        it('should judge order ' + order.str + ' correctly', function () {
-                            (!!order.fail).should.equal(!order.test_expectedSuccess);
+                        var o = orders[nation][orderNum];
+                        it('should judge order ' + o.str + ' correctly', function () {
+                            (o.succeeds()).should.equal(o.test_expectedSucceeds);
                         });
                     }
                 }
