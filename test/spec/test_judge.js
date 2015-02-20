@@ -17,7 +17,6 @@ var dfs = require('../../app/scripts/models/defs');
         for (var testnum in doc) {
             describe('for Testcase ' + doc[testnum].testCaseID, function () {
                 var state = new st.State(doc[testnum].state);
-
                 var orders = {};
                 for (var nation in doc[testnum].orders) {
                     orders[nation] = [];
@@ -38,6 +37,11 @@ var dfs = require('../../app/scripts/models/defs');
                         it('should judge order ' + o.str + ' correctly', function () {
                             (o.succeeds()).should.equal(o.test_expectedSucceeds);
                         });
+                        if (o.test_expectedSucceeds) {
+                            it('should have no fail reasons for order ' + o.str, function () {
+                                should.not.exist(o.whyFail);
+                            });
+                        }
                     }
                 }
             });

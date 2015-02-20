@@ -15,12 +15,12 @@ root.Order = class Order
     #        In particular, we can support holds, but convoy child orders should be moves.
     # @result Result of order in ('fail', 'success', undefined).
     # @whyFail If order fails, list of reasons why.
-    for key, val of order when val? and key in ['unit', 'action', 'src', 'dst', 'str', 'child', 'status', 'whyFail']
+    for key, val of order when val? and key in ['unit', 'action', 'src', 'dst', 'str', 'child', 'result', 'whyFail']
       @[key] = val
 
   failOrder: (why) =>
     @result = 'fails'
-    @whyFail = (@whyFail ? []).push why
+    (@whyFail = @whyFail ? []).push why
 
   finishOrder: =>
     @result = if @whyFail then 'fail' else @result ? 'success'
@@ -84,7 +84,7 @@ root.Order = class Order
       whyFail = (whyFail ? []).push error
 
     if whyFail?
-      status = 'fails'
+      result = 'fails'
 
     return new Order {'unit': unit, \
                       'action': action, \
@@ -92,5 +92,5 @@ root.Order = class Order
                       'dst': dst, \
                       'child': child, \
                       'str': str, \
-                      'status': status,
+                      'result': result,
                       'whyFail': whyFail}

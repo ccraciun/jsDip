@@ -1,7 +1,41 @@
 # Test cases transcribed from http://web.inter.nl.net/users/L.B.Kruijswijk
 #
 # Note: in `precondition`, `fleets` and `armies` are both optional.
-#
+
+###################################
+# ADJUSTMENT TEST CASES
+###################################
+- orders:
+    England:
+      Build A Liverpool: true
+  state:
+    date:
+      phase: Adjustment
+    activePowers: [England]
+    forces:
+      England:
+        armies: []
+    SCs:
+      England:
+        - Liverpool
+  testCaseID: Adjustment.1
+
+- orders:
+    England:
+      Build A Liverpool: false
+  state:
+    date:
+      phase: Adjustment
+    activePowers: [England]
+    forces:
+      England:
+        armies:
+        - Liverpool
+    SCs:
+      England:
+        - Liverpool
+  testCaseID: Adjustment.2
+
 ###################################
 # 6.A. TEST CASES, BASIC CHECKS
 ###################################

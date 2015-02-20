@@ -9,26 +9,25 @@ root.State = class State
       @[key] = val
     @date = new gd.GameDate info.date
 
-  counts: =>
+  counts: ->
     if !@_counts?
-      # Count SCs.
-      for power, supplyCenters of @SCs
-        @_counts[power] ?= {}
-        @_counts[power].SCs = @SCs[power].length
+      @_counts = {}
+      for _, power of @activePowers
+        # Count SCs.
+        @_counts[power] = {}
+        @_counts[power].SCs = @SCs[power]?.length ? 0
 
-      # Count forces
-      for power, forces in @forces
-        @_counts[power] ?= {}
+        # Count forces
         # If custom forces are defined, we might needs defs here.
-        @_counts[power].armies = forces.armies.length
-        @_counts[power].fleets = forces.fleets.length
-        @_counts[power].forces = @_counts[power].armies + @counts[power].fleets
+        @_counts[power].armies = @forces[power]?.armies?.length ? 0
+        @_counts[power].fleets = @forces[power]?.fleets?.length ? 0
+        @_counts[power].forces = @_counts[power].armies + @_counts[power].fleets
         @_counts[power].adjudment = @_counts[power].SCs - @_counts[power].forces
 
     return @_counts
 
-  forceAt: (loc) =>
-    for power, forces in @forces
-      for type, locations in forces
+  forceAt: (loc) ->
+    for power, forces of @forces
+      for type, locations of forces
         if loc in locations
           return {'power': power, 'type': type}
