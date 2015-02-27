@@ -19,17 +19,17 @@ root.Order = class Order
     for key, val of order when val? and key in ['owner', 'unit', 'action', 'src', 'dst', 'str', 'child', 'result', 'whyFail']
       @[key] = val
 
-  failOrder: (why) =>
+  failOrder: (why) ->
     @result = 'fails'
     (@whyFail = @whyFail ? []).push why
 
-  finishOrder: =>
+  finishOrder: ->
     @result = if @whyFail then 'fail' else @result ? 'success'
 
-  fails: =>
+  fails: ->
     return @result == 'fail'
 
-  succeeds: =>
+  succeeds: ->
     return @result == 'success'
 
   @fromString: (str) ->
