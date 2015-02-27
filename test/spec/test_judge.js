@@ -17,13 +17,13 @@ var dfs = require('../../app/scripts/models/defs');
         for (var testnum in doc) {
             describe('for Testcase ' + doc[testnum].testCaseID, function () {
                 var state = new st.State(doc[testnum].state);
-                var orders = {};
-                for (var nation in doc[testnum].orders) {
-                    orders[nation] = [];
-                    for (var orderStr in doc[testnum].orders[nation]) {
+                var orders = [];
+                for (var power in doc[testnum].orders) {
+                    for (var orderStr in doc[testnum].orders[power]) {
                         var order = ord.Order.fromString(orderStr);
-                        order.test_expectedSucceeds = doc[testnum].orders[nation][orderStr];
-                        orders[nation].push(order);
+                        order.owner = power;
+                        order.test_expectedSucceeds = doc[testnum].orders[power][orderStr];
+                        orders.push(order);
                     }
                 }
 
@@ -31,17 +31,15 @@ var dfs = require('../../app/scripts/models/defs');
 
                 orders = judge.judge(state, orders);
 
-                for (nation in orders) {
-                    for (var orderNum in orders[nation]) {
-                        var o = orders[nation][orderNum];
-                        it('should judge order ' + o.str + ' correctly', function () {
-                            (o.succeeds()).should.equal(o.test_expectedSucceeds);
+                for (var orderNum in orders) {
+                    var o = orders[orderNum];
+                    it('should judge order ' + o.str + ' correctly', function () {
+                        (o.succeeds()).should.equal(o.test_expectedSucceeds);
+                    });
+                    if (o.test_expectedSucceeds) {
+                        it('should have no fail reasons for order ' + o.str, function () {
+                            should.not.exist(o.whyFail);
                         });
-                        if (o.test_expectedSucceeds) {
-                            it('should have no fail reasons for order ' + o.str, function () {
-                                should.not.exist(o.whyFail);
-                            });
-                        }
                     }
                 }
             });

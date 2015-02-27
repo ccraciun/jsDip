@@ -1,11 +1,14 @@
 root = exports ? this
 
 root.Unit = class Unit
+  # TODO(cosmic): All model classes use this boilerplate constructor, have them inherit
+  # this off a base class?
   constructor: (unit) ->
-    # Unit type in {A, F}
-    @type = unit.type
-    # Location of Unit.
-    @loc = unit.loc
+    # @type Unit type for example {A, F}.
+    # @loc Location of Unit.
+    # @owner Unit owner.
+    for key, val of unit when val? and key in ['type', 'loc', 'owner']
+      @[key] = val
 
   @fromString: (str) ->
     parts = str.split ' '

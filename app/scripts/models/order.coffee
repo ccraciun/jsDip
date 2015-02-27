@@ -6,6 +6,7 @@ unt = require './unit'
 
 root.Order = class Order
   constructor: (order) ->
+    # @owner Power giving order.
     # @unit Actor unit.
     # @action Action as string.
     # @src Source unit. Currently only for convoying.
@@ -15,7 +16,7 @@ root.Order = class Order
     #        In particular, we can support holds, but convoy child orders should be moves.
     # @result Result of order in ('fail', 'success', undefined).
     # @whyFail If order fails, list of reasons why.
-    for key, val of order when val? and key in ['unit', 'action', 'src', 'dst', 'str', 'child', 'result', 'whyFail']
+    for key, val of order when val? and key in ['owner', 'unit', 'action', 'src', 'dst', 'str', 'child', 'result', 'whyFail']
       @[key] = val
 
   failOrder: (why) =>
