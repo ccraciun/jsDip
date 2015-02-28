@@ -3,10 +3,16 @@ var should = require('should');
 var yaml = require('js-yaml');
 var fs = require('fs');
 var _ = require('underscore');
+
+var dfs = require('../../app/scripts/models/defs');
 var order = require('../../app/scripts/models/order');
+
+var root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
 
 (function () {
     'use strict';
+
+    global.defs = new dfs.Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
 
     var parsesOrder = function (ordr, ans) {
         var parsed = order.Order.fromString(ordr);

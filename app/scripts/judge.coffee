@@ -5,9 +5,7 @@ ord = require './models/order'
 unt = require './models/unit'
 
 root.Judge = class Judge
-  constructor: (defs) ->
-    @defs = defs
-
+  constructor: () ->
     @phaseJudge = {
       'Movement': @judgeMovement,
       'Retreat': @judgeNaive,
@@ -24,7 +22,7 @@ root.Judge = class Judge
         order.status = 'resolved'
       if order.owner not in state.activePowers
         order.failOrder "#{order.owner} is not an active power."
-      if order.owner not in @defs.belligerents
+      if order.owner not in global.defs.belligerents
         order.failOrder "#{order.owner} is not belligerent."
 
     # Judge orders for phase.
@@ -151,14 +149,15 @@ root.Judge = class Judge
   judgeAdjustment: (state, orders) =>
     counts = state.counts
     for idx, order of orders
+      console.log(JSON.stringify(order))
       if order.action = 'build'
         if counts[order.owner].adjustment < 1
           order.failOrder "No adjustments left to build."
-        unless order.unit.loc in @defs.headquarters[order.owner]
+        unless order.unit.loc in global.defs.headquarters[order.owner]
           order.failOrder "Can only build in headquarters."
         if state.forceAt order.unit.loc
           order.failOrder "Can't build if unit is present."
-        unless @defs.adjacent[order.unit.loc][order.unit.type]
+        unless global.defs.adjacent[order.unit.loc][order.unit.type]
           order.failOrder "Can't build unit that can't legally move."
         unless order.fails()
           counts[order.owner].adjustment--

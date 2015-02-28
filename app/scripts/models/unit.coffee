@@ -10,11 +10,13 @@ root.Unit = class Unit
     for key, val of unit when val? and key in ['type', 'loc', 'owner']
       @[key] = val
 
+    @loc = global.defs.canonicalName @loc if @loc
+
   @fromString: (str) ->
     parts = str.split ' '
     type = parts[0]
     loc = str.slice type.length + 1
-    type = type[0]
+    type = type[0].toUpperCase()
     loc = loc.trim()
 
     return new Unit {'type': type, 'loc': loc}

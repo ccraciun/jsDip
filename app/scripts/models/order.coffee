@@ -19,6 +19,9 @@ root.Order = class Order
     for key, val of order when val? and key in ['owner', 'unit', 'action', 'src', 'dst', 'str', 'child', 'result', 'whyFail']
       @[key] = val
 
+    for key in ['src', 'dst'] when @[key]
+      @[key] = global.defs.canonicalName @[key]
+
   failOrder: (why) ->
     @result = 'fails'
     (@whyFail = @whyFail ? []).push why

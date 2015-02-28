@@ -8,12 +8,15 @@ var st = require('../../app/scripts/models/state');
 var ord = require('../../app/scripts/models/order');
 var dfs = require('../../app/scripts/models/defs');
 
+var root = (typeof global !== "undefined" && global !== null) ? global : this;
+
 (function () {
     'use strict';
 
+    global.defs = new dfs.Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
+
     describe('Judge', function () {
         var doc = yaml.safeLoad(fs.readFileSync('test/data/rule_tests.yml', 'utf8'));
-        var defs = new dfs.Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
         for (var testnum in doc) {
             describe('for Testcase ' + doc[testnum].testCaseID, function () {
                 var state = new st.State(doc[testnum].state);
@@ -27,7 +30,7 @@ var dfs = require('../../app/scripts/models/defs');
                     }
                 }
 
-                var judge = new jg.Judge(defs);
+                var judge = new jg.Judge();
 
                 orders = judge.judge(state, orders);
 

@@ -116,9 +116,6 @@
       "ser",
       "serbia"
     ],
-    "scConstantinople": [
-      "scconstantinople"
-    ],
     "St Petersburg": [
       "stp",
       "st petersburg",
@@ -137,15 +134,6 @@
       "syr",
       "syria"
     ],
-    "scRome": [
-      "scrome"
-    ],
-    "scSevastopol": [
-      "scsevastopol"
-    ],
-    "scTunis": [
-      "sctunis"
-    ],
     "English Channel": [
       "ech",
       "english channel",
@@ -161,22 +149,13 @@
       "con",
       "constantinople"
     ],
-    "scVenice": [
-      "scvenice"
-    ],
     "Ankara": [
       "ank",
       "ankara"
     ],
-    "scTrieste": [
-      "sctrieste"
-    ],
     "Munich": [
       "mun",
       "munich"
-    ],
-    "scNorway": [
-      "scnorway"
     ],
     "North Sea": [
       "nts",
@@ -186,9 +165,6 @@
       "northsea",
       "nrd"
     ],
-    "scPortugal": [
-      "scportugal"
-    ],
     "Naples": [
       "nap",
       "naples"
@@ -197,9 +173,6 @@
       "apu",
       "apulia"
     ],
-    "scKiel": [
-      "sckiel"
-    ],
     "Prussia": [
       "prussia",
       "pru"
@@ -207,9 +180,6 @@
     "Smyrna": [
       "smyrna",
       "smy"
-    ],
-    "scVienna": [
-      "scvienna"
     ],
     "Venice": [
       "ven",
@@ -230,12 +200,6 @@
       "bre",
       "brest"
     ],
-    "scSpain": [
-      "scspain"
-    ],
-    "scWarsaw": [
-      "scwarsaw"
-    ],
     "Baltic Sea": [
       "bal",
       "baltic sea"
@@ -243,9 +207,6 @@
     "Gascony": [
       "gascony",
       "gas"
-    ],
-    "scSmyrna": [
-      "scsmyrna"
     ],
     "Tyrrhenian Sea": [
       "tys",
@@ -255,9 +216,6 @@
       "tyrhenian sea",
       "tyrrhenian sea",
       "tyh"
-    ],
-    "scLiverpool": [
-      "scliverpool"
     ],
     "Adriatic Sea": [
       "adr",
@@ -279,9 +237,6 @@
       "den",
       "denmark"
     ],
-    "scMunich": [
-      "scmunich"
-    ],
     "Ionian Sea": [
       "ionian sea",
       "ion"
@@ -290,15 +245,9 @@
       "sil",
       "silesia"
     ],
-    "scParis": [
-      "scparis"
-    ],
     "Belgium": [
       "belgium",
       "bel"
-    ],
-    "scHolland": [
-      "scholland"
     ],
     "Galicia": [
       "galicia",
@@ -328,15 +277,9 @@
       "norway",
       "nge"
     ],
-    "scGreece": [
-      "scgreece"
-    ],
     "Trieste": [
       "tri",
       "trieste"
-    ],
-    "scEdinburgh": [
-      "scedinburgh"
     ],
     "Piedmont": [
       "pie",
@@ -353,12 +296,6 @@
       "lva",
       "lvo",
       "lvn"
-    ],
-    "scMarseilles": [
-      "scmarseilles"
-    ],
-    "scSweden": [
-      "scsweden"
     ],
     "North Atlantic Ocean": [
       "northatlantic",
@@ -384,9 +321,6 @@
       "kiel",
       "kie"
     ],
-    "scBelgium": [
-      "scbelgium"
-    ],
     "Helgoland Bight": [
       "helgoland bight",
       "hel"
@@ -408,9 +342,6 @@
       "paris",
       "par"
     ],
-    "scSerbia": [
-      "scserbia"
-    ],
     "Norwegian Sea": [
       "nwg",
       "norwegian sea",
@@ -418,9 +349,6 @@
       "norwsea",
       "gro",
       "nrg"
-    ],
-    "scDenmark": [
-      "scdenmark"
     ],
     "Liverpool": [
       "liverpool",
@@ -485,15 +413,6 @@
       "black sea",
       "bla"
     ],
-    "scBerlin": [
-      "scberlin"
-    ],
-    "scLondon": [
-      "sclondon"
-    ],
-    "scBudapest": [
-      "scbudapest"
-    ],
     "Ukraine": [
       "ukraine",
       "ukr"
@@ -529,18 +448,6 @@
       "portugal",
       "por"
     ],
-    "scAnkara": [
-      "scankara"
-    ],
-    "scNaples": [
-      "scnaples"
-    ],
-    "scBrest": [
-      "scbrest"
-    ],
-    "scRumania": [
-      "scrumania"
-    ],
     "Marseilles": [
       "marseilles",
       "mar"
@@ -553,9 +460,6 @@
       "picardy",
       "pic"
     ],
-    "scBulgaria": [
-      "scbulgaria"
-    ],
     "Wales": [
       "wales",
       "wal"
@@ -563,12 +467,6 @@
     "Aegean Sea": [
       "aegean sea",
       "aeg"
-    ],
-    "scSt Petersburg": [
-      "scst petersburg"
-    ],
-    "scMoscow": [
-      "scmoscow"
     ],
     "Eastern Mediterranean": [
       "eastmed",
@@ -580,268 +478,6 @@
       "eas",
       "eastern mediterranean"
     ]
-  },
-  "alias": {
-    "Warsaw": "Warsaw",
-    "St Petersburg": "St Petersburg",
-    "Greece": "Greece",
-    "lpl": "Liverpool",
-    "swe": "Sweden",
-    "vie": "Vienna",
-    "St Petersburg (nc)": "St Petersburg (nc)",
-    "scRumania": "scRumania",
-    "scBrest": "scBrest",
-    "con": "Constantinople",
-    "ems": "Eastern Mediterranean",
-    "scAnkara": "scAnkara",
-    "tyrrhenian sea": "Tyrrhenian Sea",
-    "wms": "Western Mediterranean",
-    "boh": "Bohemia",
-    "Bulgaria (sc)": "Bulgaria (sc)",
-    "Mid-Atlantic Ocean": "Mid-Atlantic Ocean",
-    "bot": "Gulf of Bothnia",
-    "st petersburg": "St Petersburg",
-    "syr": "Syria",
-    "Portugal": "Portugal",
-    "nat": "North Atlantic Ocean",
-    "Gulf of Bothnia": "Gulf of Bothnia",
-    "tyrhenian sea": "Tyrrhenian Sea",
-    "western med": "Western Mediterranean",
-    "tun": "Tunis",
-    "scNaples": "scNaples",
-    "Sweden": "Sweden",
-    "nth": "North Sea",
-    "ech": "English Channel",
-    "Finland": "Finland",
-    "nts": "North Sea",
-    "nge": "Norway",
-    "den": "Denmark",
-    "Tuscany": "Tuscany",
-    "tus": "Tuscany",
-    "ruh": "Ruhr",
-    "Ukraine": "Ukraine",
-    "scBudapest": "scBudapest",
-    "scLondon": "scLondon",
-    "mun": "Munich",
-    "scBerlin": "scBerlin",
-    "stp": "St Petersburg",
-    "Armenia": "Armenia",
-    "Berlin": "Berlin",
-    "scTunis": "scTunis",
-    "gob": "Gulf of Bothnia",
-    "westmed": "Western Mediterranean",
-    "rum": "Rumania",
-    "Moscow": "Moscow",
-    "eastern med": "Eastern Mediterranean",
-    "esp": "Spain",
-    "Helgoland Bight": "Helgoland Bight",
-    "lyon": "Gulf of Lyon",
-    "Edinburgh": "Edinburgh",
-    "Bohemia": "Bohemia",
-    "Vienna": "Vienna",
-    "breast": "Brest",
-    "arm": "Armenia",
-    "Norway": "Norway",
-    "Tyrrhenian Sea": "Tyrrhenian Sea",
-    "scGreece": "scGreece",
-    "Trieste": "Trieste",
-    "var": "Warsaw",
-    "Spain (sc)": "Spain (sc)",
-    "tyn": "Tyrrhenian Sea",
-    "nap": "Naples",
-    "easternmed": "Eastern Mediterranean",
-    "fin": "Finland",
-    "Norwegian Sea": "Norwegian Sea",
-    "ven": "Venice",
-    "cly": "Clyde",
-    "ska": "Skagerrak",
-    "gre": "Greece",
-    "nora": "North Africa",
-    "Paris": "Paris",
-    "wes": "Western Mediterranean",
-    "Bulgaria (ec)": "Bulgaria (ec)",
-    "Tyrolia": "Tyrolia",
-    "tyr": "Tyrolia",
-    "iri": "Irish Sea",
-    "adr": "Adriatic Sea",
-    "Liverpool": "Liverpool",
-    "scDenmark": "scDenmark",
-    "Burgundy": "Burgundy",
-    "nwy": "Norway",
-    "alb": "Albania",
-    "edi": "Edinburgh",
-    "Aegean Sea": "Aegean Sea",
-    "Black Sea": "Black Sea",
-    "rom": "Rome",
-    "scSerbia": "scSerbia",
-    "Yorkshire": "Yorkshire",
-    "gulfofb": "Gulf of Bothnia",
-    "nwg": "Norwegian Sea",
-    "scBelgium": "scBelgium",
-    "bothnia": "Gulf of Bothnia",
-    "gulfofl": "Gulf of Lyon",
-    "alp": "Tyrolia",
-    "Kiel": "Kiel",
-    "Gascony": "Gascony",
-    "Spain": "Spain",
-    "tri": "Trieste",
-    "Holland": "Holland",
-    "tys": "Tyrrhenian Sea",
-    "mos": "Moscow",
-    "mid atlantic": "Mid-Atlantic Ocean",
-    "Rome": "Rome",
-    "northatlantic": "North Atlantic Ocean",
-    "Ruhr": "Ruhr",
-    "mao": "Mid-Atlantic Ocean",
-    "Spain (nc)": "Spain (nc)",
-    "apu": "Apulia",
-    "eastmed": "Eastern Mediterranean",
-    "nor": "Norway",
-    "North Atlantic Ocean": "North Atlantic Ocean",
-    "eme": "Eastern Mediterranean",
-    "Albania": "Albania",
-    "bar": "Barents Sea",
-    "trl": "Tyrolia",
-    "Adriatic Sea": "Adriatic Sea",
-    "bla": "Black Sea",
-    "scSweden": "scSweden",
-    "Livonia": "Livonia",
-    "London": "London",
-    "aeg": "Aegean Sea",
-    "bal": "Baltic Sea",
-    "sil": "Silesia",
-    "sev": "Sevastopol",
-    "Ionian Sea": "Ionian Sea",
-    "scEdinburgh": "scEdinburgh",
-    "tyrhennian sea": "Tyrrhenian Sea",
-    "por": "Portugal",
-    "Marseilles": "Marseilles",
-    "norwegiansea": "Norwegian Sea",
-    "Clyde": "Clyde",
-    "Picardy": "Picardy",
-    "stg": "Irish Sea",
-    "scBulgaria": "scBulgaria",
-    "North Sea": "North Sea",
-    "Wales": "Wales",
-    "bre": "Brest",
-    "Gulf of Lyon": "Gulf of Lyon",
-    "st. petersberg": "St Petersburg",
-    "ser": "Serbia",
-    "swi": "Switzerland",
-    "wal": "Wales",
-    "English Channel": "English Channel",
-    "lon": "London",
-    "stpetersburg": "St Petersburg",
-    "scMoscow": "scMoscow",
-    "scParis": "scParis",
-    "Galicia": "Galicia",
-    "mid atlantic ocean": "Mid-Atlantic Ocean",
-    "emed": "Eastern Mediterranean",
-    "Belgium": "Belgium",
-    "st petersberg": "St Petersburg",
-    "sevastapol": "Sevastopol",
-    "Bulgaria": "Bulgaria",
-    "norsea": "North Sea",
-    "Silesia": "Silesia",
-    "scMunich": "scMunich",
-    "westernmed": "Western Mediterranean",
-    "bur": "Burgundy",
-    "Denmark": "Denmark",
-    "gas": "Gascony",
-    "gulf of bot": "Gulf of Bothnia",
-    "northsea": "North Sea",
-    "hel": "Helgoland Bight",
-    "gal": "Galicia",
-    "Tunis": "Tunis",
-    "bul": "Bulgaria",
-    "Switzerland": "Switzerland",
-    "eas": "Eastern Mediterranean",
-    "ank": "Ankara",
-    "Smyrna": "Smyrna",
-    "bud": "Budapest",
-    "skaggerak": "Skagerrak",
-    "scLiverpool": "scLiverpool",
-    "lvp": "Liverpool",
-    "bel": "Belgium",
-    "scMarseilles": "scMarseilles",
-    "scSmyrna": "scSmyrna",
-    "Eastern Mediterranean": "Eastern Mediterranean",
-    "wmed": "Western Mediterranean",
-    "smy": "Smyrna",
-    "St Petersburg (sc)": "St Petersburg (sc)",
-    "war": "Warsaw",
-    "north atlantic": "North Atlantic Ocean",
-    "scWarsaw": "scWarsaw",
-    "lva": "Livonia",
-    "wme": "Western Mediterranean",
-    "scSpain": "scSpain",
-    "ber": "Berlin",
-    "Brest": "Brest",
-    "lvo": "Livonia",
-    "lvn": "Livonia",
-    "Venice": "Venice",
-    "scVienna": "scVienna",
-    "scHolland": "scHolland",
-    "Irish Sea": "Irish Sea",
-    "pic": "Picardy",
-    "Prussia": "Prussia",
-    "pie": "Piedmont",
-    "scKiel": "scKiel",
-    "pru": "Prussia",
-    "Barents Sea": "Barents Sea",
-    "mid-atlantic": "Mid-Atlantic Ocean",
-    "Apulia": "Apulia",
-    "norwsea": "Norwegian Sea",
-    "spa": "Spain",
-    "lyo": "Gulf of Lyon",
-    "Naples": "Naples",
-    "scPortugal": "scPortugal",
-    "scSt Petersburg": "scSt Petersburg",
-    "northafrica": "North Africa",
-    "par": "Paris",
-    "naf": "North Africa",
-    "ukr": "Ukraine",
-    "eng": "English Channel",
-    "yonkers": "Yorkshire",
-    "Piedmont": "Piedmont",
-    "hol": "Holland",
-    "scNorway": "scNorway",
-    "mid": "Mid-Atlantic Ocean",
-    "Munich": "Munich",
-    "scTrieste": "scTrieste",
-    "Ankara": "Ankara",
-    "scVenice": "scVenice",
-    "Constantinople": "Constantinople",
-    "gulf of lyo": "Gulf of Lyon",
-    "gro": "Norwegian Sea",
-    "midatlanticocean": "Mid-Atlantic Ocean",
-    "yor": "Yorkshire",
-    "channel": "English Channel",
-    "Western Mediterranean": "Western Mediterranean",
-    "tyl": "Tyrolia",
-    "Budapest": "Budapest",
-    "mar": "Marseilles",
-    "tyh": "Tyrrhenian Sea",
-    "mat": "Mid-Atlantic Ocean",
-    "gol": "Gulf of Lyon",
-    "Sevastopol": "Sevastopol",
-    "nrg": "Norwegian Sea",
-    "nao": "North Atlantic Ocean",
-    "scSevastopol": "scSevastopol",
-    "stpetersberg": "St Petersburg",
-    "ion": "Ionian Sea",
-    "scRome": "scRome",
-    "Syria": "Syria",
-    "Skagerrak": "Skagerrak",
-    "nrd": "North Sea",
-    "rhe": "Ruhr",
-    "kie": "Kiel",
-    "man": "English Channel",
-    "North Africa": "North Africa",
-    "Baltic Sea": "Baltic Sea",
-    "scConstantinople": "scConstantinople",
-    "Serbia": "Serbia",
-    "Rumania": "Rumania"
   },
   "coords": {
     "Warsaw": "361,315",

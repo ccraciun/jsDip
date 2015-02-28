@@ -18,8 +18,8 @@ root.Defs = class Defs
 
     @canonical = {}
     for name, aliases of @aliases
-      for alias of aliases
+      for alias in aliases
         @canonical[alias] = name
 
   canonicalName: (name) ->
-    return @canonical[name.toLowercase()]
+    return @canonical[name.toLowerCase().replace('_', ' ')]
