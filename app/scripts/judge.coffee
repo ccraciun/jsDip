@@ -9,14 +9,14 @@ root.Judge = class Judge
     @defs = defs
 
     @phaseJudge = {
-      'Movement': @judgeNaive,
+      'Movement': @judgeMovement,
       'Retreat': @judgeNaive,
-      'Adjustment': @judgeAdjustment
+      'Adjustment': @judgeAdjustment,
     }
 
   judge: (state, orders) ->
-    # Copy orders so judges can modify the structures.
-    orders = _.extend({}, orders)
+    # Return a list of judged (annotated with status) orders.
+    orders = _.extend([], orders)
 
     # Common failure cases.
     for idx, order of orders
@@ -26,11 +26,13 @@ root.Judge = class Judge
         order.failOrder "#{order.owner} is not an active power."
       if order.owner not in @defs.belligerents
         order.failOrder "#{order.owner} is not belligerent."
+
     # Judge orders for phase.
     @phaseJudge[state.date.phase](state, orders)
     return orders
 
   applyJudgement: (state, orders) ->
+    # Return a new state created by applying judged orders to given state.
     return
 
   judgeNaive: (state, orders) ->
@@ -40,25 +42,47 @@ root.Judge = class Judge
   judgeMovement: (state, orders) ->
     dependencies = []
 
+    adjudicateMove = (o) ->
+      return 'success'
+
+    adjudicateHold = (o) ->
+      return 'success'
+
+    adjudicateSupport = (o) ->
+      if o.child.unit == o.unit
+        o.failOrder "Invalid support: unit can't support itself. 6.A.8"
+        return 'fail'
+      unless o.child.action in ['move', 'hold']
+        o.failOrder "Invalid support: #{child.str} not a supportable order."
+        return 'fail'
+      return 'success'
+
+    adjudicateConvoy = (o) ->
+      if o.child.action isnt 'move'
+        o.failOrder "Invalid convoy: could not parse #{child.str} as move."
+        return 'fail'
+      return 'success'
+
     adjudicate = (o) ->
-      # Must not use o.result, instead should call resolve to get resolution for dependencies.
+      # Must not use o.result, instead call resolve to get resolution for dependencies.
       if o.action == 'hold'
-        return
+        return adjudicateHold o
       else if o.action == 'move'
-        return
+        return adjudicateMove o
       else if o.action == 'support'
-        return
+        return adjudicateSupport o
       else if o.action == 'convoy'
-        return
+        return adjudicateConvoy o
       else
         o.failOrder "Can't perform action #{o.action} during Movement"
+        return 'fail'
 
     resolve = (o) ->
       # Adapted from `The Math of Adjudication' by Lucas Kruijswijk
       # http://www.diplom.org/Zine/S2009M/Kruijswijk/DipMath_Chp1.htm
       # Also `Creating an Adjudicator' by Martin Bruse
       # http://diplom.org/Zine/F2013R/Bruse/adjudicator.htm
-      reset_dependencies_to_depth = (depth) ->
+      resetDependenciesToDepth = (depth) ->
         while dependencies.length > dependencies_len_before
           dependencies.pop().state = undefined
 
@@ -89,7 +113,7 @@ root.Judge = class Judge
           return result_1
 
         # Dependent on our own guess, reset dependencies to original state.
-        reset_dependencies_to_depth dependencies_len_before
+        resetDependenciesToDepth dependencies_len_before
 
         # Guess order succeeds, try to adjudicate.
         o.state = 'guessing'
@@ -98,31 +122,35 @@ root.Judge = class Judge
 
         if result_1 == result_2
           # There is a cycle, but the resolution is the same no matter the guess.
-          reset_dependencies_to_depth dependencies_len_before
+          resetDependenciesToDepth dependencies_len_before
           o.state = 'resolved'
           o.result = result_1
+          return result_1
 
         # Two or no resolutions for the cycle.
+        # Cycle occurs in dependencies[dependencies_len_before:]
         backupRule o, dependencies_len_before
 
         # Backup rule may not have resolved all orders in cycle. Try again.
         return resolve o
 
       backupRule = (o, dependencies_len_before) ->
+        # Paradox or circular dependency with multiple resolutions?
+        # http://www.diplom.org/Zine/F1999R/Debate/paradox.html
         # TODO(cosmic): Write actual backup rule.
-        reset_dependencies_to_depth dependencies_len_before
+        resetDependenciesToDepth dependencies_len_before
         o.state = 'resolved'
         o.result = 'fail'
 
   judgeAdjustment: (state, orders) =>
-    counts = state.counts()
+    counts = state.counts
     for idx, order of orders
       if order.action = 'build'
         if counts[order.owner].adjustment < 1
           order.failOrder "No adjustments left to build."
         unless order.unit.loc in @defs.headquarters[order.owner]
           order.failOrder "Can only build in headquarters."
-        if state.forceAt(order.unit.loc)
+        if state.forceAt order.unit.loc
           order.failOrder "Can't build if unit is present."
         unless @defs.adjacent[order.unit.loc][order.unit.type]
           order.failOrder "Can't build unit that can't legally move."
@@ -131,9 +159,9 @@ root.Judge = class Judge
       else if order.action = 'disband'
         unless counts[order.owner].adjustment < 0
           order.failOrder "Can only disband if forced."
-        unless state.forceAt(order.unit.loc)?
+        unless state.forceAt order.unit.loc
           order.failOrder "Can't disband nonpresent unit."
-        unless state.forceAt(order.unti.loc).power == order.owner
+        unless state.forceAt(order.unit.loc).power == order.owner
           order.failOrder "Can't disband non owned unit."
         unless order.fails()
           counts[order.owner].adjustment++
@@ -143,14 +171,14 @@ root.Judge = class Judge
 
     # Force random disbands. TODO(cosmic): handle this more gracefully, should judge
     # really add orders to the list? If not, move this to applyJudgement?
-    for power, powCounts of counts
-      if powCounts.adjustment < 0
-        units = _.shuffle(state.forces[power].armies + state.forces[power].fleets)
-        for unit of _.take(units, -adjustment)
-          order = new ord.Order {
-            'unit': new unt.Unit({'loc': unit}),
-            'action': 'disband'}
-          order.finishOrder()
-          orders.push(order)
+#    for power, powCounts of counts
+#      if powCounts.adjustment < 0
+#        units = _.shuffle state.forcesOfPower power
+#        for idx, unit of _.take units, -powCounts.adjustment
+#          order = new ord.Order {
+#            'unit': unit,
+#            'action': 'disband'}
+#          order.finishOrder()
+#          orders.push order
 
     return orders

@@ -2,7 +2,7 @@ root = exports ? this
 
 root.Unit = class Unit
   # TODO(cosmic): All model classes use this boilerplate constructor, have them inherit
-  # this off a base class?
+  # this off a base class? Model attributes in {must, may}
   constructor: (unit) ->
     # @type Unit type for example {A, F}.
     # @loc Location of Unit.

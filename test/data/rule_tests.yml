@@ -2,6 +2,8 @@
 #
 # Note: in `precondition`, `fleets` and `armies` are both optional.
 
+# TODO(cosmic): Can replace some boilerplate with anchors and references.
+
 ###################################
 # ADJUSTMENT TEST CASES
 ###################################
@@ -15,7 +17,7 @@
     forces:
       England:
         armies: []
-    SCs:
+    supplyCenters:
       England:
         - Liverpool
   testCaseID: Adjustment.1
@@ -31,7 +33,7 @@
       England:
         armies:
         - Liverpool
-    SCs:
+    supplyCenters:
       England:
         - Liverpool
   testCaseID: Adjustment.2

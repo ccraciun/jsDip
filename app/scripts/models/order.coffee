@@ -45,18 +45,14 @@ root.Order = class Order
         # TODO(cosmic): match/slice hold and holds
         action = 'hold'
         unit = unt.Unit.fromString (str.slice 0, str.length - 5)
+        dst = unit.loc
 
       # (unit) supports (order)
       else if (parts = str.split(/supports?/i)).length > 1
         action = 'support'
         unit = unt.Unit.fromString parts[0].trim()
         child = Order.fromString parts[1].trim()
-        if child.unit == unit
-          whyFail = (whyFail ? []).push "Invalid support: unit can't support itself."
-        if child.action in ['build', 'convoy']
-          whyFail = (whyFail ? []).push "Invalid support: #{child.str} not a supportable order."
-        if child.whyFail
-          whyFail = (whyFail ? []) + child.whyFail
+        dst = child.dst
 
       # (unit) convoy (unit) - (destination)
       else if (parts = str.split(/convoys?/i)).length > 1
@@ -65,10 +61,6 @@ root.Order = class Order
         child = Order.fromString parts[1].trim()
         src = child.unit.loc
         dst = child.dst
-        if child.action != 'move'
-          whyFail = (whyFail ? []).push "Invalid convoy: could not parse #{child.str} as move."
-        if child.whyFail
-          whyFail = (whyFail ? []) + child.whyFail
 
       # (unit) - (destination)
       else if (parts = str.split '-').length > 1
@@ -81,8 +73,12 @@ root.Order = class Order
       else
         action = 'hold'
         unit = unt.Unit.fromString str
+        dst = unit.loc
     catch error
       whyFail = (whyFail ? []).push error
+
+    if child?.whyFail
+      whyFail = (whyFail ? []) + child.whyFail
 
     if whyFail?
       result = 'fails'
