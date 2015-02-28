@@ -21,12 +21,12 @@ root.State = class State
     @forces = []
     for owner, forceTypes of info.forces
       for type, forces of forceTypes
-        for idx, loc of forces
+        for loc in forces
           @forces.push new unt.Unit {'loc': loc, 'type': type, 'owner': owner}
 
     @counts = {}
     # TODO(cosmic): Should do counts for all powers, not just active ones.
-    for idx, power of @activePowers
+    for power in @activePowers
       # Count SCs.
       @counts[power] = {}
       @counts[power].supplyCenters = @supplyCenters[power]?.length ? 0

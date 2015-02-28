@@ -17,7 +17,7 @@ root.Judge = class Judge
     orders = _.extend([], orders)
 
     # Common failure cases.
-    for idx, order of orders
+    for order in orders
       if order.fail?
         order.status = 'resolved'
       if order.owner not in state.activePowers
@@ -34,7 +34,7 @@ root.Judge = class Judge
     return
 
   judgeNaive: (state, orders) ->
-    for idx, order of orders
+    for order in orders
       order.finishOrder()
 
   judgeMovement: (state, orders) ->
@@ -140,7 +140,7 @@ root.Judge = class Judge
         o.state = 'resolved'
         o.result = 'fail'
 
-    for idx, order of orders
+    for order in orders
       order.result = resolve order
       order.finishOrder()
 
@@ -148,8 +148,7 @@ root.Judge = class Judge
 
   judgeAdjustment: (state, orders) =>
     counts = state.counts
-    for idx, order of orders
-      console.log(JSON.stringify(order))
+    for order in orders
       if order.action = 'build'
         if counts[order.owner].adjustment < 1
           order.failOrder "No adjustments left to build."
@@ -179,7 +178,7 @@ root.Judge = class Judge
 #    for power, powCounts of counts
 #      if powCounts.adjustment < 0
 #        units = _.shuffle state.forcesOfPower power
-#        for idx, unit of _.take units, -powCounts.adjustment
+#        for unit in _.take units, -powCounts.adjustment
 #          order = new ord.Order {
 #            'unit': unit,
 #            'action': 'disband'}
