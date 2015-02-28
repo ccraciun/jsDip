@@ -142,6 +142,12 @@ root.Judge = class Judge
         o.state = 'resolved'
         o.result = 'fail'
 
+    for idx, order of orders
+      order.result = resolve order
+      order.finishOrder()
+
+    return orders
+
   judgeAdjustment: (state, orders) =>
     counts = state.counts
     for idx, order of orders
