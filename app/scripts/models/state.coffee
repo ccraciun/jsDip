@@ -32,7 +32,6 @@ root.State = class State
       @counts[power].supplyCenters = @supplyCenters[power]?.length ? 0
 
       # Count forces
-      # If custom forces are defined, we might needs defs here.
       @counts[power].forces = (f for f in @forces when f.owner is power).length
       @counts[power].adjustment = @counts[power].supplyCenters - @counts[power].forces
 

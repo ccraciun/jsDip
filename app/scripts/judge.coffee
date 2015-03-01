@@ -4,6 +4,7 @@ _ = require 'underscore'
 ord = require './models/order'
 unt = require './models/unit'
 
+# TODO(cosmic): Add JudgeOrder class extending Order. (eg. holding order.state)
 root.Judge = class Judge
   constructor: () ->
     @phaseJudge = {
@@ -40,18 +41,66 @@ root.Judge = class Judge
   judgeMovement: (state, orders) ->
     dependencies = []
 
+    adjudicateContenders = (contenders) ->
+      # No opposition.
+      return contenders[0] if contenders.length is 1
+
+      support = {}
+      for contender in contenders
+        if contender.state is 'resolved' and contender.succeeds()
+          return 'fail'
+        if contender.state is 'resolved' and contender.fails()
+          continue
+        support[contender] = (order for order in orders \
+                              when order.action is 'support' and order.child == contender \
+                              and resolve order is 'success').length
+
+      winners = (order for order in contenders \
+                 when support[contender] == _.max(_.values(support)))
+
+      return winners
+
     adjudicateMove = (o) ->
-      return 'success'
+      unless global.defs.adjacent[o.dst][o.unit.type]
+        o.failOrder "Can't move fleet to land or army to sea"
+        return 'fail'
+      unless o.dst in global.defs.adjacent[o.unit.loc][o.unit.type]
+        # Non-adjacent move. TODO(cosmic): Check for convoys.
+        return 'fail'
+
+      contenders = (order for order in orders \
+                    when order.action is 'move' and order.dst == o.dst)
+      throw "Order not in contenders." if o not in contenders
+
+      if dstUnit = state.forceAt(o.dst)
+        dstUnitSuccessfulOrders = (order for order in orders \
+                                   when order.unit == dstUnit and resolve o is 'success')
+        throw "One unit has multiple successful orders! successes: #{JSON.stringify(dstUnitSuccessfulOrders)}" if dstUnitSuccessfulOrders.length > 1
+        if dstUnitSuccessfulOrders[0]?.action is 'hold'
+          return 'fail'
+        unless dstUnitSuccessfulOrders[0]?.action is 'move'
+          # Unit has no successful move orders, it acts as if holding.
+          contenders.push new ord.Order {'unit': dstUnit, 'action': 'hold', 'dst': o.dst}
+
+      winners = adjudicateContenders contenders
+
+      # Two winners means everyone loses.
+      return 'fail' if winners.length > 1
+      return if o == winners[0] then 'success' else 'fail'
 
     adjudicateHold = (o) ->
-      return 'success'
+      contenders = (order for order in orders \
+                    when order.action is 'move' and order.dst == o.dst)
 
     adjudicateSupport = (o) ->
       if o.child.unit == o.unit
-        o.failOrder "Invalid support: unit can't support itself. 6.A.8"
+        o.failOrder "Unit can't support itself. 6.A.8"
         return 'fail'
       unless o.child.action in ['move', 'hold']
-        o.failOrder "Invalid support: #{child.str} not a supportable order."
+        o.failOrder "#{child.str} not a supportable order."
+        return 'fail'
+      unless o.child.dst in global.defs.adjacent[o.unit.loc][o.unit.type]
+        o.failOrder "Destination not reachable."
         return 'fail'
       return 'success'
 

@@ -8,9 +8,9 @@ root.Defs = class Defs
     # @phases       map of season -> list of phases in that season.
     # @headquarters list of headquarters per belligerent.
     # @force_types  list of force types, (e.g. [A, F] as army, fleet.
-    # TODO(cosmic): @coords does not belong here!
     # @subregions   regions with multiple coasts.
     # @aliases      aliases for each region
+    # TODO(cosmic): @coords does not belong here!
     # @coords       coordinates where forces will be drawn for each region.
     # @adjacent     adjacency list per region by force type.
     for key, val of defs when val? and key in ['startDate', 'belligerents', 'seasons', 'phases', 'headquarters', 'force_types', 'coords', 'subregions', 'aliases', 'adjacent']
@@ -23,3 +23,4 @@ root.Defs = class Defs
 
   canonicalName: (name) ->
     return @canonical[name.toLowerCase().replace('_', ' ')]
+
