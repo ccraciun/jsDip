@@ -3,7 +3,7 @@ var yaml = require('js-yaml');
 var fs = require('fs');
 var _ = require('underscore');
 
-require('coffee-script');
+require('coffee-script/register');
 
 var jg = require('../../app/scripts/judge');
 var st = require('../../app/scripts/models/state');

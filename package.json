@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "apache-server-configs": "^2.7.1",
+    "coffee-script": "^1.9.1",
     "connect": "^3.0.1",
     "connect-livereload": "^0.5.0",
     "del": "^0.1.0",
@@ -29,14 +30,14 @@
     "gulp-uglify": "^1.0.1",
     "gulp-useref": "^1.0.2",
     "gulp-util": "^3.0.1",
+    "js-yaml": "~3.2.6",
     "jshint-stylish": "^1.0.0",
     "main-bower-files": "^2.1.0",
     "opn": "^1.0.0",
     "serve-index": "^1.1.4",
     "serve-static": "^1.4.0",
     "should": "~5.0.0",
-    "wiredep": "^2.0.0",
-    "js-yaml": "~3.2.6",
-    "underscore": "~1.7.0"
+    "underscore": "~1.7.0",
+    "wiredep": "^2.0.0"
   }
 }
