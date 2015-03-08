@@ -1,11 +1,12 @@
 root = exports ? this
 
-root.GameDate = class GameDate
-  constructor: (date, defs) ->
-    @year = date.year
-    @season = date.season
-    @phase = date.phase
-    @defs = defs ? date.defs
+base = require './base'
+
+root.GameDate = class GameDate extends base.BaseModel
+  # @year Game year.
+  # @season Season of the year (eg, for standard ['spring', 'fall', winter']).
+  # @phase Phase of year (eg, for standard ['movement', 'retreat', 'adjustment']).
+  modelMust: @::['modelMust'].concat ['phase', 'season', 'year']
 
   get_next = (arr, it) ->
     idx = arr.indexOf it
@@ -13,9 +14,9 @@ root.GameDate = class GameDate
       throw "#{arr} doesn't contain #{it}"
     return arr[idx+1]
 
-  next: (defs) =>
+  next: () ->
     # TODO(cosmic): Tests?
-    defs = defs ? @defs
+    defs = global.defs
     year = @year
     season = @season
     phase = get_next defs.phases[@season] @phase
@@ -34,5 +35,4 @@ root.GameDate = class GameDate
     return new GameDate {
       'year': year,
       'season': season,
-      'phase': phase,
-      'defs': defs }
+      'phase': phase}

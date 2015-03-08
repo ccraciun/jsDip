@@ -1,26 +1,30 @@
 root = exports ? this
 
 unt = require './unit'
+base = require './base'
 
 # TODO(cosmic): Locations need a class for normalization.
 
-root.Order = class Order
+root.Order = class Order extends base.BaseModel
+  # @owner Power giving order.
+  # @unit Actor unit.
+  # @action Action as string.
+  # @src Source unit. Currently only for convoying.
+  # @dst Destionation/target location for action.
+  # @str String from which order was created (if any).
+  # @child Support and convoy actions need to be lent to a specific order.
+  #        In particular, we can support holds, but convoy child orders should be moves.
+  # @result Result of order in ('fail', 'success', undefined).
+  # @whyFail If order fails, list of reasons why.
+  modelMust: @::['modelMust'].concat ['owner', 'unit', 'action', 'dst']
+  modelMay: @::['modelMay'].concat ['str', 'child', 'src', 'result', 'whyFail']
+
   constructor: (order) ->
-    # @owner Power giving order.
-    # @unit Actor unit.
-    # @action Action as string.
-    # @src Source unit. Currently only for convoying.
-    # @dst Destionation/target location for action.
-    # @str String from which order was created (if any).
-    # @child Support and convoy actions need to be lent to a specific order.
-    #        In particular, we can support holds, but convoy child orders should be moves.
-    # @result Result of order in ('fail', 'success', undefined).
-    # @whyFail If order fails, list of reasons why.
-    for key, val of order when val? and key in ['owner', 'unit', 'action', 'src', 'dst', 'str', 'child', 'result', 'whyFail']
-      @[key] = val
+    super order
 
     for key in ['src', 'dst'] when @[key]
       @[key] = global.defs.canonicalName @[key]
+    # TODO(comic): create objects for unit, child here.
 
   failOrder: (why) ->
     @result = 'fails'
@@ -36,7 +40,6 @@ root.Order = class Order
     return @result == 'success'
 
   @fromString: (str) ->
-    # TODO(cosmic): Pull all order failure logic out of this class!
     try
       # startsWith 'build': build (unit)
       if 0 == str.toLowerCase().indexOf 'build'
