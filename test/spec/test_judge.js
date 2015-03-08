@@ -23,9 +23,6 @@ var root = (typeof global !== "undefined" && global !== null) ? global : this;
 
     var judgesNoFailWhyOnSuccess = function (order) {
         if (order.test_expectedSucceeds) {
-            if(order.whyFail) {
-                console.log(JSON.stringify(order, null, 2));
-            }
             should.not.exist(order.whyFail);
         }
     };

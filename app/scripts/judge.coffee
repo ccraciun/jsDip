@@ -4,6 +4,10 @@ _ = require 'underscore'
 ord = require './models/order'
 unt = require './models/unit'
 
+class GameOrder extends ord.Order
+  # @resolution Order resolution in ('guessing', 'resolved', undefined)
+  modelMay: @::['modelMay'].concat ['resolution']
+
 # TODO(cosmic): Add JudgeOrder class extending Order. (eg. holding order.state)
 root.Judge = class Judge
   constructor: () ->
@@ -86,11 +90,19 @@ root.Judge = class Judge
 
       # Two winners means everyone loses.
       return 'fail' if winners.length > 1
+
       return if o == winners[0] then 'success' else 'fail'
 
     adjudicateHold = (o) ->
       contenders = (order for order in orders \
                     when order.action is 'move' and order.dst == o.dst)
+      contenders.push o
+
+      winners = adjudicateContenders contenders
+      # Standoff means holds win
+      return 'success' if winners.length > 1
+
+      return if o == winners[0] then 'success' else 'fail'
 
     adjudicateSupport = (o) ->
       if o.child.unit == o.unit
