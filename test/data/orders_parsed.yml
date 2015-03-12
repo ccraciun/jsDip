@@ -63,6 +63,7 @@
       dst: Yorkshire
       str: F London - Yorkshire
     str: A Wales Supports F London - Yorkshire
+    dst: Yorkshire
 
 - order:
     "A Tyrolia Supports A Venice"
@@ -78,3 +79,5 @@
         loc: Venice
       action: hold
       str: A Venice
+      dst: Venice
+    dst: Venice

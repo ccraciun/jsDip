@@ -3,14 +3,26 @@ var should = require('should');
 var yaml = require('js-yaml');
 var fs = require('fs');
 var _ = require('underscore');
+
+require('coffee-script/register');
+
+var dfs = require('../../app/scripts/models/defs');
 var order = require('../../app/scripts/models/order');
+
+var root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
 
 (function () {
     'use strict';
 
-    var parsesOrder = function (ordr, answer) {
+    global.defs = new dfs.Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
+
+    var parsesOrder = function (ordr, ans) {
         var parsed = order.Order.fromString(ordr);
-        if (answer !== undefined) {
+        if (ans !== undefined) {
+            if (ans.child) {
+                ans.child = new order.Order(ans.child);
+            }
+            var answer = new order.Order(ans);
             parsed.should.eql(answer);
         }
     };

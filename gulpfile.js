@@ -135,5 +135,5 @@ gulp.task('default', ['clean'], function () {
 
 gulp.task('test', function () {
     return gulp.src('test/spec/*.js', {read: false})
-        .pipe(mocha({reporter: 'nyan'}));
+        .pipe(mocha({reporter: 'spec'}));
 });

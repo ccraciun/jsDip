@@ -4,10 +4,10 @@
         "season": "Winter",
         "phase": "Adjustment"
     },
-    "active": [
+    "activePowers": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
     ],
-    "SCs": {
+    "supplyCenters": {
         "Austria": ["Budapest", "Trieste", "Vienna"],
         "England": ["Edinburgh", "Liverpool", "London"],
         "France": ["Brest", "Marseilles", "Paris"],
