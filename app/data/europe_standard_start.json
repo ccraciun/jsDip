@@ -2,7 +2,7 @@
     "date": {
         "year": 1901,
         "season": "Spring",
-        "phase": "Movement",
+        "phase": "Movement"
     },
     "activePowers": [
         "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
