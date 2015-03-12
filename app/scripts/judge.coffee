@@ -4,13 +4,85 @@ _ = require 'underscore'
 ord = require './models/order'
 unt = require './models/unit'
 
-class GameOrder extends ord.Order
-  # @resolution Order resolution in ('guessing', 'resolved', undefined)
-  modelMay: @::['modelMay'].concat ['resolution']
 
-# TODO(cosmic): Add JudgeOrder class extending Order. (eg. holding order.state)
+class JudgeOrder extends ord.Order
+  # @state Order resolution state in ('guessing', 'resolved', undefined)
+  modelMay: @::['modelMay'].concat ['state']
+
+  resolveOrder: ->
+    @finishOrder
+    @state = 'resolved'
+
+  resolved: ->
+    return @state is 'resolved'
+
+  @fromOrder: (order) ->
+    orderByAction = {
+        'move': MoveOrder,
+        'hold': HoldOrder,
+        'support': SupportOrder,
+        'convoy': ConvoyOrder,
+    }
+
+    return new (orderByAction[order.action] ? JudgeOrder) order
+
+
+class HoldOrder extends JudgeOrder
+  constructor: (order) ->
+    super order
+
+
+class MoveOrder extends JudgeOrder
+  constructor: (order) ->
+    super order
+
+    if @dst == @unit.loc
+      @invalidateOrder "Can't move to own location."
+      @resolveOrder()
+    unless global.defs.adjacent[@dst][@unit.type]
+      @invalidateOrder "Can't move fleet to land or army to sea"
+      @resolveOrder()
+
+
+class SupportOrder extends JudgeOrder
+  constructor: (order) ->
+    super order
+
+    @child = JudgeOrder.fromOrder @child
+
+    if @child.invalid()
+      @invalidateOrder @child.whyFail
+      @resolveOrder()
+    if @child.unit == @unit
+      @invalidateOrder "Unit can't support itself. 6.A.8"
+      @resolveOrder()
+    unless @child.action in ['move', 'hold']
+      @invalidateOrder "#{child.str} not a supportable order"
+      @resolveOrder()
+    unless @child.dst in global.defs.adjacent[@unit.loc][@unit.type]
+      @invalidateOrder "Destination not reachable."
+      @resolveOrder()
+
+
+class ConvoyOrder extends JudgeOrder
+  constructor: (order) ->
+    super order
+
+    @child = JudgeOrder.fromOrder @child
+
+    if @child.invalid()
+      @invalidateOrder @child.whyFail
+      @resolveOrder()
+    if @child.action isnt 'move'
+      @invalidateOrder "Could not parse #{child.str} as move."
+      @resolveOrder()
+    unless @child.unit.type in global.defs.canConvoy[@unit.type]
+      @invalidateOrder "Type #{@unit.type} not allowed to convoy type #{@child.unit.type}."
+      @resolveOrder()
+
+
 root.Judge = class Judge
-  constructor: () ->
+  constructor: ->
     @phaseJudge = {
       'Movement': @judgeMovement,
       'Retreat': @judgeNaive,
@@ -18,17 +90,18 @@ root.Judge = class Judge
     }
 
   judge: (state, orders) ->
-    # Return a list of judged (annotated with status) orders.
-    orders = _.extend([], orders)
+    # Returns a list of judged (annotated with result) orders.
+
+    orders = (JudgeOrder.fromOrder order for order in orders)
 
     # Common failure cases.
     for order in orders
-      if order.fail?
-        order.status = 'resolved'
       if order.owner not in state.activePowers
         order.failOrder "#{order.owner} is not an active power."
       if order.owner not in global.defs.belligerents
         order.failOrder "#{order.owner} is not belligerent."
+      if order.fails()
+        order.finishOrder()
 
     # Judge orders for phase.
     @phaseJudge[state.date.phase](state, orders)
@@ -45,31 +118,31 @@ root.Judge = class Judge
   judgeMovement: (state, orders) ->
     dependencies = []
 
+    # TODO(cosmic): Refactor contender.state is 'resolved' and contender.succeeds()
     adjudicateContenders = (contenders) ->
+      contenders = (contender for contender in contenders when not (contender.resolved() and contender.fails()))
       # No opposition.
       return contenders[0] if contenders.length is 1
 
       support = {}
       for contender in contenders
         if contender.state is 'resolved' and contender.succeeds()
-          return 'fail'
-        if contender.state is 'resolved' and contender.fails()
-          continue
-        support[contender] = (order for order in orders \
-                              when order.action is 'support' and order.child == contender \
-                              and resolve order is 'success').length
+          # Already adjudicated. Should this happen?
+          return [contender]
+        support[contender.unit.loc] = (order for order in orders \
+                                       when (order.action is 'support') \
+                                            and (order.child.matches contender) \
+                                            and ((resolve order) is 'success')).length
 
       winners = (order for order in contenders \
-                 when support[contender] == _.max(_.values(support)))
+                 when support[order.unit.loc] == _.max(_.values(support)))
 
       return winners
 
     adjudicateMove = (o) ->
-      unless global.defs.adjacent[o.dst][o.unit.type]
-        o.failOrder "Can't move fleet to land or army to sea"
-        return 'fail'
       unless o.dst in global.defs.adjacent[o.unit.loc][o.unit.type]
         # Non-adjacent move. TODO(cosmic): Check for convoys.
+        o.failOrder "Non-adjacent move. TODO(cosmic): Convoys!"
         return 'fail'
 
       contenders = (order for order in orders \
@@ -81,14 +154,16 @@ root.Judge = class Judge
                                    when order.unit == dstUnit and resolve o is 'success')
         throw "One unit has multiple successful orders! successes: #{JSON.stringify(dstUnitSuccessfulOrders)}" if dstUnitSuccessfulOrders.length > 1
         if dstUnitSuccessfulOrders[0]?.action is 'hold'
+          o.failOrder "Tried to move to destination, but unit holds successfully."
           return 'fail'
         unless dstUnitSuccessfulOrders[0]?.action is 'move'
           # Unit has no successful move orders, it acts as if holding.
-          contenders.push new ord.Order {'unit': dstUnit, 'action': 'hold', 'dst': o.dst}
+          contenders.push new JudgeOrder {'unit': dstUnit, 'action': 'hold', 'dst': o.dst}
 
       winners = adjudicateContenders contenders
 
       # Two winners means everyone loses.
+      o.failOrder "There was a standoff at the destination."
       return 'fail' if winners.length > 1
 
       return if o == winners[0] then 'success' else 'fail'
@@ -105,22 +180,36 @@ root.Judge = class Judge
       return if o == winners[0] then 'success' else 'fail'
 
     adjudicateSupport = (o) ->
-      if o.child.unit == o.unit
-        o.failOrder "Unit can't support itself. 6.A.8"
+      # Direct attack cuts support.
+      direct_attack = (order for order in orders \
+                       when order.action is 'move' and order.dst == o.unit.loc and \
+                            o.unit.loc in global.defs.adjacent[order.unit.loc][order.unit.type])
+      if direct_attack.length > 0
         return 'fail'
-      unless o.child.action in ['move', 'hold']
-        o.failOrder "#{child.str} not a supportable order."
-        return 'fail'
-      unless o.child.dst in global.defs.adjacent[o.unit.loc][o.unit.type]
-        o.failOrder "Destination not reachable."
-        return 'fail'
+
+      # TODO(cosmic): Cutting support through a convoy.
+
       return 'success'
 
     adjudicateConvoy = (o) ->
-      if o.child.action isnt 'move'
-        o.failOrder "Invalid convoy: could not parse #{child.str} as move."
+      unless state.forceAt(o.src) == o.child.unit
+        o.failOrder "Order to convoy unit #{JSON.stringify(o.child.unit)} doesn't match unit on map #{JSON.stringify(state.forceAt(o.src))}."
         return 'fail'
-      return 'success'
+
+      contenders = (order for order in orders \
+                    when order.action is 'move' and order.dst == o.unit.loc)
+      if contenders.length == 0
+        return 'success'
+
+      hold = new JudgeOrder {'unit': dstUnit, 'action': 'hold', 'dst': o.dst}
+      contenders.push hold
+      winners = adjudicateContenders contenders
+
+      if winners.length > 1
+        return 'success'
+      if  winners[0] == hold
+        return 'success'
+      return 'fail'
 
     adjudicate = (o) ->
       # Must not use o.result, instead call resolve to get resolution for dependencies.
@@ -137,6 +226,7 @@ root.Judge = class Judge
         return 'fail'
 
     resolve = (o) ->
+      # Returns 'success' or 'fail'
       # Adapted from `The Math of Adjudication' by Lucas Kruijswijk
       # http://www.diplom.org/Zine/S2009M/Kruijswijk/DipMath_Chp1.htm
       # Also `Creating an Adjudicator' by Martin Bruse
