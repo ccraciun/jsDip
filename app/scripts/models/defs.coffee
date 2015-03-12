@@ -1,20 +1,27 @@
 root = exports ? this
 
-root.Defs = class Defs
+base = require './base'
+
+root.Defs = class Defs extends base.BaseModel
+  # @startDate    considered the start of the game for turn calculations.
+  # @belligerents involved powers.
+  # @seasons      list of seasons in each year.
+  # @phases       map of season -> list of phases in that season.
+  # @headquarters list of headquarters per belligerent.
+  # @force_types  list of force types, (e.g. [A, F] as army, fleet.
+  # @canConvoy     What unit types can convoy what unit types.
+  # @subregions   regions with multiple coasts.
+  # @aliases      aliases for each region
+  # TODO(cosmic): @coords does not belong here!
+  # @coords       coordinates where forces will be drawn for each region.
+  # @adjacent     adjacency list per region by force type.
+  modelMust: @::['modelMust'].concat ['startDate', 'belligerents', 'seasons', 'phases',
+                                      'headquarters', 'force_types', 'canConvoy',
+                                      'subregions','aliases', 'adjacent']
+  modelMay: @::['modelMay'].concat ['coords']
+
   constructor: (defs) ->
-    # @startDate    considered the start of the game for turn calculations.
-    # @belligerents involved powers.
-    # @seasons      list of seasons in each year.
-    # @phases       map of season -> list of phases in that season.
-    # @headquarters list of headquarters per belligerent.
-    # @force_types  list of force types, (e.g. [A, F] as army, fleet.
-    # @subregions   regions with multiple coasts.
-    # @aliases      aliases for each region
-    # TODO(cosmic): @coords does not belong here!
-    # @coords       coordinates where forces will be drawn for each region.
-    # @adjacent     adjacency list per region by force type.
-    for key, val of defs when val? and key in ['startDate', 'belligerents', 'seasons', 'phases', 'headquarters', 'force_types', 'coords', 'subregions', 'aliases', 'adjacent']
-      @[key] = val
+    super defs
 
     @canonical = {}
     for name, aliases of @aliases

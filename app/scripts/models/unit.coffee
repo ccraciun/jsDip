@@ -13,6 +13,7 @@ root.Unit = class Unit extends base.BaseModel
     super unit
 
     @loc = global.defs.canonicalName @loc if @loc
+    @type = @type[0].toUpperCase()  # TODO(cosmic): Coordinate with defs.unit_types.
 
   @fromString: (str) ->
     parts = str.split ' '

@@ -24,20 +24,29 @@ root.Order = class Order extends base.BaseModel
 
     for key in ['src', 'dst'] when @[key]
       @[key] = global.defs.canonicalName @[key]
-    # TODO(comic): create objects for unit, child here.
+    @unit = new unt.Unit @unit
+    @child = new Order @child if @child?
 
   failOrder: (why) ->
-    @result = 'fails'
+    @result = 'fail'
+    (@whyFail = @whyFail ? []).push why
+
+  invalidateOrder: (why) ->
+    @result = 'invalid'
     (@whyFail = @whyFail ? []).push why
 
   finishOrder: ->
-    @result = if @whyFail then 'fail' else @result ? 'success'
+    @result = @result ? if @whyFail then 'fail' else 'success'
+
+  invalid: ->
+    return @result is 'invalid'
 
   fails: ->
-    return @result == 'fail'
+    return @result in ['fail', 'invalid']
 
   succeeds: ->
-    return @result == 'success'
+    return not @fails()
+
 
   @fromString: (str) ->
     try
@@ -87,7 +96,7 @@ root.Order = class Order extends base.BaseModel
       whyFail = (whyFail ? []) + child.whyFail
 
     if whyFail?
-      result = 'fails'
+      result = 'fail'
 
     return new Order {'unit': unit, \
                       'action': action, \
