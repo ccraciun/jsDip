@@ -3,11 +3,30 @@
   "engines": {
     "node": ">=0.10.0"
   },
+  "browser": {
+    "snap.svg": "./bower_components/snap.svg/dist/snap.svg.js"
+  },
+  "browserify-shim": {
+    "snap.svg": {
+      "exports": "Snap"
+    }
+  },
+  "browserify": {
+    "transform": [
+      "coffeeify",
+      "hbsfy",
+      "browserify-shim"
+    ]
+  },
   "devDependencies": {
     "apache-server-configs": "^2.7.1",
+    "browserify": "^9.0.3",
+    "browserify-shim": "^3.8.3",
     "coffee-script": "^1.9.1",
+    "coffeeify": "^1.0.0",
     "connect": "^3.0.1",
     "connect-livereload": "^0.5.0",
+    "debowerify": "^1.2.0",
     "del": "^0.1.0",
     "gulp": "^3.6.0",
     "gulp-autoprefixer": "^1.0.1",
@@ -30,6 +49,8 @@
     "gulp-uglify": "^1.0.1",
     "gulp-useref": "^1.0.2",
     "gulp-util": "^3.0.1",
+    "handlebars": "^3.0.0",
+    "hbsfy": "^2.2.1",
     "js-yaml": "~3.2.6",
     "jshint-stylish": "^1.0.0",
     "main-bower-files": "^2.1.0",
@@ -38,6 +59,11 @@
     "serve-static": "^1.4.0",
     "should": "~5.0.0",
     "underscore": "~1.7.0",
+    "vinyl-source-stream": "^1.1.0",
     "wiredep": "^2.0.0"
+  },
+  "dependencies": {
+    "jquery": "^2.1.3",
+    "underscore": "^1.8.2"
   }
 }
