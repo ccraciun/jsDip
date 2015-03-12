@@ -44,11 +44,13 @@ var root = (typeof global !== "undefined" && global !== null) ? global : this;
 
                 var judge = new jg.Judge();
 
-                orders = judge.judge(state, orders);
+                var judged_orders = judge.judge(state, orders);
 
                 for (var orderNum in orders) {
+                    var j_o = judged_orders[orderNum];
                     var o = orders[orderNum];
-                    var fun = _.partial(judgesCorrectly, o);
+                    j_o.test_expectedSucceeds = o.test_expectedSucceeds;
+                    var fun = _.partial(judgesCorrectly, j_o);
                     it('should judge order ' + o.str + ' correctly', fun);
                     if (o.test_expectedSucceeds) {
                         fun = _.partial(judgesNoFailWhyOnSuccess, o);
