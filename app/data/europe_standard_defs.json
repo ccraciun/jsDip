@@ -73,6 +73,10 @@
     "A",
     "F"
   ],
+  "canConvoy": {
+    "A": [],
+    "F": ["A"]
+  },
   "subregions": {
     "Bulgaria": [
       "Bulgaria (ec)",
