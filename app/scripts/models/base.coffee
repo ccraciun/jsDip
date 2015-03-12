@@ -1,8 +1,6 @@
-root = exports ? this
-
 _ = require 'underscore'
 
-root.BaseModel = class BaseModel
+module.exports = class BaseModel
   modelMust: []
   modelMay: []
 

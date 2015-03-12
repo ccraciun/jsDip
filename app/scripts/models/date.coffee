@@ -1,8 +1,8 @@
 root = exports ? this
 
-base = require './base'
+BaseModel = require './base'
 
-root.GameDate = class GameDate extends base.BaseModel
+module.exports = class GameDate extends BaseModel
   # @year Game year.
   # @season Season of the year (eg, for standard ['spring', 'fall', winter']).
   # @phase Phase of year (eg, for standard ['movement', 'retreat', 'adjustment']).

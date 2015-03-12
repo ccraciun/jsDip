@@ -1,8 +1,6 @@
-root = exports ? this
+BaseModel = require './base'
 
-base = require './base'
-
-root.Unit = class Unit extends base.BaseModel
+module.exports = class Unit extends BaseModel
   # @type Unit type for example {A, F}.
   # @loc Location of Unit.
   # @owner Unit owner.
@@ -23,4 +21,3 @@ root.Unit = class Unit extends base.BaseModel
     loc = loc.trim()
 
     return new Unit {'type': type, 'loc': loc}
-

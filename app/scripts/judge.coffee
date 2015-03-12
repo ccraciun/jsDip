@@ -1,11 +1,8 @@
-root = exports ? this
-
 _ = require 'underscore'
-ord = require './models/order'
-unt = require './models/unit'
+Order = require './models/order'
 
 
-class JudgeOrder extends ord.Order
+class JudgeOrder extends Order
   # @state Order resolution state in ('guessing', 'resolved', undefined)
   modelMay: @::['modelMay'].concat ['state']
 
@@ -81,7 +78,7 @@ class ConvoyOrder extends JudgeOrder
       @resolveOrder()
 
 
-root.Judge = class Judge
+module.exports = class Judge
   constructor: ->
     @phaseJudge = {
       'Movement': @judgeMovement,
