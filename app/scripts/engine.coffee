@@ -2,9 +2,9 @@
 HistoryBox = window.HistoryBox
 DipMap = window.DipMap
 Menu = window.Menu
-State = window.State
+State = require './models/state'
 
-class window.DipEngine
+module.exports = class DipEngine
   constructor: () ->
     @dipMap = new DipMap("#map")
     @historyBox = new HistoryBox("#messageBox")

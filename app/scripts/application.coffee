@@ -1,3 +1,5 @@
+DipEngine = require('./engine')
+
 bootstrap = ->
   # NOTE: If this function gets beyond ~5 lines, it should be refactored.
   $().ready ->
