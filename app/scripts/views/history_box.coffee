@@ -1,6 +1,6 @@
 $ = window.$
 
-class window.HistoryBox
+module.exports = class HistoryBox
   constructor: (selector) ->
     @$el = $(selector)
 

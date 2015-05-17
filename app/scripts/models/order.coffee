@@ -21,7 +21,7 @@ module.exports = class Order extends BaseModel
     super order
 
     for key in ['src', 'dst'] when @[key]
-      @[key] = global.defs.canonicalName @[key]
+      @[key] = window.defs.canonicalName @[key]
     @unit = new Unit @unit
     @child = new Order @child if @child?
 
