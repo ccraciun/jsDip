@@ -40,6 +40,14 @@ var Defs = require('../../app/scripts/models/defs');
                     }
                 }
 
+                if (doc[testNum].generateForces) {
+                    for (var orderIdx in orders) {
+                        var unit = orders[orderIdx].unit;
+                        unit.owner = orders[orderIdx].owner;
+                        state.forces.push(unit);
+                    }
+                }
+
                 var judge = new Judge();
 
                 var judged_orders = judge.judge(state, orders);

@@ -16,8 +16,8 @@
         "Russia": ["Moscow", "Sevastopol", "St_Petersburg", "Warsaw"],
         "Turkey": ["Ankara", "Constantinople", "Smyrna"],
         "Independent": ["Belgium", "Bulgaria", "Denmark", "Greece", "Norway",
-                        "Portugal", "Rumania", "Serbia", "Spain", "Sweden",
-                        "Tunis"]
+                      "Portugal", "Rumania", "Serbia", "Spain", "Sweden",
+                      "Tunis"]
     },
     "forces": {
         "Austria": {
