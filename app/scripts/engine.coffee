@@ -1,5 +1,5 @@
 # Future-proofing, for modularized code.
-HistoryBox = window.HistoryBox
+HistoryBox = require './views/history_box'
 DipMap = window.DipMap
 Menu = require './views/menu'
 State = require './models/state'
