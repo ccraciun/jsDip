@@ -1,8 +1,6 @@
-root = exports ? this
+BaseModel = require './base'
 
-base = require './base'
-
-root.Unit = class Unit extends base.BaseModel
+module.exports = class Unit extends BaseModel
   # @type Unit type for example {A, F}.
   # @loc Location of Unit.
   # @owner Unit owner.
@@ -12,7 +10,7 @@ root.Unit = class Unit extends base.BaseModel
   constructor: (unit) ->
     super unit
 
-    @loc = global.defs.canonicalName @loc if @loc
+    @loc = window.defs.canonicalName @loc if @loc
     @type = @type[0].toUpperCase()  # TODO(cosmic): Coordinate with defs.unit_types.
 
   @fromString: (str) ->
@@ -23,4 +21,3 @@ root.Unit = class Unit extends base.BaseModel
     loc = loc.trim()
 
     return new Unit {'type': type, 'loc': loc}
-

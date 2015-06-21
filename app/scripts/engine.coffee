@@ -1,10 +1,11 @@
 # Future-proofing, for modularized code.
 HistoryBox = window.HistoryBox
 DipMap = window.DipMap
-Menu = window.Menu
-State = window.State
+Menu = require './views/menu'
+State = require './models/state'
+Defs = require './models/defs'
 
-class window.DipEngine
+module.exports = class DipEngine
   constructor: () ->
     @dipMap = new DipMap("#map")
     @historyBox = new HistoryBox("#messageBox")
@@ -41,6 +42,7 @@ class window.DipEngine
 
     # TODO(ccraciun): Support loading jDip map data..
     $.getJSON(defsUrl).done((data) =>
+      window.defs = new Defs(data) # not sure if correct, but unreaks some .js
       @defs = data
       @dipMap.setDefs data
       console.log "done loadMap"
@@ -57,7 +59,7 @@ class window.DipEngine
     @printCounts
     @showTime
     @dipMap.drawState @state
-    for pow in @state.active
+    for pow in @state.activePowers
       $("<span class=\"separator\"> | </span>").appendTo $("#menu #powers")
       $("<a href=\"#\" class=\"menu-item power " + pow.toLowerCase() + "\"><span>" + pow + "</span></a>").appendTo $("#menu #powers")
 

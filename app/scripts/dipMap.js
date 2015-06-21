@@ -196,17 +196,12 @@ function DipMap(mapSelector) {
         };
 
         // Update forces
-        var forces = map.select('g#ForcesLayer');
-        forces.selectAll('g').remove();
-        for (power in state.forces) {
-            forces = state.forces[power];
-            // TODO(ccraciun): Support different force types.
-            forces.armies.forEach(function (org) {
-                drawForce(power, 'A', org);
-            });
-            forces.fleets.forEach(function (org) {
-                drawForce(power, 'F', org);
-            });
+        var mapForces = map.select('g#ForcesLayer');
+        if (mapForces) {
+          mapForces.selectAll('g').remove();
+        }
+        for (unit of state.forces) {
+            drawForce(unit.owner, unit.type, unit.loc)
         };
     };
 

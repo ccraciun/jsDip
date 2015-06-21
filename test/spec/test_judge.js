@@ -5,17 +5,15 @@ var _ = require('underscore');
 
 require('coffee-script/register');
 
-var jg = require('../../app/scripts/judge');
-var st = require('../../app/scripts/models/state');
-var ord = require('../../app/scripts/models/order');
-var dfs = require('../../app/scripts/models/defs');
-
-var root = (typeof global !== "undefined" && global !== null) ? global : this;
+var Judge = require('../../app/scripts/judge');
+var State = require('../../app/scripts/models/state');
+var Order = require('../../app/scripts/models/order');
+var Defs = require('../../app/scripts/models/defs');
 
 (function () {
     'use strict';
 
-    global.defs = new dfs.Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
+    global.defs = new Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
 
     var judgesCorrectly = function (order) {
         (order.succeeds()).should.equal(order.test_expectedSucceeds);
@@ -31,18 +29,18 @@ var root = (typeof global !== "undefined" && global !== null) ? global : this;
         var doc = yaml.safeLoad(fs.readFileSync('test/data/rule_tests.yml', 'utf8'));
         for (var testNum in doc) {
             describe('for Testcase ' + doc[testNum].testCaseID, function () {
-                var state = new st.State(doc[testNum].state);
+                var state = new State(doc[testNum].state);
                 var orders = [];
                 for (var power in doc[testNum].orders) {
                     for (var orderStr in doc[testNum].orders[power]) {
-                        var order = ord.Order.fromString(orderStr);
+                        var order = Order.fromString(orderStr);
                         order.owner = power;
                         order.test_expectedSucceeds = doc[testNum].orders[power][orderStr];
                         orders.push(order);
                     }
                 }
 
-                var judge = new jg.Judge();
+                var judge = new Judge();
 
                 var judged_orders = judge.judge(state, orders);
 

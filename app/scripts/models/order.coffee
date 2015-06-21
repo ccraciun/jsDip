@@ -1,11 +1,9 @@
-root = exports ? this
-
-unt = require './unit'
-base = require './base'
+BaseModel = require './base'
+Unit = require './unit'
 
 # TODO(cosmic): Locations need a class for normalization.
 
-root.Order = class Order extends base.BaseModel
+module.exports = class Order extends BaseModel
   # @owner Power giving order.
   # @unit Actor unit.
   # @action Action as string.
@@ -23,8 +21,8 @@ root.Order = class Order extends base.BaseModel
     super order
 
     for key in ['src', 'dst'] when @[key]
-      @[key] = global.defs.canonicalName @[key]
-    @unit = new unt.Unit @unit
+      @[key] = window.defs.canonicalName @[key]
+    @unit = new Unit @unit
     @child = new Order @child if @child?
 
   failOrder: (why) ->
@@ -53,26 +51,26 @@ root.Order = class Order extends base.BaseModel
       # startsWith 'build': build (unit)
       if 0 == str.toLowerCase().indexOf 'build'
         action = 'build'
-        unit = unt.Unit.fromString (str.slice 6)
+        unit = Unit.fromString (str.slice 6)
 
       # endsWith 'hold': (unit) hold
       else if 'hold' == str.toLowerCase().match('hold$')?[0]
         # TODO(cosmic): match/slice hold and holds
         action = 'hold'
-        unit = unt.Unit.fromString (str.slice 0, str.length - 5)
+        unit = Unit.fromString (str.slice 0, str.length - 5)
         dst = unit.loc
 
       # (unit) supports (order)
       else if (parts = str.split(/supports?/i)).length > 1
         action = 'support'
-        unit = unt.Unit.fromString parts[0].trim()
+        unit = Unit.fromString parts[0].trim()
         child = Order.fromString parts[1].trim()
         dst = child.dst
 
       # (unit) convoy (unit) - (destination)
       else if (parts = str.split(/convoys?/i)).length > 1
         action = 'convoy'
-        unit = unt.Unit.fromString parts[0].trim()
+        unit = Unit.fromString parts[0].trim()
         child = Order.fromString parts[1].trim()
         src = child.unit.loc
         dst = child.dst
@@ -81,13 +79,13 @@ root.Order = class Order extends base.BaseModel
       else if (parts = str.split '-').length > 1
         action = 'move'
         parts = str.split '-'
-        unit = unt.Unit.fromString parts[0].trim()
+        unit = Unit.fromString parts[0].trim()
         dst = parts[1].trim()
 
       # declaring just (unit) is a hold, fallback case.
       else
         action = 'hold'
-        unit = unt.Unit.fromString str
+        unit = Unit.fromString str
         dst = unit.loc
     catch error
       whyFail = (whyFail ? []).push error

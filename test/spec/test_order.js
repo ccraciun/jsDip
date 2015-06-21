@@ -6,23 +6,23 @@ var _ = require('underscore');
 
 require('coffee-script/register');
 
-var dfs = require('../../app/scripts/models/defs');
-var order = require('../../app/scripts/models/order');
+var Defs = require('../../app/scripts/models/defs');
+var Order = require('../../app/scripts/models/order');
 
 var root = (typeof exports !== "undefined" && exports !== null) ? exports : this;
 
 (function () {
     'use strict';
 
-    global.defs = new dfs.Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
+    global.defs = new Defs(JSON.parse(fs.readFileSync('app/data/europe_standard_defs.json', 'utf8')));
 
     var parsesOrder = function (ordr, ans) {
-        var parsed = order.Order.fromString(ordr);
+        var parsed = Order.fromString(ordr);
         if (ans !== undefined) {
             if (ans.child) {
-                ans.child = new order.Order(ans.child);
+                ans.child = new Order(ans.child);
             }
-            var answer = new order.Order(ans);
+            var answer = new Order(ans);
             parsed.should.eql(answer);
         }
     };

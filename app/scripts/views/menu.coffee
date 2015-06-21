@@ -1,6 +1,6 @@
 judge = window.judge
 
-class Menu
+module.exports = class Menu
   selector: '#menu'
   constructor: (map, state) ->
     @state = state
@@ -30,7 +30,7 @@ class Menu
 
   clickEndPhase: (e) =>
     @clickDone()
-    for power in @state.active
+    for power in @state.activePowers
       console.log("#{power} is active but has no orders.") unless power in @turnOrders
       # WIP(ccraciun): Stuff here.
       newState = judge(@state, @turnOrders);

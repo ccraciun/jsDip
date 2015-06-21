@@ -1,8 +1,6 @@
-root = exports ? this
+BaseModel = require './base'
 
-base = require './base'
-
-root.Defs = class Defs extends base.BaseModel
+module.exports = class Defs extends BaseModel
   # @startDate    considered the start of the game for turn calculations.
   # @belligerents involved powers.
   # @seasons      list of seasons in each year.
@@ -30,4 +28,3 @@ root.Defs = class Defs extends base.BaseModel
 
   canonicalName: (name) ->
     return @canonical[name.toLowerCase().replace('_', ' ')]
-
