@@ -1,25 +1,22 @@
 # Future-proofing, for modularized code.
 HistoryBox = require './views/history_box'
-DipMap = window.DipMap
+# DipMap = window.DipMap
+Defs = require './models/defs'
+Header = require('./views/bb/header')
+Map = require './views/bb/map'
 Menu = require './views/menu'
 State = require './models/state'
-Defs = require './models/defs'
 
 module.exports = class DipEngine
-  constructor: () ->
-    @dipMap = new DipMap("#map")
-    @historyBox = new HistoryBox("#messageBox")
-    @defs = null
-    @state = null
+  constructor: ->
+    @map = new Map("images/europe_standard.svg")
+    @header = new Header()
+    # @historyBox = new HistoryBox("#messageBox")
 
   init: ->
-    $.when(@loadMap("data/europe_standard_defs.json", "images/europe_standard.svg"),
-           @loadStateUrl("data/europe_standard_start.json"))
-      .then @finishInit
-
-  finishInit: =>
-    @menu = new Menu(@dipMap, @state)
-    @showTime()
+    @map.render()
+    @header.render()
+    @loadDefs()
 
   printCounts: ->
     for pow in @state.counts()
@@ -35,21 +32,19 @@ module.exports = class DipEngine
     dateString = [@state.date.year, @state.date.season, @state.date.phase].join(" ")
     $("#map_interface #status #date").text dateString
 
+  loadDefs: ->
+    $.getJSON(defsUrl).done((data) =>
+      window.defs = new Defs(data) # not sure if correct, but unreaks some .js
+      @defs = data
+      # @dipMap.setDefs data
+      console.log "done loadMap"
+      deferred.resolve()
+
   loadMap: (defsUrl, mapSvgUrl) =>
     # TODO(rkofman): just return the getJSON deferred object
     console.log "deferring loadMap"
     deferred = new jQuery.Deferred()
 
-    # TODO(ccraciun): Support loading jDip map data..
-    $.getJSON(defsUrl).done((data) =>
-      globals.defs = new Defs(data) # not sure if correct, but unreaks some .js
-      @defs = data
-      @dipMap.setDefs data
-      console.log "done loadMap"
-      deferred.resolve()
-    ).fail (jqxhr, textStatus, error) ->
-      console.error(textStatus + ', ' + error)
-      deferred.reject jqxhr, textStatus, error
 
     @dipMap.loadMapFromUrl mapSvgUrl
     deferred.promise()

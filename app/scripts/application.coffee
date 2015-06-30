@@ -1,10 +1,10 @@
-DipEngine = require('./engine')
-window.Menu = require('./views/menu')
+DiplomacyGame = require('./diplomacy')
+$ = require('jQuery')
 
 bootstrap = ->
   # NOTE: If this function gets beyond ~5 lines, it should be refactored.
   $().ready ->
-    window.game = new DipEngine() # args here
+    window.game = game = new DiplomacyGame() # args here
     game.init()
 
 bootstrap()

@@ -2,8 +2,6 @@
   "name": "jsdipwebapp",
   "private": true,
   "dependencies": {
-    "jquery": "~2.1.1",
-    "underscore": "~1.7.0",
     "snap.svg": "~0.3.0"
   }
 }

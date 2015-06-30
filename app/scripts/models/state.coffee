@@ -1,5 +1,3 @@
-root = exports ? this
-
 _ = require 'underscore'
 
 GameDate = require './date'
