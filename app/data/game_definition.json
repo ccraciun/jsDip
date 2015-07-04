@@ -1,0 +1,68 @@
+{
+  "startDate": {
+    "year": 1900,
+    "season": "Spring",
+    "phase": "Movement"
+  },
+  "seasons": [
+    {"name": "Spring", "phases": ["Movement", "Retreat"]},
+    {"name": "Autumn", "phases": ["Movement", "Retreat"]},
+    {"name": "Winter", "phases": ["Adjustment"]}
+  ],
+  "belligerents": [
+    {
+      "name": "Austria",
+      "hq": [
+          "Budapest",
+          "Trieste",
+          "Vienna" ]
+    },
+    {
+      "name": "England",
+      "hq": [
+        "Edinburgh",
+        "Liverpool",
+        "London" ]
+    },
+    {
+      "name": "France",
+      "hqs": [
+        "Brest",
+        "Marseilles",
+        "Paris"
+      ]
+    },
+    {
+      "name": "Germany",
+      "hqs": [
+        "Berlin",
+        "Kiel",
+        "Munich"
+      ]
+    },
+    {"name": "Italy",
+      "hqs": [
+        "Naples",
+        "Rome",
+        "Venice"
+      ]
+    },
+    {
+      "name": "Russia",
+      "hqs": [
+        "Moscow",
+        "Sevastopol",
+        "St Petersburg",
+        "Warsaw"
+      ]
+    },
+    {
+      "name": "Turkey",
+      "hqs": [
+        "Ankara",
+        "Constantinople",
+        "Smyrna"
+      ]
+    }
+  ]
+}

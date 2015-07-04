@@ -1,0 +1,1588 @@
+[
+  {
+    "name": "Adriatic Sea",
+    "adjacent": {
+      "F": ["Albania", "Apulia", "Venice", "Trieste", "Ionian Sea"]
+    },
+    "aliases": ["adr", "adriatic sea"],
+    "subregions": []
+  },
+  {
+    "name": "Aegean Sea",
+    "adjacent": {
+      "F": ["Greece", "Bulgaria (sc)", "Constantinople", "Smyrna", "Eastern Mediterranean", "Ionian Sea"]
+    },
+    "aliases": ["aegean sea", "aeg"],
+    "subregions": []
+  },
+  {
+    "name": "Albania",
+    "adjacent": {
+      "F": ["Adriatic Sea", "Trieste", "Greece", "Ionian Sea"],
+      "A": ["Trieste", "Greece", "Serbia"]
+    },
+    "aliases": ["alb", "albania"],
+    "subregions": []
+  },
+  {
+    "name": "Ankara",
+    "adjacent": {
+      "F": ["Black Sea", "Armenia", "Constantinople"],
+      "A": ["Armenia", "Constantinople", "Smyrna"]
+    },
+    "aliases": ["ank", "ankara"],
+    "subregions": []
+  },
+  {
+    "name": "Apulia",
+    "adjacent": {
+      "F": [
+        "Venice",
+        "Adriatic Sea",
+        "Ionian Sea",
+        "Naples"
+      ],
+      "A": [
+        "Venice",
+        "Naples",
+        "Rome"
+      ]
+    },
+    "aliases": [
+      "apu",
+      "apulia"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Armenia",
+    "adjacent": {
+      "F": [
+        "Ankara",
+        "Sevastopol",
+        "Black Sea"
+      ],
+      "A": [
+        "Smyrna",
+        "Syria",
+        "Ankara",
+        "Sevastopol"
+      ]
+    },
+    "aliases": [
+      "arm",
+      "armenia"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Baltic Sea",
+    "adjacent": {
+      "F": [
+        "Livonia",
+        "Prussia",
+        "Berlin",
+        "Kiel",
+        "Denmark",
+        "Sweden",
+        "Gulf of Bothnia"
+      ]
+    },
+    "aliases": [
+      "bal",
+      "baltic sea"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Barents Sea",
+    "adjacent": {
+      "F": [
+        "Norwegian Sea",
+        "St Petersburg (nc)",
+        "Norway"
+      ]
+    },
+    "aliases": [
+      "bar",
+      "barents sea"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Belgium",
+    "adjacent": {
+      "F": [
+        "English Channel",
+        "North Sea",
+        "Holland",
+        "Picardy"
+      ],
+      "A": [
+        "Holland",
+        "Picardy",
+        "Ruhr",
+        "Burgundy"
+      ]
+    },
+    "aliases": [
+      "belgium",
+      "bel"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Berlin",
+    "adjacent": {
+      "F": [
+        "Kiel",
+        "Baltic Sea",
+        "Prussia"
+      ],
+      "A": [
+        "Kiel",
+        "Prussia",
+        "Silesia",
+        "Munich"
+      ]
+    },
+    "aliases": [
+      "berlin",
+      "ber"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Black Sea",
+    "adjacent": {
+      "F": [
+        "Rumania",
+        "Sevastopol",
+        "Armenia",
+        "Ankara",
+        "Constantinople",
+        "Bulgaria (ec)"
+      ]
+    },
+    "aliases": [
+      "black sea",
+      "bla"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Bohemia",
+    "adjacent": {
+      "A": [
+        "Munich",
+        "Silesia",
+        "Galicia",
+        "Vienna",
+        "Tyrolia"
+      ]
+    },
+    "aliases": [
+      "bohemia",
+      "boh"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Brest",
+    "adjacent": {
+      "F": [
+        "Mid-Atlantic Ocean",
+        "English Channel",
+        "Picardy",
+        "Gascony"
+      ],
+      "A": [
+        "Picardy",
+        "Gascony",
+        "Paris"
+      ]
+    },
+    "aliases": [
+      "breast",
+      "bre",
+      "brest"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Budapest",
+    "adjacent": {
+      "A": [
+        "Vienna",
+        "Galicia",
+        "Rumania",
+        "Serbia",
+        "Trieste"
+      ]
+    },
+    "aliases": [
+      "bud",
+      "budapest"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Bulgaria",
+    "adjacent": {
+      "A": [
+        "Greece",
+        "Constantinople",
+        "Serbia",
+        "Rumania"
+      ]
+    },
+    "aliases": [
+      "bulgaria",
+      "bul"
+    ],
+    "subregions": [
+      "Bulgaria (ec)",
+      "Bulgaria (sc)"
+    ]
+  },
+  {
+    "name": "Bulgaria (ec)",
+    "adjacent": {
+      "F": [
+        "Constantinople",
+        "Black Sea",
+        "Rumania"
+      ]
+    },
+    "aliases": [
+      "bulgaria (ec)"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Bulgaria (sc)",
+    "adjacent": {
+      "F": [
+        "Greece",
+        "Aegean Sea",
+        "Constantinople"
+      ]
+    },
+    "aliases": [
+      "bulgaria (sc)"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Burgundy",
+    "adjacent": {
+      "A": [
+        "Marseilles",
+        "Gascony",
+        "Paris",
+        "Picardy",
+        "Belgium",
+        "Ruhr",
+        "Munich"
+      ]
+    },
+    "aliases": [
+      "burgundy",
+      "bur"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Clyde",
+    "adjacent": {
+      "F": [
+        "Edinburgh",
+        "Liverpool",
+        "North Atlantic Ocean",
+        "Norwegian Sea"
+      ],
+      "A": [
+        "Edinburgh",
+        "Liverpool"
+      ]
+    },
+    "aliases": [
+      "cly",
+      "clyde"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Constantinople",
+    "adjacent": {
+      "F": [
+        "Bulgaria (sc)",
+        "Bulgaria (ec)",
+        "Black Sea",
+        "Ankara",
+        "Smyrna",
+        "Aegean Sea"
+      ],
+      "A": [
+        "Bulgaria",
+        "Ankara",
+        "Smyrna"
+      ]
+    },
+    "aliases": [
+      "con",
+      "constantinople"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Denmark",
+    "adjacent": {
+      "F": [
+        "Helgoland Bight",
+        "North Sea",
+        "Sweden",
+        "Baltic Sea",
+        "Kiel",
+        "Skagerrak"
+      ],
+      "A": [
+        "Sweden",
+        "Kiel"
+      ]
+    },
+    "aliases": [
+      "den",
+      "denmark"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Eastern Mediterranean",
+    "adjacent": {
+      "F": [
+        "Syria",
+        "Smyrna",
+        "Aegean Sea",
+        "Ionian Sea"
+      ]
+    },
+    "aliases": [
+      "eastmed",
+      "eme",
+      "easternmed",
+      "eastern med",
+      "ems",
+      "emed",
+      "eas",
+      "eastern mediterranean"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Edinburgh",
+    "adjacent": {
+      "F": [
+        "North Sea",
+        "Norwegian Sea",
+        "Clyde",
+        "Yorkshire"
+      ],
+      "A": [
+        "Liverpool",
+        "Yorkshire",
+        "Clyde"
+      ]
+    },
+    "aliases": [
+      "edi",
+      "edinburgh"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "English Channel",
+    "adjacent": {
+      "F": [
+        "Mid-Atlantic Ocean",
+        "Irish Sea",
+        "Wales",
+        "London",
+        "North Sea",
+        "Belgium",
+        "Picardy",
+        "Brest"
+      ]
+    },
+    "aliases": [
+      "ech",
+      "english channel",
+      "eng",
+      "channel",
+      "man"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Finland",
+    "adjacent": {
+      "F": [
+        "Sweden",
+        "St Petersburg (sc)",
+        "Gulf of Bothnia"
+      ],
+      "A": [
+        "Sweden",
+        "St Petersburg",
+        "Norway"
+      ]
+    },
+    "aliases": [
+      "fin",
+      "finland"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Galicia",
+    "adjacent": {
+      "A": [
+        "Warsaw",
+        "Ukraine",
+        "Rumania",
+        "Budapest",
+        "Vienna",
+        "Bohemia",
+        "Silesia"
+      ]
+    },
+    "aliases": [
+      "galicia",
+      "gal"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Gascony",
+    "adjacent": {
+      "F": [
+        "Spain (nc)",
+        "Mid-Atlantic Ocean",
+        "Brest"
+      ],
+      "A": [
+        "Paris",
+        "Burgundy",
+        "Marseilles",
+        "Spain",
+        "Brest"
+      ]
+    },
+    "aliases": [
+      "gascony",
+      "gas"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Greece",
+    "adjacent": {
+      "F": [
+        "Bulgaria (sc)",
+        "Aegean Sea",
+        "Ionian Sea",
+        "Albania"
+      ],
+      "A": [
+        "Bulgaria",
+        "Albania",
+        "Serbia"
+      ]
+    },
+    "aliases": [
+      "gre",
+      "greece"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Gulf of Bothnia",
+    "adjacent": {
+      "F": [
+        "Sweden",
+        "Finland",
+        "St Petersburg (sc)",
+        "Livonia",
+        "Baltic Sea"
+      ]
+    },
+    "aliases": [
+      "gulfofb",
+      "bothnia",
+      "gob",
+      "gulf of bothnia",
+      "bot",
+      "gulf of bot"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Gulf of Lyon",
+    "adjacent": {
+      "F": [
+        "Spain (sc)",
+        "Marseilles",
+        "Piedmont",
+        "Tuscany",
+        "Tyrrhenian Sea",
+        "Western Mediterranean"
+      ]
+    },
+    "aliases": [
+      "gulfofl",
+      "lyon",
+      "gulf of lyon",
+      "lyo",
+      "gulf of lyo",
+      "gol"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Helgoland Bight",
+    "adjacent": {
+      "F": [
+        "North Sea",
+        "Denmark",
+        "Kiel",
+        "Holland"
+      ]
+    },
+    "aliases": [
+      "helgoland bight",
+      "hel"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Holland",
+    "adjacent": {
+      "F": [
+        "Belgium",
+        "North Sea",
+        "Helgoland Bight",
+        "Kiel"
+      ],
+      "A": [
+        "Belgium",
+        "Kiel",
+        "Ruhr"
+      ]
+    },
+    "aliases": [
+      "holland",
+      "hol"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Ionian Sea",
+    "adjacent": {
+      "F": [
+        "Tunis",
+        "Tyrrhenian Sea",
+        "Naples",
+        "Apulia",
+        "Adriatic Sea",
+        "Albania",
+        "Greece",
+        "Aegean Sea",
+        "Eastern Mediterranean"
+      ]
+    },
+    "aliases": [
+      "ionian sea",
+      "ion"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Irish Sea",
+    "adjacent": {
+      "F": [
+        "North Atlantic Ocean",
+        "Liverpool",
+        "Wales",
+        "English Channel",
+        "Mid-Atlantic Ocean"
+      ]
+    },
+    "aliases": [
+      "iri",
+      "stg",
+      "irish sea"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Kiel",
+    "adjacent": {
+      "F": [
+        "Holland",
+        "Helgoland Bight",
+        "Denmark",
+        "Baltic Sea",
+        "Berlin"
+      ],
+      "A": [
+        "Holland",
+        "Denmark",
+        "Berlin",
+        "Munich",
+        "Ruhr"
+      ]
+    },
+    "aliases": [
+      "kiel",
+      "kie"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Liverpool",
+    "adjacent": {
+      "F": [
+        "Wales",
+        "Irish Sea",
+        "North Atlantic Ocean",
+        "Clyde"
+      ],
+      "A": [
+        "Wales",
+        "Edinburgh",
+        "Yorkshire",
+        "Clyde"
+      ]
+    },
+    "aliases": [
+      "liverpool",
+      "lvp",
+      "lpl"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Livonia",
+    "adjacent": {
+      "F": [
+        "Prussia",
+        "Baltic Sea",
+        "Gulf of Bothnia",
+        "St Petersburg (sc)"
+      ],
+      "A": [
+        "Prussia",
+        "St Petersburg",
+        "Moscow",
+        "Warsaw"
+      ]
+    },
+    "aliases": [
+      "livonia",
+      "lva",
+      "lvo",
+      "lvn"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "London",
+    "adjacent": {
+      "F": [
+        "Yorkshire",
+        "North Sea",
+        "English Channel",
+        "Wales"
+      ],
+      "A": [
+        "Yorkshire",
+        "Wales"
+      ]
+    },
+    "aliases": [
+      "london",
+      "lon"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Marseilles",
+    "adjacent": {
+      "F": [
+        "Spain (sc)",
+        "Gulf of Lyon",
+        "Piedmont"
+      ],
+      "A": [
+        "Spain",
+        "Piedmont",
+        "Gascony",
+        "Burgundy"
+      ]
+    },
+    "aliases": [
+      "marseilles",
+      "mar"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Mid-Atlantic Ocean",
+    "adjacent": {
+      "F": [
+        "North Atlantic Ocean",
+        "Irish Sea",
+        "English Channel",
+        "Brest",
+        "Gascony",
+        "Spain (nc)",
+        "Portugal",
+        "Spain (sc)",
+        "North Africa",
+        "Western Mediterranean"
+      ]
+    },
+    "aliases": [
+      "mid atlantic",
+      "mao",
+      "mid-atlantic ocean",
+      "mid atlantic ocean",
+      "mid-atlantic",
+      "mid",
+      "midatlanticocean",
+      "mat"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Moscow",
+    "adjacent": {
+      "A": [
+        "St Petersburg",
+        "Livonia",
+        "Warsaw",
+        "Ukraine",
+        "Sevastopol"
+      ]
+    },
+    "aliases": [
+      "mos",
+      "moscow"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Munich",
+    "adjacent": {
+      "A": [
+        "Burgundy",
+        "Ruhr",
+        "Kiel",
+        "Berlin",
+        "Silesia",
+        "Bohemia",
+        "Tyrolia"
+      ]
+    },
+    "aliases": [
+      "mun",
+      "munich"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Naples",
+    "adjacent": {
+      "F": [
+        "Rome",
+        "Tyrrhenian Sea",
+        "Ionian Sea",
+        "Apulia"
+      ],
+      "A": [
+        "Rome",
+        "Apulia"
+      ]
+    },
+    "aliases": [
+      "nap",
+      "naples"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "North Africa",
+    "adjacent": {
+      "F": [
+        "Mid-Atlantic Ocean",
+        "Western Mediterranean",
+        "Tunis"
+      ],
+      "A": [
+        "Tunis"
+      ]
+    },
+    "aliases": [
+      "nora",
+      "northafrica",
+      "naf",
+      "north africa"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "North Atlantic Ocean",
+    "adjacent": {
+      "F": [
+        "Norwegian Sea",
+        "Liverpool",
+        "Irish Sea",
+        "Mid-Atlantic Ocean",
+        "Clyde"
+      ]
+    },
+    "aliases": [
+      "northatlantic",
+      "north atlantic ocean",
+      "nat",
+      "north atlantic",
+      "nao"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "North Sea",
+    "adjacent": {
+      "F": [
+        "Yorkshire",
+        "Edinburgh",
+        "Norwegian Sea",
+        "Norway",
+        "Skagerrak",
+        "Denmark",
+        "Helgoland Bight",
+        "Holland",
+        "Belgium",
+        "English Channel",
+        "London"
+      ]
+    },
+    "aliases": [
+      "nts",
+      "nth",
+      "north sea",
+      "norsea",
+      "northsea",
+      "nrd"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Norway",
+    "adjacent": {
+      "F": [
+        "Skagerrak",
+        "North Sea",
+        "Norwegian Sea",
+        "Barents Sea",
+        "St Petersburg (nc)",
+        "Sweden"
+      ],
+      "A": [
+        "Finland",
+        "St Petersburg",
+        "Sweden"
+      ]
+    },
+    "aliases": [
+      "nwy",
+      "nor",
+      "norway",
+      "nge"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Norwegian Sea",
+    "adjacent": {
+      "F": [
+        "North Atlantic Ocean",
+        "Barents Sea",
+        "Norway",
+        "North Sea",
+        "Clyde",
+        "Edinburgh"
+      ]
+    },
+    "aliases": [
+      "nwg",
+      "norwegian sea",
+      "norwegiansea",
+      "norwsea",
+      "gro",
+      "nrg"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Paris",
+    "adjacent": {
+      "A": [
+        "Brest",
+        "Picardy",
+        "Burgundy",
+        "Gascony"
+      ]
+    },
+    "aliases": [
+      "paris",
+      "par"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Picardy",
+    "adjacent": {
+      "F": [
+        "Brest",
+        "English Channel",
+        "Belgium"
+      ],
+      "A": [
+        "Burgundy",
+        "Paris",
+        "Brest",
+        "Belgium"
+      ]
+    },
+    "aliases": [
+      "picardy",
+      "pic"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Piedmont",
+    "adjacent": {
+      "F": [
+        "Marseilles",
+        "Gulf of Lyon",
+        "Tuscany"
+      ],
+      "A": [
+        "Marseilles",
+        "Tuscany",
+        "Venice",
+        "Tyrolia"
+      ]
+    },
+    "aliases": [
+      "pie",
+      "piedmont"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Portugal",
+    "adjacent": {
+      "F": [
+        "Mid-Atlantic Ocean",
+        "Spain (nc)",
+        "Spain (sc)"
+      ],
+      "A": [
+        "Spain"
+      ]
+    },
+    "aliases": [
+      "portugal",
+      "por"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Prussia",
+    "adjacent": {
+      "F": [
+        "Berlin",
+        "Baltic Sea",
+        "Livonia"
+      ],
+      "A": [
+        "Warsaw",
+        "Silesia",
+        "Berlin",
+        "Livonia"
+      ]
+    },
+    "aliases": [
+      "prussia",
+      "pru"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Rome",
+    "adjacent": {
+      "F": [
+        "Tuscany",
+        "Tyrrhenian Sea",
+        "Naples"
+      ],
+      "A": [
+        "Tuscany",
+        "Naples",
+        "Venice",
+        "Apulia"
+      ]
+    },
+    "aliases": [
+      "rom",
+      "rome"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Ruhr",
+    "adjacent": {
+      "A": [
+        "Burgundy",
+        "Belgium",
+        "Holland",
+        "Kiel",
+        "Munich"
+      ]
+    },
+    "aliases": [
+      "ruhr",
+      "ruh",
+      "rhe"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Rumania",
+    "adjacent": {
+      "F": [
+        "Sevastopol",
+        "Black Sea",
+        "Bulgaria (ec)"
+      ],
+      "A": [
+        "Serbia",
+        "Budapest",
+        "Galicia",
+        "Ukraine",
+        "Sevastopol",
+        "Bulgaria"
+      ]
+    },
+    "aliases": [
+      "rum",
+      "rumania"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Serbia",
+    "adjacent": {
+      "A": [
+        "Trieste",
+        "Budapest",
+        "Rumania",
+        "Bulgaria",
+        "Greece",
+        "Albania"
+      ]
+    },
+    "aliases": [
+      "ser",
+      "serbia"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Sevastopol",
+    "adjacent": {
+      "F": [
+        "Rumania",
+        "Black Sea",
+        "Armenia"
+      ],
+      "A": [
+        "Ukraine",
+        "Moscow",
+        "Rumania",
+        "Armenia"
+      ]
+    },
+    "aliases": [
+      "sev",
+      "sevastapol",
+      "sevastopol"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Silesia",
+    "adjacent": {
+      "A": [
+        "Munich",
+        "Berlin",
+        "Prussia",
+        "Warsaw",
+        "Galicia",
+        "Bohemia"
+      ]
+    },
+    "aliases": [
+      "sil",
+      "silesia"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Skagerrak",
+    "adjacent": {
+      "F": [
+        "North Sea",
+        "Norway",
+        "Denmark",
+        "Sweden"
+      ]
+    },
+    "aliases": [
+      "ska",
+      "Skagerrak",
+      "skagerrak"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Smyrna",
+    "adjacent": {
+      "A": [
+        "Syria",
+        "Constantinople",
+        "Ankara",
+        "Armenia"
+      ]
+    },
+    "aliases": [
+      "smyrna",
+      "smy"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Spain",
+    "adjacent": {
+      "A": [
+        "Gascony",
+        "Portugal",
+        "Marseilles"
+      ]
+    },
+    "aliases": [
+      "spain",
+      "esp",
+      "spa"
+    ],
+    "subregions": [
+      "Spain (nc)",
+      "Spain (sc)"
+    ]
+  },
+  {
+    "name": "Spain (nc)",
+    "adjacent": {
+      "F": [
+        "Gascony",
+        "Mid-Atlantic Ocean",
+        "Portugal"
+      ]
+    },
+    "aliases": [
+      "spain (nc)"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Spain (sc)",
+    "adjacent": {
+      "F": [
+        "Portugal",
+        "Western Mediterranean",
+        "Gulf of Lyon",
+        "Marseilles",
+        "Mid-Atlantic Ocean"
+      ]
+    },
+    "aliases": [
+      "spain (sc)"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "St Petersburg",
+    "adjacent": {
+      "A": [
+        "Finland",
+        "Livonia",
+        "Norway",
+        "Moscow"
+      ]
+    },
+    "aliases": [
+      "stp",
+      "st petersburg",
+      "st. petersberg",
+      "stpetersburg",
+      "st petersberg",
+      "stpetersberg",
+      "st petersburg"
+    ],
+    "subregions": [
+      "St Petersburg (nc)",
+      "St Petersburg (sc)"
+    ]
+  },
+  {
+    "name": "St Petersburg (nc)",
+    "adjacent": {
+      "F": [
+        "Barents Sea",
+        "Norway"
+      ]
+    },
+    "aliases": [
+      "st petersburg (nc)"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "St Petersburg (sc)",
+    "adjacent": {
+      "F": [
+        "Finland",
+        "Livonia",
+        "Gulf of Bothnia"
+      ]
+    },
+    "aliases": [
+      "st petersburg (sc)"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Sweden",
+    "adjacent": {
+      "F": [
+        "Finland",
+        "Gulf of Bothnia",
+        "Baltic Sea",
+        "Denmark",
+        "Skagerrak",
+        "Norway"
+      ],
+      "A": [
+        "Finland",
+        "Denmark",
+        "Norway"
+      ]
+    },
+    "aliases": [
+      "sweden",
+      "swe"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Switzerland",
+    "adjacent": {},
+    "aliases": [
+      "swi",
+      "switzerland"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Syria",
+    "adjacent": {
+      "F": [
+        "Eastern Mediterranean",
+        "Smyrna"
+      ],
+      "A": [
+        "Smyrna",
+        "Armenia"
+      ]
+    },
+    "aliases": [
+      "syr",
+      "syria"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Trieste",
+    "adjacent": {
+      "F": [
+        "Albania",
+        "Adriatic Sea",
+        "Venice"
+      ],
+      "A": [
+        "Tyrolia",
+        "Vienna",
+        "Budapest",
+        "Serbia",
+        "Albania",
+        "Venice"
+      ]
+    },
+    "aliases": [
+      "tri",
+      "trieste"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Tunis",
+    "adjacent": {
+      "F": [
+        "North Africa",
+        "Western Mediterranean",
+        "Tyrrhenian Sea",
+        "Ionian Sea"
+      ],
+      "A": [
+        "North Africa"
+      ]
+    },
+    "aliases": [
+      "tun",
+      "tunis"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Tuscany",
+    "adjacent": {
+      "F": [
+        "Rome",
+        "Tyrrhenian Sea",
+        "Gulf of Lyon",
+        "Piedmont"
+      ],
+      "A": [
+        "Rome",
+        "Piedmont",
+        "Venice"
+      ]
+    },
+    "aliases": [
+      "tus",
+      "tuscany"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Tyrolia",
+    "adjacent": {
+      "A": [
+        "Munich",
+        "Bohemia",
+        "Vienna",
+        "Trieste",
+        "Venice",
+        "Piedmont"
+      ]
+    },
+    "aliases": [
+      "alp",
+      "tyr",
+      "tyrolia",
+      "trl",
+      "tyl"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Tyrrhenian Sea",
+    "adjacent": {
+      "F": [
+        "Western Mediterranean",
+        "Gulf of Lyon",
+        "Tuscany",
+        "Rome",
+        "Naples",
+        "Ionian Sea",
+        "Tunis"
+      ]
+    },
+    "aliases": [
+      "tys",
+      "tyrhennian sea",
+      "tyn",
+      "tyrrhenian sea",
+      "tyrhenian sea",
+      "tyrrhenian sea",
+      "tyh"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Ukraine",
+    "adjacent": {
+      "A": [
+        "Rumania",
+        "Galicia",
+        "Warsaw",
+        "Moscow",
+        "Sevastopol"
+      ]
+    },
+    "aliases": [
+      "ukraine",
+      "ukr"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Venice",
+    "adjacent": {
+      "F": [
+        "Apulia",
+        "Adriatic Sea",
+        "Trieste"
+      ],
+      "A": [
+        "Tyrolia",
+        "Tuscany",
+        "Rome",
+        "Piedmont",
+        "Apulia",
+        "Trieste"
+      ]
+    },
+    "aliases": [
+      "ven",
+      "venice"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Vienna",
+    "adjacent": {
+      "A": [
+        "Tyrolia",
+        "Bohemia",
+        "Galicia",
+        "Budapest",
+        "Trieste"
+      ]
+    },
+    "aliases": [
+      "vienna",
+      "vie"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Wales",
+    "adjacent": {
+      "F": [
+        "Liverpool",
+        "Irish Sea",
+        "English Channel",
+        "London"
+      ],
+      "A": [
+        "Liverpool",
+        "London",
+        "Yorkshire"
+      ]
+    },
+    "aliases": [
+      "wales",
+      "wal"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Warsaw",
+    "adjacent": {
+      "A": [
+        "Silesia",
+        "Prussia",
+        "Livonia",
+        "Moscow",
+        "Ukraine",
+        "Galicia"
+      ]
+    },
+    "aliases": [
+      "var",
+      "war",
+      "warsaw"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Western Mediterranean",
+    "adjacent": {
+      "F": [
+        "Mid-Atlantic Ocean",
+        "Spain (sc)",
+        "Gulf of Lyon",
+        "Tyrrhenian Sea",
+        "Tunis",
+        "North Africa"
+      ]
+    },
+    "aliases": [
+      "wes",
+      "westmed",
+      "western med",
+      "wms",
+      "westernmed",
+      "wmed",
+      "wme",
+      "western mediterranean"
+    ],
+    "subregions": []
+  },
+  {
+    "name": "Yorkshire",
+    "adjacent": {
+      "F": [
+        "Edinburgh",
+        "North Sea",
+        "London"
+      ],
+      "A": [
+        "Edinburgh",
+        "London",
+        "Liverpool",
+        "Wales"
+      ]
+    },
+    "aliases": [
+      "yorkshire",
+      "yonkers",
+      "yor"
+    ],
+    "subregions": []
+  }
+]

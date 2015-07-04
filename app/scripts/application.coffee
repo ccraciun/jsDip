@@ -1,10 +1,18 @@
 DiplomacyGame = require('./diplomacy')
 $ = require('jQuery')
 
+
 bootstrap = ->
-  # NOTE: If this function gets beyond ~5 lines, it should be refactored.
+  # NOTE: This function is the entry-point, and should be *extremely* small.
+  # Please always keep it well-factored.
   $().ready ->
-    window.game = game = new DiplomacyGame() # args here
+    game = new DiplomacyGame() # args here
     game.init()
+
+    # useful for ease of debugging.
+    window.$ = $
+    window._ = require('underscore')
+    window.game = game
+
 
 bootstrap()
