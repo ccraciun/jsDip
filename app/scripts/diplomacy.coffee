@@ -1,4 +1,6 @@
 _ = require 'underscore'
+backbone = require 'backbone'
+
 Views = {
   Map: require './views/bb/map'
   Header: require './views/bb/header'
@@ -6,41 +8,31 @@ Views = {
 Models = {
   GameDefinition: require './models/bb/game_definition'
   Map: require './models/bb/map'
+  Game: require './models/bb/game'
 }
 Collections = {
   Provinces: require './collections/provinces'
 }
 Data = {
   Base: {
-    GameDefinition: require '../data/game_definition.json'
-    StartState: require '../data/start_state.json'
-    Provinces: require '../data/provinces.json'
+    gameDefinition: require '../data/game_definition.json'
+    state: require '../data/start_state.json'
+    provinces: require '../data/provinces.json'
+    coords: require '../data/coords.json'
   }
-  # If we want to include variations, here's how. Any files provided below
-  # should be used to override the Base data for the particular variation.
-  #
-  # Variations: {
-  #   ScOnlyStart: {
-  #     StartState: require '../data/Variations/sconly_start/start_state.json'
-  #   }
-  # }
 }
 
-module.exports = class DiplomacyGame
-  constructor: ->
-    @views = {
+module.exports = class DiplomacyGame extends backbone.View
+  initialize: ->
+    @subViews = {
       map: new Views.Map("images/europe_standard.svg")
       header: new Views.Header()
     }
-    @models = {
-      gameDefinition: new Models.GameDefinition(Data.Base.GameDefinition, parse: true)
-      provinces: new Collections.Provinces(Data.Base.Provinces, parse: true)
-      # state: new Models.State(Data.Base.StartState, parse: true)
-    }
+    @model = new Models.Game(Data.Base, parse: true)
 
-  init: ->
-    @renderViews()
+  render: ->
+    @renderSubViews()
 
-  renderViews: ->
-    for view in _(@views).values()
+  renderSubViews: ->
+    for view in _(@subViews).values()
       view.render()

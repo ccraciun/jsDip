@@ -7,7 +7,7 @@ bootstrap = ->
   # Please always keep it well-factored.
   $().ready ->
     game = new DiplomacyGame() # args here
-    game.init()
+    game.render()
 
     # useful for ease of debugging.
     window.$ = $
