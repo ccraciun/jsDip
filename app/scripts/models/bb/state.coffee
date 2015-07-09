@@ -1,4 +1,5 @@
 backbone = require 'backbone'
+_ = require 'underscore'
 Models = {
   GameDate: require './game_date'
 }
@@ -7,12 +8,7 @@ Collections = {
 }
 
 module.exports = class State extends backbone.Model
-  initialize: (attrs, options) ->
-    super
-
   parse: (data, options) ->
-    return
-    attrs = super(data.state, options)
-    attrs.defs = data.defs
-    attrs.date = new Models.GameDate(attrs.date, parse: true)
-    attrs.forces = new Collections.Forces(attrs.forces, parse: true)
+    _(super).tap (attrs) ->
+      attrs.date = new Models.GameDate(attrs.date, parse: true)
+      attrs.forces = new Collections.Forces(attrs.forces, parse: true)

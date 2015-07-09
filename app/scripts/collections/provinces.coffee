@@ -19,6 +19,10 @@ module.exports = class Provinces extends backbone.Collection
       model.initAdjacencyLinks()
       model.initSubregionLinks()
 
+  supplyCenters: (country=null) ->
+    provinces = @where(isSupplyCenter: true)
+    new Provinces(provinces)
+
   getMany: (modelNames) ->
     new Provinces(
       _(modelNames).map (name) => @get(name)
