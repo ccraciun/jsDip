@@ -8,6 +8,5 @@ module.exports = class Countries extends backbone.Collection
 
   active: ->
     @filter((country) ->
-      !country.forces().blank() &&
-      !country.supplyCenters().blank()
+      not(country.get('units').isEmpty() and country.get('supplyCenters').isEmpty())
     )

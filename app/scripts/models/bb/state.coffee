@@ -20,4 +20,7 @@ module.exports = class State extends backbone.Model
       )
 
   activeCountries: ->
-    null
+    @get('countries').active()
+
+  units: ->
+    _(@get('countries').map((country) -> country.get('units'))).flatten()

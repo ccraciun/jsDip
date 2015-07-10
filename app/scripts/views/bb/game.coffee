@@ -27,7 +27,7 @@ module.exports = class DiplomacyGame extends Views.Base
   initialize: ->
     @model = new Models.Game(Data.Base, parse: true)
     @subViews = {
-      map: new Views.Map(svgUrl: "images/europe_standard.svg", model: @model.get('provinces'))
+      map: new Views.Map(svgUrl: "images/europe_standard.svg", model: @model)
       header: new Views.Header(model: @model.get('state'))
     }
 

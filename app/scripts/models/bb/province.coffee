@@ -21,6 +21,9 @@ module.exports = class Province extends backbone.Model
       vivifiedAdjacencies[type] = @_vivifyProvinces modelNames
     @set('adjacent', vivifiedAdjacencies, silent: true)
 
+  htmlId: ->
+    @get('name').replace(/\s/g, "_").replace(/\(/g, "_").replace(/\)/g, "");
+
   _vivifyProvinces: (provinceNames) ->
     _(@collection.getMany(provinceNames)).tap (subCollection) ->
       throw "Bad data encountered." if subCollection.contains(undefined)

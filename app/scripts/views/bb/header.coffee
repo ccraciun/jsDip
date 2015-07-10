@@ -19,7 +19,7 @@ module.exports = class Header extends Views.Base
       season: @date.get('season')
       year: @date.get('year')
       phase: @date.get('phase')
-      countries: @model.activeCountries()
+      countries: @model.activeCountries().map (c) -> c.get('name')
     }
 
   onCountrySelect: (e) =>

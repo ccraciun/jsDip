@@ -3,23 +3,22 @@ _ = require 'underscore'
 Views = {
   BaseSvgView: require './base_svg'
 }
-BaseView = require('./base')
 
 module.exports = class SupplyCenter extends Views.BaseSvgView
 
-  tagName: 'circle'
+  tagName: 'use'
+  xlink: {
+    href: "#SC"
+  }
 
   initialize: ->
     super
     @listenTo(@model, 'change', @modelUpdated)
 
-  attributes: ->
+  render: ->
     coords = @model.get('supplyCenterCoords')
-    transform: "translate(#{coords.x},#{coords.y})"
-    'data-province-name': @model.get('name')
-    class: 'sc Unowned'
-    id: "sc#{@model.get('name')}"
-    r: 4
+    @$el.attr('transform', "translate(#{coords.x},#{coords.y})")
+
 
   modelUpdated: =>
     # update owner-class if owner has changed.

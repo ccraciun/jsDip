@@ -6,11 +6,8 @@ Collections = {
 }
 
 module.exports = class Country extends backbone.Model
-  initialize: ->
-    super
 
   parse: (data, options) ->
-    console.log "parsing country!", data.name, options
     attrs = super
 
     fleets = _(attrs.fleets).map (provinceName) ->

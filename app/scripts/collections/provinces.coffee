@@ -42,3 +42,6 @@ module.exports = class Provinces extends backbone.Collection
           supplyCenterCoords: {x: scX, y: scY}
           isSupplyCenter: true
         })
+
+  units: ->
+    _(@map((country) -> country.get('unit'))).compact()
