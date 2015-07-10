@@ -4,49 +4,41 @@
         "season": "Spring",
         "phase": "Movement"
     },
-    "activeBelligerents": [
-        "Austria", "England", "France", "Germany", "Italy", "Russia", "Turkey"
-    ],
-    "supplyCenters": {
-        "Austria": ["Budapest", "Trieste", "Vienna"],
-        "England": ["Edinburgh", "Liverpool", "London"],
-        "France": ["Brest", "Marseilles", "Paris"],
-        "Germany": ["Berlin", "Kiel", "Munich"],
-        "Italy": ["Naples", "Rome", "Venice"],
-        "Russia": ["Moscow", "Sevastopol", "St_Petersburg", "Warsaw"],
-        "Turkey": ["Ankara", "Constantinople", "Smyrna"],
-        "Independent": ["Belgium", "Bulgaria", "Denmark", "Greece", "Norway",
-                      "Portugal", "Rumania", "Serbia", "Spain", "Sweden",
-                      "Tunis"]
-    },
-    "forces": {
+    "countries": {
         "Austria": {
             "armies": ["Budapest", "Vienna"],
-            "fleets": ["Trieste"]
+            "fleets": ["Trieste"],
+            "provinces": ["Budapest", "Trieste", "Vienna"]
         },
         "England": {
             "armies": ["Liverpool"],
-            "fleets": ["London", "Edinburgh"]
+            "fleets": ["London", "Edinburgh"],
+            "provinces": ["Edinburgh", "Liverpool", "London"]
         },
         "France": {
             "armies": ["Paris", "Marseilles"],
-            "fleets": ["Brest"]
+            "fleets": ["Brest"],
+            "provinces": ["Brest", "Marseilles", "Paris"]
         },
         "Germany": {
             "armies": ["Berlin", "Munich"],
-            "fleets": ["Kiel"]
+            "fleets": ["Kiel"],
+            "provinces": ["Berlin", "Kiel", "Munich"]
         },
         "Italy": {
             "armies": ["Rome", "Venice"],
-            "fleets": ["Naples"]
+            "fleets": ["Naples"],
+            "provinces": ["Naples", "Rome", "Venice"]
         },
         "Russia": {
             "armies": ["Moscow", "Warsaw"],
-            "fleets": ["St_Petersburg__sc", "Sevastopol"]
+            "fleets": ["St Petersburg (nc)", "Sevastopol"],
+            "provinces": ["Moscow", "Sevastopol", "St Petersburg", "Warsaw"]
         },
         "Turkey": {
             "armies": ["Constantinople", "Smyrna"],
-            "fleets": ["Ankara"]
+            "fleets": ["Ankara"],
+            "provinces": ["Ankara", "Constantinople", "Smyrna"]
         }
     }
 }

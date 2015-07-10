@@ -19,8 +19,10 @@ module.exports = class Header extends Views.Base
       season: @date.get('season')
       year: @date.get('year')
       phase: @date.get('phase')
-      countries: @model.get('activeBelligerents')
+      countries: @model.activeCountries()
     }
 
   onCountrySelect: (e) =>
-    console.log e.currentTarget.value
+    selectedCountry = e.currentTarget.value
+    selectedCountry = null if _(selectedCountry).isEmpty()
+    @model.set('selectedCountry', selectedCountry)

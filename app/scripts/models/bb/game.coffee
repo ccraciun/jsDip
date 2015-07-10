@@ -11,10 +11,13 @@ Collections = {
 
 module.exports = class Game extends backbone.Model
   parse: (data, options) ->
+    provinces = new Collections.Provinces(
+      data.provinces,
+      coords: data.coords
+      parse: true
+    )
     {
       gameDefinition: new Models.GameDefinition(data.gameDefinition, parse: true)
-      state: new Models.State(data.state, parse: true)
-      provinces: new Collections.Provinces(data.provinces,
-        coords: data.coords
-        parse: true)
+      state: new Models.State(data.state, provinces: provinces, parse: true)
+      provinces: provinces
     }
