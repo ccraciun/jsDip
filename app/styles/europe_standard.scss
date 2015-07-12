@@ -1,6 +1,24 @@
-.sc, .l	{fill:#FFFFDD; stroke:black; stroke-linejoin:round}
-.w				{fill:#99CCFF; stroke:black; stroke-linejoin:round}
-.s				{fill:#DDDDDD; stroke:black; stroke-linejoin:round}
+// Colors
+$neutral-color: #ffd; // already faded for area-fill.
+
+$austria-color: #f00;
+$england-color: #00f;
+$france-color: #0ff;
+$germany-color: #444;
+$italy-color: #0f0;
+$russia-color: #fff;
+$turkey-color: #ff0;
+$area-fill-lighten: 30%;
+
+.sc, .l	{
+  fill: $neutral-color;
+  stroke: black;
+  stroke-linejoin: round;
+}
+.w				{fill:#9cf; stroke:black; stroke-linejoin:round}
+.s				{fill:#fff; stroke:black; stroke-linejoin:round}
+
+
 
 text {
     font-family: Arial,Helvetica,sans-serif;
@@ -24,47 +42,49 @@ text {
 
 #SupplyCentersLayer .sc.selected {stroke-width:2;}
 
-.unit {
+.sc, .unit {
+  opacity: .7;
   stroke: black;
-  // opacity: .7;
-  &.Austria   {fill:#FF0000;}
-  &.England   {fill:#0000FF;}
-  &.France    {fill:#00FFFF;}
-  &.Germany   {fill:#808080;}
-  &.Italy     {fill:#00FF00;}
-  &.Russia    {fill:#fff;}
-  &.Turkey    {fill:#FFFF00;}
+}
+.unit {
+  &.Austria   {fill: $austria-color;}
+  &.England   {fill: $england-color;}
+  &.France    {fill: $france-color;}
+  &.Germany   {fill: $germany-color;}
+  &.Italy     {fill: $italy-color;}
+  &.Russia    {fill: $russia-color;}
+  &.Turkey    {fill: $turkey-color;}
 
   &.selected {stroke-width:2;}
 }
 
 g[data-owner='Austria'] {
-  .sc { fill:#FF0000; stroke:black; }
-  polygon, polyline { fill: #fbb; }
+  .sc { fill: $austria-color; }
+  polygon, polyline { fill: lighten($austria-color, $area-fill-lighten); }
 }
 g[data-owner='England'] {
-  .sc { fill:#0000FF; stroke:black; }
-  polygon, polyline { fill:#bbf; }
+  .sc { fill: $england-color; }
+  polygon, polyline { fill: lighten($england-color, $area-fill-lighten); }
 }
 g[data-owner='France'] {
-  .sc { fill:#00FFFF; stroke:black; }
-  polygon, polyline { fill:#bff; }
+  .sc { fill: $france-color; }
+  polygon, polyline { fill: lighten($france-color, $area-fill-lighten); }
 }
 g[data-owner='Germany'] {
-  .sc { fill:#808080; stroke:black; }
-  polygon, polyline { fill:#999; }
+  .sc { fill: $germany-color; }
+  polygon, polyline { fill: lighten($germany-color, $area-fill-lighten); }
 }
 g[data-owner='Italy'] {
-  .sc { fill:#00FF00; stroke:black; }
-  polygon, polyline { fill:#bfb; }
+  .sc { fill: $italy-color; }
+  polygon, polyline { fill: lighten($italy-color, $area-fill-lighten); }
 }
 g[data-owner='Russia'] {
-  .sc { fill:#fff; stroke:black; }
-  polygon, polyline { fill:#eee; }
+  .sc { fill: $russia-color; }
+  polygon, polyline { fill: darken($russia-color, 18%); }
 }
 g[data-owner='Turkey'] {
-  .sc { fill:#FFFF00; stroke:black; }
-  polygon, polyline { fill:#ff9; }
+  .sc { fill: $turkey-color; }
+  polygon, polyline { fill: lighten($turkey-color, $area-fill-lighten); }
 }
 
 #ForcesLayer .force.selected 	{stroke-width:2}
@@ -77,18 +97,18 @@ g[data-owner='Turkey'] {
 #OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
 #OrdersLayer .order.fail {marker-mid:url(#fail)}
 
-#OrdersLayer .Austria .force 	{fill:#FF0000; stroke:black; opacity:.5}
-#OrdersLayer .England .force 	{fill:#0000FF; stroke:black; opacity:.5}
-#OrdersLayer .France .force  	{fill:#00FFFF; stroke:black; opacity:.5}
-#OrdersLayer .Germany .force 	{fill:#808080; stroke:black; opacity:.5}
-#OrdersLayer .Italy .force   	{fill:#00FF00; stroke:black; opacity:.5}
-#OrdersLayer .Russia .force  	{fill:#008000; stroke:black; opacity:.5}
-#OrdersLayer .Turkey .force  	{fill:#FFFF00; stroke:black; opacity:.5}
+#OrdersLayer .Austria .force 	{ fill: $austria-color; stroke:black; opacity:.5; }
+#OrdersLayer .England .force 	{ fill: $england-color; stroke:black; opacity:.5; }
+#OrdersLayer .France .force  	{ fill: $france-color; stroke:black; opacity:.5; }
+#OrdersLayer .Germany .force 	{ fill: $germany-color; stroke:black; opacity:.5; }
+#OrdersLayer .Italy .force   	{ fill: $italy-color; stroke:black; opacity:.5; }
+#OrdersLayer .Russia .force  	{ fill: $russia-color; stroke:black; opacity:.5; }
+#OrdersLayer .Turkey .force  	{ fill: $turkey-color; stroke:black; opacity:.5; }
 
-.message.Austria    {color:#FF0000}
-.message.England    {color:#0000FF}
-.message.France     {color:#00FFFF}
-.message.Germany    {color:#808080}
-.message.Italy      {color:#00FF00}
-.message.Russia     {color:#008000}
-.message.Turkey     {color:#FFFF00}
+.message.Austria    { color: $austria-color }
+.message.England    { color: $england-color; }
+.message.France     { color: $france-color; }
+.message.Germany    { color: $germany-color; }
+.message.Italy      { color: $italy-color; }
+.message.Russia     { color: $russia-color; }
+.message.Turkey     { color: $turkey-color; }

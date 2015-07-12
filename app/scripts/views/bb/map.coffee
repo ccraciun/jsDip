@@ -32,6 +32,8 @@ module.exports = class Map extends Views.Base
     @renderSubviews()
 
   renderSubviews: ->
+    # TODO(rkofman): Supply Centers and Units might deserve their own layers,
+    # so they are always drawn on top.
     @model.get('provinces').each (province) ->
       provinceEl = @$("##{province.htmlId()}")
       if province.get('owner')
