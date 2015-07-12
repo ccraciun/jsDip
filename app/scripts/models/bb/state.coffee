@@ -5,6 +5,7 @@ Models = {
 }
 Collections = {
   Countries: require '../../collections/countries'
+  Provinces: require '../../collections/provinces'
 }
 
 module.exports = class State extends backbone.Model
@@ -15,7 +16,7 @@ module.exports = class State extends backbone.Model
         _(val).extend name: key
       attrs.countries = new Collections.Countries(
         countries,
-        provinces: options.provinces,
+        allProvinces: options.provinces,
         parse: true
       )
 

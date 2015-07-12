@@ -1,7 +1,7 @@
 backbone = require 'backbone'
 $ = require 'jQuery'
-
 Snap = require 'snap.svg'
+
 Collections = {
   SupplyCenters: require '../../collections/supply_centers'
 }
@@ -18,19 +18,25 @@ module.exports = class Map extends Views.Base
   el: '#map'
   initialize: (options) ->
     super
-    @svgUrl = options.svgUrl
+    @state = @model.get('state')
+    @initOrderEntry() # should depend on current State Machine.
 
-  render: ->
-    Snap.load(@svgUrl, @onSvgLoad)
+  initOrderEntry: ->
+    @listenTo(@state, 'change:selectedCountry', @onCountryChange)
 
-  onSvgLoad: (svg_data) =>
-    Snap(@el).append svg_data
+  onCountryChange: (state, countryName) =>
+    console.log @model.get('state').get('selectedCountry')
+
+  render: (svgData=null) =>
+    Snap(@el).append svgData if svgData
     @renderSubviews()
-    # @renderUnits()
 
   renderSubviews: ->
     @model.get('provinces').each (province) ->
       provinceEl = @$("##{province.htmlId()}")
+      if province.get('owner')
+        provinceEl.attr('data-owner', province.get('owner').get('name'))
+
       if province.get('isSupplyCenter')
         supplyCenterView = new Views.SupplyCenter(model: province)
         supplyCenterView.render()

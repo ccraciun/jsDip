@@ -12,6 +12,10 @@ module.exports = class Province extends backbone.Model
     @set('subregions', @_vivifyProvinces @get('subregions'))
     @get('subregions').each (subregion) =>
       subregion.set 'parentRegion', @
+    @on 'change:owner', =>
+      @get('subregions').each (subregion) =>
+        subregion.set('owner', @get('owner'))
+
 
 
   initAdjacencyLinks: ->

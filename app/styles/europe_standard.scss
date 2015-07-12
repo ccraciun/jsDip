@@ -1,4 +1,4 @@
-.l, .Unowned, .Independent	{fill:#FFFFDD; stroke:black; stroke-linejoin:round}
+.sc, .l	{fill:#FFFFDD; stroke:black; stroke-linejoin:round}
 .w				{fill:#99CCFF; stroke:black; stroke-linejoin:round}
 .s				{fill:#DDDDDD; stroke:black; stroke-linejoin:round}
 
@@ -12,7 +12,6 @@ text {
     cursor: default;
 }
 
-// TODO(ccraciun): One rule here?
 #MapLayer {
   &.accepting g:hover, .accepting:hover {
     .l {fill:#BADA55;}
@@ -20,28 +19,53 @@ text {
   }
 }
 
-#SupplyCentersLayer {
-  .Austria		{fill:#FF0000; stroke:black}
-  .England		{fill:#0000FF; stroke:black}
-  .France 		{fill:#00FFFF; stroke:black}
-  .Germany		{fill:#808080; stroke:black}
-  .Italy  		{fill:#00FF00; stroke:black}
-  .Russia 		{fill:#008000; stroke:black}
-  .Turkey 		{fill:#FFFF00; stroke:black}
-}
-
 #SupplyCentersLayer .accepting .sc:hover 	{fill:#BADA55;}
 #SupplyCentersLayer .sc.accepting:hover 	{fill:#BADA55;}
 
 #SupplyCentersLayer .sc.selected {stroke-width:2;}
 
-#ForcesLayer .Austria .force 	{fill:#FF0000; stroke:black}
-#ForcesLayer .England .force 	{fill:#0000FF; stroke:black}
-#ForcesLayer .France .force  	{fill:#00FFFF; stroke:black}
-#ForcesLayer .Germany .force 	{fill:#808080; stroke:black}
-#ForcesLayer .Italy .force   	{fill:#00FF00; stroke:black}
-#ForcesLayer .Russia .force  	{fill:#008000; stroke:black}
-#ForcesLayer .Turkey .force  	{fill:#FFFF00; stroke:black}
+.unit {
+  stroke: black;
+  // opacity: .7;
+  &.Austria   {fill:#FF0000;}
+  &.England   {fill:#0000FF;}
+  &.France    {fill:#00FFFF;}
+  &.Germany   {fill:#808080;}
+  &.Italy     {fill:#00FF00;}
+  &.Russia    {fill:#fff;}
+  &.Turkey    {fill:#FFFF00;}
+
+  &.selected {stroke-width:2;}
+}
+
+g[data-owner='Austria'] {
+  .sc { fill:#FF0000; stroke:black; }
+  polygon, polyline { fill: #fbb; }
+}
+g[data-owner='England'] {
+  .sc { fill:#0000FF; stroke:black; }
+  polygon, polyline { fill:#bbf; }
+}
+g[data-owner='France'] {
+  .sc { fill:#00FFFF; stroke:black; }
+  polygon, polyline { fill:#bff; }
+}
+g[data-owner='Germany'] {
+  .sc { fill:#808080; stroke:black; }
+  polygon, polyline { fill:#999; }
+}
+g[data-owner='Italy'] {
+  .sc { fill:#00FF00; stroke:black; }
+  polygon, polyline { fill:#bfb; }
+}
+g[data-owner='Russia'] {
+  .sc { fill:#fff; stroke:black; }
+  polygon, polyline { fill:#eee; }
+}
+g[data-owner='Turkey'] {
+  .sc { fill:#FFFF00; stroke:black; }
+  polygon, polyline { fill:#ff9; }
+}
 
 #ForcesLayer .force.selected 	{stroke-width:2}
 
@@ -61,10 +85,10 @@ text {
 #OrdersLayer .Russia .force  	{fill:#008000; stroke:black; opacity:.5}
 #OrdersLayer .Turkey .force  	{fill:#FFFF00; stroke:black; opacity:.5}
 
-.message.Austria		{color:#FF0000}
-.message.England		{color:#0000FF}
-.message.France 		{color:#00FFFF}
-.message.Germany		{color:#808080}
-.message.Italy  		{color:#00FF00}
-.message.Russia 		{color:#008000}
-.message.Turkey 		{color:#FFFF00}
+.message.Austria    {color:#FF0000}
+.message.England    {color:#0000FF}
+.message.France     {color:#00FFFF}
+.message.Germany    {color:#808080}
+.message.Italy      {color:#00FF00}
+.message.Russia     {color:#008000}
+.message.Turkey     {color:#FFFF00}

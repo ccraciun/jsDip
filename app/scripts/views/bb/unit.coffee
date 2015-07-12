@@ -12,8 +12,10 @@ module.exports = class UnitView extends Views.BaseSvgView
     return unless @model
     href: "##{@model.get('type')}"
 
-  attributes:
-    style: "opacity: .8; fill: #f33;"
+  className: ->
+    "unit #{@model.get('owner').get('name')}"
+  # attributes:
+  #   style: "opacity: .8; fill: #f33;"
 
   initialize: (options) ->
     super

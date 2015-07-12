@@ -8,8 +8,9 @@ module.exports = class SupplyCenter extends Views.BaseSvgView
 
   tagName: 'use'
   xlink: {
-    href: "#SC"
+    href: "#sc"
   }
+  className: "sc"
 
   initialize: ->
     super

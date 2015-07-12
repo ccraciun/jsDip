@@ -19,9 +19,6 @@ Created for Diplomap (http://www.games2relax.net/diplomap/)
 <g id="sc"> <!-- colored SC -->
 	<circle r="4"/>
 </g>
-<g id="SC"> <!-- unowned SC -->
-        <circle r="4" class="sc Unowned"/>
-</g>
 <marker id="move" orient="auto" markerwidth="2" markerHeight="4" refX="0.1" refY="2">
     <path d="M0,0 V4 L2,2 Z" fill="black"/>
 </marker>

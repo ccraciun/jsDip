@@ -8,37 +8,37 @@
         "Austria": {
             "armies": ["Budapest", "Vienna"],
             "fleets": ["Trieste"],
-            "provinces": ["Budapest", "Trieste", "Vienna"]
+            "provinces": ["Budapest", "Trieste", "Vienna", "Galicia", "Bohemia", "Tyrolia"]
         },
         "England": {
             "armies": ["Liverpool"],
             "fleets": ["London", "Edinburgh"],
-            "provinces": ["Edinburgh", "Liverpool", "London"]
+            "provinces": ["Edinburgh", "Liverpool", "London", "Yorkshire", "Wales", "Clyde"]
         },
         "France": {
             "armies": ["Paris", "Marseilles"],
             "fleets": ["Brest"],
-            "provinces": ["Brest", "Marseilles", "Paris"]
+            "provinces": ["Brest", "Marseilles", "Paris", "Gascony", "Burgundy", "Picardy"]
         },
         "Germany": {
             "armies": ["Berlin", "Munich"],
             "fleets": ["Kiel"],
-            "provinces": ["Berlin", "Kiel", "Munich"]
+            "provinces": ["Berlin", "Kiel", "Munich", "Ruhr", "Prussia", "Silesia"]
         },
         "Italy": {
             "armies": ["Rome", "Venice"],
             "fleets": ["Naples"],
-            "provinces": ["Naples", "Rome", "Venice"]
+            "provinces": ["Naples", "Rome", "Venice", "Piedmont", "Apulia", "Tuscany"]
         },
         "Russia": {
             "armies": ["Moscow", "Warsaw"],
             "fleets": ["St Petersburg (nc)", "Sevastopol"],
-            "provinces": ["Moscow", "Sevastopol", "St Petersburg", "Warsaw"]
+            "provinces": ["Moscow", "Sevastopol", "St Petersburg", "Warsaw", "Ukraine", "St Petersburg", "Finland", "Livonia"]
         },
         "Turkey": {
             "armies": ["Constantinople", "Smyrna"],
             "fleets": ["Ankara"],
-            "provinces": ["Ankara", "Constantinople", "Smyrna"]
+            "provinces": ["Ankara", "Constantinople", "Smyrna", "Armenia", "Syria"]
         }
     }
 }

@@ -1,5 +1,6 @@
 _ = require 'underscore'
 backbone = require 'backbone'
+Snap = require 'snap.svg'
 
 Views = {
   Base: require './base'
@@ -24,15 +25,21 @@ Data = {
 }
 
 module.exports = class DiplomacyGame extends Views.Base
+  svgUrl: "images/europe_standard.svg"
   initialize: ->
     @model = new Models.Game(Data.Base, parse: true)
     @subViews = {
-      map: new Views.Map(svgUrl: "images/europe_standard.svg", model: @model)
+      map: new Views.Map(model: @model)
       header: new Views.Header(model: @model.get('state'))
     }
 
   render: ->
-    @renderSubViews()
+    # TODO(rkofman): maybe show a loading screen?
+    Snap.load(@svgUrl, @onSvgLoad)
+
+  onSvgLoad: (svgData) =>
+    @subViews.map.render(svgData)
+    @subViews.header.render()
 
   renderSubViews: ->
     for view in _(@subViews).values()

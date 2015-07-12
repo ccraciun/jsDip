@@ -10,7 +10,5 @@ module.exports = class SupplyCenters extends backbone.Collection
 
   parse: (data, options) ->
     _(data).map (coords, provinceName) ->
-      {
-        coords: coords
-        provinceName: provinceName
-      }
+      coords: coords
+      provinceName: provinceName
