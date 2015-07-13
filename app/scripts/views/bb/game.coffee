@@ -18,7 +18,7 @@ Collections = {
 Data = {
   Base: {
     gameDefinition: require '../../../data/game_definition.json'
-    state: require '../../../data/start_state.json'
+    phase: require '../../../data/start_phase.json'
     provinces: require '../../../data/provinces.json'
     coords: require '../../../data/coords.json'
   }
@@ -30,7 +30,7 @@ module.exports = class DiplomacyGame extends Views.Base
     @model = new Models.Game(Data.Base, parse: true)
     @subViews = {
       map: new Views.Map(model: @model)
-      header: new Views.Header(model: @model.get('state'))
+      header: new Views.Header(model: @model.get('phase'))
     }
 
   render: ->

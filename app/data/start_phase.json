@@ -1,10 +1,9 @@
 ﻿{
-    "date": {
-        "year": 1901,
-        "season": "Spring",
-        "phase": "Movement"
-    },
-    "countries": {
+    "name": "Movement",
+    "year": 1901,
+    "season": "Spring",
+    "orders": {},
+    "state": {
         "Austria": {
             "armies": ["Budapest", "Vienna"],
             "fleets": ["Trieste"],

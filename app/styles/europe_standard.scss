@@ -1,5 +1,7 @@
 // Colors
-$neutral-color: #ffd; // already faded for area-fill.
+$water-color: #007fff;
+$neutral-land-color: #c59d66;
+$impassable-color: #fff;
 
 $austria-color: #f00;
 $england-color: #00f;
@@ -10,13 +12,15 @@ $russia-color: #fff;
 $turkey-color: #ff0;
 $area-fill-lighten: 30%;
 
-.sc, .l	{
-  fill: $neutral-color;
+.sc, .l, .w, .s {
   stroke: black;
   stroke-linejoin: round;
 }
-.w				{fill:#9cf; stroke:black; stroke-linejoin:round}
-.s				{fill:#fff; stroke:black; stroke-linejoin:round}
+.sc, .l	{
+  fill: lighten($neutral-land-color, $area-fill-lighten);
+}
+.w				{ fill: lighten($water-color, $area-fill-lighten); }
+.s				{ fill: $impassable-color; }
 
 
 
@@ -58,33 +62,33 @@ text {
   &.selected {stroke-width:2;}
 }
 
-g[data-owner='Austria'] {
+.province[data-owner='Austria'] {
   .sc { fill: $austria-color; }
-  polygon, polyline { fill: lighten($austria-color, $area-fill-lighten); }
+  .l { fill: lighten($austria-color, $area-fill-lighten); }
 }
-g[data-owner='England'] {
+.province[data-owner='England'] {
   .sc { fill: $england-color; }
-  polygon, polyline { fill: lighten($england-color, $area-fill-lighten); }
+  .l { fill: lighten($england-color, $area-fill-lighten); }
 }
-g[data-owner='France'] {
+.province[data-owner='France'] {
   .sc { fill: $france-color; }
-  polygon, polyline { fill: lighten($france-color, $area-fill-lighten); }
+  .l { fill: lighten($france-color, $area-fill-lighten); }
 }
-g[data-owner='Germany'] {
+.province[data-owner='Germany'] {
   .sc { fill: $germany-color; }
-  polygon, polyline { fill: lighten($germany-color, $area-fill-lighten); }
+  .l { fill: lighten($germany-color, $area-fill-lighten); }
 }
-g[data-owner='Italy'] {
+.province[data-owner='Italy'] {
   .sc { fill: $italy-color; }
-  polygon, polyline { fill: lighten($italy-color, $area-fill-lighten); }
+  .l { fill: lighten($italy-color, $area-fill-lighten); }
 }
-g[data-owner='Russia'] {
+.province[data-owner='Russia'] {
   .sc { fill: $russia-color; }
-  polygon, polyline { fill: darken($russia-color, 18%); }
+  .l { fill: darken($russia-color, 18%); }
 }
-g[data-owner='Turkey'] {
+.province[data-owner='Turkey'] {
   .sc { fill: $turkey-color; }
-  polygon, polyline { fill: lighten($turkey-color, $area-fill-lighten); }
+  .l { fill: lighten($turkey-color, $area-fill-lighten); }
 }
 
 #ForcesLayer .force.selected 	{stroke-width:2}
@@ -112,3 +116,41 @@ g[data-owner='Turkey'] {
 .message.Italy      { color: $italy-color; }
 .message.Russia     { color: $russia-color; }
 .message.Turkey     { color: $turkey-color; }
+
+.province.actionable:hover {
+  .unit { opacity: 1; }
+  .l {
+    fill: $neutral-land-color;
+  }
+  .w {
+    fill: $water-color;
+  }
+  &[data-owner='Austria'] {
+    .sc { fill: $austria-color; }
+    .l { fill: lighten($austria-color, $area-fill-lighten / 3); }
+  }
+  &[data-owner='England'] {
+    .sc { fill: $england-color; }
+    .l { fill: lighten($england-color, $area-fill-lighten / 3); }
+  }
+  &[data-owner='France'] {
+    .sc { fill: $france-color; }
+    .l { fill: lighten($france-color, $area-fill-lighten / 3); }
+  }
+  &[data-owner='Germany'] {
+    .sc { fill: $germany-color; }
+    .l { fill: lighten($germany-color, $area-fill-lighten / 3); }
+  }
+  &[data-owner='Italy'] {
+    .sc { fill: $italy-color; }
+    .l { fill: lighten($italy-color, $area-fill-lighten / 3); }
+  }
+  &[data-owner='Russia'] {
+    .sc { fill: $russia-color; }
+    .l { fill: darken($russia-color, 18%/ 3); }
+  }
+  &[data-owner='Turkey'] {
+    .sc { fill: $turkey-color; }
+    .l { fill: lighten($turkey-color, $area-fill-lighten / 3); }
+  }
+}

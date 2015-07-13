@@ -10,6 +10,7 @@ Collections = {
 }
 
 module.exports = class Country extends backbone.Model
+  idAttribute: "name"
 
   parse: (data, options) ->
     attrs = super

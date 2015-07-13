@@ -12,17 +12,15 @@ module.exports = class Header extends Views.Base
 
   initialize: (attrs, options) ->
     super
-    @date = @model.get('date')
 
   toJSON: ->
-    {
-      season: @date.get('season')
-      year: @date.get('year')
-      phase: @date.get('phase')
-      countries: @model.activeCountries().map (c) -> c.get('name')
-    }
+    season: @model.get('season')
+    year: @model.get('year')
+    phase: @model.get('name')
+    countries: @model.activeCountries().map (c) -> c.get('name')
 
   onCountrySelect: (e) =>
-    selectedCountry = e.currentTarget.value
-    selectedCountry = null if _(selectedCountry).isEmpty()
-    @model.set('selectedCountry', selectedCountry)
+    countryName = e.currentTarget.value
+    countryName = null if _(countryName).isEmpty()
+    country = @model.get('state').get(countryName)
+    @model.set('selectedCountry', country)
