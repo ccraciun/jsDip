@@ -6,7 +6,7 @@ Models = {
 module.exports = class Countries extends backbone.Collection
   model: Models.Country
 
-  activeCountries: ->
+  active: ->
     @filter((country) ->
       not(country.get('units').isEmpty() and country.get('supplyCenters').isEmpty())
     )

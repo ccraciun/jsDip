@@ -2,7 +2,7 @@ backbone = require 'backbone'
 
 Models = {
   GameDefinition: require './game_definition'
-  Phase: require './phase'
+  State: require './state'
   GameDate: require './game_date'
 }
 Collections = {
@@ -18,6 +18,6 @@ module.exports = class Game extends backbone.Model
     )
     {
       gameDefinition: new Models.GameDefinition(data.gameDefinition, parse: true)
-      phase: new Models.Phase(data.phase, provinces: provinces, parse: true)
+      state: new Models.State(data.state, provinces: provinces, parse: true)
       provinces: provinces
     }

@@ -16,11 +16,11 @@ module.exports = class Header extends Views.Base
   toJSON: ->
     season: @model.get('season')
     year: @model.get('year')
-    phase: @model.get('name')
+    phase: @model.get('phase')
     countries: @model.activeCountries().map (c) -> c.get('name')
 
   onCountrySelect: (e) =>
     countryName = e.currentTarget.value
     countryName = null if _(countryName).isEmpty()
-    country = @model.get('state').get(countryName)
+    country = @model.getCountry(countryName)
     @model.set('selectedCountry', country)

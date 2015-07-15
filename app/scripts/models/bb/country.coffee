@@ -10,12 +10,25 @@ Collections = {
 }
 
 module.exports = class Country extends backbone.Model
+  # Attributes:
+  #   - name: String, the name of the country.
+  #   - provinces: A collection of provinces owned by this country.
+  #   - units: A collection fleets and armies owned by this country.
+  #   - orders: The current collection of orders entered for this country.
+
   idAttribute: "name"
 
   parse: (data, options) ->
     attrs = super
     attrs = @_parseUnits(attrs, options)
     attrs = @_parseProvinces(attrs, options)
+    attrs = @_parseOrders(attrs, options)
+
+  supplyCenters: ->
+    @get('provinces').where(isSupplyCenter: true)
+
+  supplyCenterDelta: ->
+    @supplyCenters().count() - @get('units').count()
 
 
   _parseProvinces: (attrs, options) ->
@@ -31,6 +44,13 @@ module.exports = class Country extends backbone.Model
       _.union(fleets, armies)
     )
     _(attrs).omit 'fleets', 'armies'
+
+  _parseOrders: (attrs, options) ->
+    orders = options.state.buildOrdersCollection(options.phase)
+    orders.set(attrs.orders, parse: true)
+    orders.setCountry(@)
+    attrs.orders = orders
+    attrs
 
   _vivifyUnit: (type, provinceName, allProvinces) ->
     attrs = {

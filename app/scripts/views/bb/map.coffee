@@ -19,27 +19,26 @@ module.exports = class Map extends Views.Base
 
   initialize: (options) ->
     super
-    @phase = @model.get('phase')
+    @state = @model.get('state')
     @initOrderEntry() # should depend on current State Machine.
 
   initOrderEntry: ->
-    @listenTo(@phase, 'change:selectedCountry', @onCountryChange)
+    @listenTo(@state, 'change:selectedCountry', @onCountryChange)
 
   onCountryChange: (state, country) =>
     previousCountry = state.previous('selectedCountry')
     if previousCountry
-      @makeActionable previousCountry.get('units'), false
+      @makeActionable previousCountry.get('orders').actionableProvinces(), false
       @undelegateEvents()
     if country
-      @makeActionable country.get('units')
+      @makeActionable country.get('orders').actionableProvinces()
       @delegateEvents {
         "click .actionable": (e) -> console.log "clicked: #{$(e.currentTarget).attr('data-name')}!"
       }
 
 
   makeActionable: (units, flag=true) ->
-    units.each (unit) =>
-      province = unit.get('province')
+    _(units).each (province) =>
       provinceEl = @$("##{province.htmlId()}")
       Snap(provinceEl[0]).toggleClass('actionable', flag)
 
