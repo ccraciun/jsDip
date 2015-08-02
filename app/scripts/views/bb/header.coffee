@@ -21,6 +21,4 @@ module.exports = class Header extends Views.Base
 
   onCountrySelect: (e) =>
     countryName = e.currentTarget.value
-    countryName = null if _(countryName).isEmpty()
-    country = @model.getCountry(countryName)
-    @model.set('selectedCountry', country)
+    @model.startOrderEntry(countryName)

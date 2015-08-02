@@ -16,6 +16,20 @@ Data = {
 
 module.exports = class Map extends Views.Base
   el: '#map'
+  events:
+    # 'mouseenter *': 'onMouseEnter'
+    # 'mouseleave *': 'onMouseLeave'
+    'click .actionable': 'onActionableClick'
+
+  onActionableClick: (e) ->
+    console.log "actionable clicked", e
+    console.log "clicked: #{$(e.currentTarget).attr('data-name')}!"
+
+  onMouseEnter: (e) ->
+    console.log 'mouse enter', e
+
+  onMouseLeave: (e) ->
+    console.log 'mouse leave', e
 
   initialize: (options) ->
     super
@@ -23,24 +37,18 @@ module.exports = class Map extends Views.Base
     @initOrderEntry() # should depend on current State Machine.
 
   initOrderEntry: ->
-    @listenTo(@state, 'change:selectedCountry', @onCountryChange)
+    @listenTo(@state, 'change:ordersFactory', @onOrdersFactoryChange)
 
-  onCountryChange: (state, country) =>
-    previousCountry = state.previous('selectedCountry')
-    if previousCountry
-      @makeActionable previousCountry.get('orders').actionableProvinces(), false
-      @undelegateEvents()
-    if country
-      @makeActionable country.get('orders').actionableProvinces()
-      @delegateEvents {
-        "click .actionable": (e) -> console.log "clicked: #{$(e.currentTarget).attr('data-name')}!"
-      }
+  onOrdersFactoryChange: (state, ordersFactory) ->
+    @setActionableProvinces ordersFactory.actionableProvinces()
 
-
-  makeActionable: (units, flag=true) ->
-    _(units).each (province) =>
-      provinceEl = @$("##{province.htmlId()}")
-      Snap(provinceEl[0]).toggleClass('actionable', flag)
+  setActionableProvinces: (provinces) ->
+    @$("*.actionable").each (index, element) ->
+      Snap(element).removeClass('actionable')
+    _(provinces).each (province) =>
+      name = province.get('name')
+      @$("[data-province='#{name}']").each (index, element) ->
+        Snap(element).toggleClass('actionable', true)
 
   render: (svgData=null) =>
     Snap(@el).append svgData if svgData
@@ -52,6 +60,7 @@ module.exports = class Map extends Views.Base
     @model.get('provinces').each (province) ->
       provinceEl = @$("##{province.htmlId()}")
       provinceEl.attr('data-name', province.get('name'))
+      provinceEl.attr('data-province', province.get('name'))
       Snap(provinceEl[0]).addClass('province')
       if province.get('owner')
         provinceEl.attr('data-owner', province.get('owner').get('name'))
