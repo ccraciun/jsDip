@@ -25,6 +25,7 @@ module.exports = class Defs extends BaseModel
     for name, aliases of @aliases
       for alias in aliases
         @canonical[alias] = name
+        @canonical[alias.replace(/\s/g, '')] = name
 
   canonicalName: (name) ->
     return @canonical[name.toLowerCase().replace('_', ' ')]

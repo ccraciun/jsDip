@@ -76,9 +76,14 @@ module.exports = class Order extends BaseModel
         dst = child.dst
 
       # (unit) - (destination)
-      else if (parts = str.split '-').length > 1
+      else if (parts = str.split ' - ').length > 1
         action = 'move'
-        parts = str.split '-'
+        unit = unt.Unit.fromString parts[0].trim()
+        dst = parts[1].trim()
+
+      # (unit) - (destination)
+      else if (parts = str.split '->').length > 1
+        action = 'move'
         unit = Unit.fromString parts[0].trim()
         dst = parts[1].trim()
 
