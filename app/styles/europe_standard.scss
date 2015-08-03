@@ -12,18 +12,6 @@ $russia-color: #fff;
 $turkey-color: #ff0;
 $area-fill-lighten: 30%;
 
-.sc, .l, .w, .s {
-  stroke: black;
-  stroke-linejoin: round;
-}
-.sc, .l	{
-  fill: lighten($neutral-land-color, $area-fill-lighten);
-}
-.w				{ fill: lighten($water-color, $area-fill-lighten); }
-.s				{ fill: $impassable-color; }
-
-
-
 text {
     font-family: Arial,Helvetica,sans-serif;
     font-size: 8px;
@@ -34,90 +22,23 @@ text {
     cursor: default;
 }
 
-#MapLayer {
-  &.accepting g:hover, .accepting:hover {
-    .l {fill:#BADA55;}
-    .w {fill:#BAAADA;}
-  }
+.sc, .l, .w, .s {
+  stroke: black;
+  stroke-linejoin: round;
 }
-
-#SupplyCentersLayer .accepting .sc:hover 	{fill:#BADA55;}
-#SupplyCentersLayer .sc.accepting:hover 	{fill:#BADA55;}
-
-#SupplyCentersLayer .sc.selected {stroke-width:2;}
+.sc, .l	{
+  fill: lighten($neutral-land-color, $area-fill-lighten);
+}
+.w				{ fill: lighten($water-color, $area-fill-lighten); }
+.s				{ fill: $impassable-color; }
 
 .sc, .unit {
   opacity: .7;
   stroke: black;
-}
-.unit {
-  &.Austria   {fill: $austria-color;}
-  &.England   {fill: $england-color;}
-  &.France    {fill: $france-color;}
-  &.Germany   {fill: $germany-color;}
-  &.Italy     {fill: $italy-color;}
-  &.Russia    {fill: $russia-color;}
-  &.Turkey    {fill: $turkey-color;}
-
   &.selected {stroke-width:2;}
 }
 
-.province[data-owner='Austria'] {
-  .sc { fill: $austria-color; }
-  .l { fill: lighten($austria-color, $area-fill-lighten); }
-}
-.province[data-owner='England'] {
-  .sc { fill: $england-color; }
-  .l { fill: lighten($england-color, $area-fill-lighten); }
-}
-.province[data-owner='France'] {
-  .sc { fill: $france-color; }
-  .l { fill: lighten($france-color, $area-fill-lighten); }
-}
-.province[data-owner='Germany'] {
-  .sc { fill: $germany-color; }
-  .l { fill: lighten($germany-color, $area-fill-lighten); }
-}
-.province[data-owner='Italy'] {
-  .sc { fill: $italy-color; }
-  .l { fill: lighten($italy-color, $area-fill-lighten); }
-}
-.province[data-owner='Russia'] {
-  .sc { fill: $russia-color; }
-  .l { fill: darken($russia-color, 18%); }
-}
-.province[data-owner='Turkey'] {
-  .sc { fill: $turkey-color; }
-  .l { fill: lighten($turkey-color, $area-fill-lighten); }
-}
-
-#ForcesLayer .force.selected 	{stroke-width:2}
-
-#ForcesLayer.accepting .force:hover 	{stroke:gray}
-
-#OrdersLayer .order.move {fill:none; stroke:black; stroke-width:3; marker-end:url(#move)}
-#OrdersLayer .order.support {fill:none; stroke:green; stroke-width:3; marker-end:url(#support)}
-#OrdersLayer .order.convoy {fill:none; stroke:blue; stroke-width:3; marker-end:url(#convoy)}
-#OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
-#OrdersLayer .order.fail {marker-mid:url(#fail)}
-
-#OrdersLayer .Austria .force 	{ fill: $austria-color; stroke:black; opacity:.5; }
-#OrdersLayer .England .force 	{ fill: $england-color; stroke:black; opacity:.5; }
-#OrdersLayer .France .force  	{ fill: $france-color; stroke:black; opacity:.5; }
-#OrdersLayer .Germany .force 	{ fill: $germany-color; stroke:black; opacity:.5; }
-#OrdersLayer .Italy .force   	{ fill: $italy-color; stroke:black; opacity:.5; }
-#OrdersLayer .Russia .force  	{ fill: $russia-color; stroke:black; opacity:.5; }
-#OrdersLayer .Turkey .force  	{ fill: $turkey-color; stroke:black; opacity:.5; }
-
-.message.Austria    { color: $austria-color }
-.message.England    { color: $england-color; }
-.message.France     { color: $france-color; }
-.message.Germany    { color: $germany-color; }
-.message.Italy      { color: $italy-color; }
-.message.Russia     { color: $russia-color; }
-.message.Turkey     { color: $turkey-color; }
-
-.province.actionable:hover {
+.province.actionable.hover {
   .unit { opacity: 1; }
   .l {
     fill: $neutral-land-color;
@@ -125,32 +46,91 @@ text {
   .w {
     fill: $water-color;
   }
-  &[data-owner='Austria'] {
-    .sc { fill: $austria-color; }
+}
+
+[data-owner='Austria'] {
+  &.sc, &.unit { fill: $austria-color; }
+  & .l { fill: lighten($austria-color, $area-fill-lighten); }
+  &.province.actionable.hover, {
     .l { fill: lighten($austria-color, $area-fill-lighten / 3); }
   }
-  &[data-owner='England'] {
-    .sc { fill: $england-color; }
+}
+[data-owner='England'] {
+  &.sc, &.unit { fill: $england-color; }
+  & .l { fill: lighten($england-color, $area-fill-lighten); }
+  &.province.actionable.hover, {
     .l { fill: lighten($england-color, $area-fill-lighten / 3); }
   }
-  &[data-owner='France'] {
-    .sc { fill: $france-color; }
+}
+[data-owner='France'] {
+  &.sc, &.unit { fill: $france-color; }
+  & .l { fill: lighten($france-color, $area-fill-lighten); }
+  &.province.actionable.hover, {
     .l { fill: lighten($france-color, $area-fill-lighten / 3); }
   }
-  &[data-owner='Germany'] {
-    .sc { fill: $germany-color; }
+}
+[data-owner='Germany'] {
+  &.sc, &.unit { fill: $germany-color; }
+  & .l { fill: lighten($germany-color, $area-fill-lighten); }
+  &.province.actionable.hover, {
     .l { fill: lighten($germany-color, $area-fill-lighten / 3); }
   }
-  &[data-owner='Italy'] {
-    .sc { fill: $italy-color; }
+}
+[data-owner='Italy'] {
+  &.sc, &.unit { fill: $italy-color; }
+  & .l { fill: lighten($italy-color, $area-fill-lighten); }
+  &.province.actionable.hover, {
     .l { fill: lighten($italy-color, $area-fill-lighten / 3); }
   }
-  &[data-owner='Russia'] {
-    .sc { fill: $russia-color; }
-    .l { fill: darken($russia-color, 18%/ 3); }
+}
+[data-owner='Russia'] {
+  &.sc, &.unit { fill: $russia-color; }
+  & .l { fill: #eee; }
+  &.province.actionable.hover, {
+    .l { fill: $russia-color; }
   }
-  &[data-owner='Turkey'] {
-    .sc { fill: $turkey-color; }
+}
+[data-owner='Turkey'] {
+  &.sc, &.unit { fill: $turkey-color; }
+  & .l { fill: lighten($turkey-color, $area-fill-lighten); }
+  &.province.actionable.hover, {
     .l { fill: lighten($turkey-color, $area-fill-lighten / 3); }
   }
 }
+
+// #Provinces {
+//   &.accepting g:hover, .accepting:hover {
+//     .l {fill:#BADA55;}
+//     .w {fill:#BAAADA;}
+//   }
+// }
+
+// #SupplyCentersLayer .accepting .sc:hover   {fill:#BADA55;}
+// #SupplyCentersLayer .sc.accepting:hover  {fill:#BADA55;}
+
+// #SupplyCentersLayer .sc.selected {stroke-width:2;}
+
+// #ForcesLayer.accepting .force:hover 	{stroke:gray}
+
+// #OrdersLayer .order.move {fill:none; stroke:black; stroke-width:3; marker-end:url(#move)}
+// #OrdersLayer .order.support {fill:none; stroke:green; stroke-width:3; marker-end:url(#support)}
+// #OrdersLayer .order.convoy {fill:none; stroke:blue; stroke-width:3; marker-end:url(#convoy)}
+// #OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
+// #OrdersLayer .order.fail {marker-mid:url(#fail)}
+
+// #OrdersLayer .Austria .force 	{ fill: $austria-color; stroke:black; opacity:.5; }
+// #OrdersLayer .England .force 	{ fill: $england-color; stroke:black; opacity:.5; }
+// #OrdersLayer .France .force  	{ fill: $france-color; stroke:black; opacity:.5; }
+// #OrdersLayer .Germany .force 	{ fill: $germany-color; stroke:black; opacity:.5; }
+// #OrdersLayer .Italy .force   	{ fill: $italy-color; stroke:black; opacity:.5; }
+// #OrdersLayer .Russia .force  	{ fill: $russia-color; stroke:black; opacity:.5; }
+// #OrdersLayer .Turkey .force  	{ fill: $turkey-color; stroke:black; opacity:.5; }
+
+// .message.Austria    { color: $austria-color }
+// .message.England    { color: $england-color; }
+// .message.France     { color: $france-color; }
+// .message.Germany    { color: $germany-color; }
+// .message.Italy      { color: $italy-color; }
+// .message.Russia     { color: $russia-color; }
+// .message.Turkey     { color: $turkey-color; }
+

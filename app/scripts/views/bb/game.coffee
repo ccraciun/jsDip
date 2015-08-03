@@ -26,21 +26,18 @@ Data = {
 
 module.exports = class DiplomacyGame extends Views.Base
   svgUrl: "images/europe_standard.svg"
+
   initialize: ->
     @model = new Models.Game(Data.Base, parse: true)
-    @subViews = {
-      map: new Views.Map(model: @model)
-      header: new Views.Header(model: @model.get('state'))
-    }
 
   render: ->
     # TODO(rkofman): maybe show a loading screen?
     Snap.load(@svgUrl, @onSvgLoad)
 
   onSvgLoad: (svgData) =>
-    @subViews.map.render(svgData)
+    @subViews = {
+      map: new Views.Map(model: @model, svgData: svgData)
+      header: new Views.Header(model: @model.get('state'))
+    }
+    @subViews.map.render()
     @subViews.header.render()
-
-  renderSubViews: ->
-    for view in _(@subViews).values()
-      view.render()

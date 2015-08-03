@@ -16,8 +16,6 @@ module.exports = class Province extends backbone.Model
       @get('subregions').each (subregion) =>
         subregion.set('owner', @get('owner'))
 
-
-
   initAdjacencyLinks: ->
     vivifiedAdjacencies = {}
     for type, modelNames of @get('adjacent')
