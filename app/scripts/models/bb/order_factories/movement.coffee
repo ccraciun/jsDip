@@ -10,6 +10,13 @@ Models = {
 }
 
 module.exports = class MovementOrders extends BaseOrdersFactory
+  initialize: ->
+    @provinces = []
+
   actionableProvinces: ->
     @get('country').get('units').map (unit) ->
       unit.get('province')
+
+  push: (province) ->
+    @provinces.push province
+    console.log "current provinces in order factory: ", @provinces

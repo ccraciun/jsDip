@@ -90,14 +90,16 @@ module.exports = class Map extends Views.Base
   onActionableClick: (e) ->
     provinceName = Snap(e.currentTarget).attr('data-province')
     province = @model.get('provinces').get(provinceName)
-    if @ordersFactory.currentOrder
-      @ordersFactory.push province
-    else
-      console.log "TODO(rkofman): Get order type, and then create an order"
-      # @ordersFactory.createOrder(type, province)
+    @ordersFactory.push province # needs implementation.
+    unless @ordersFactory.currentOrder
+      @initOrderTypePicker(e)
+
+  initOrderTypePicker: (e) ->
+    console.log "TODO(rkofman): Need to create a popup for picking type."
 
   ## Model events
   onOrdersFactoryChange: (state, ordersFactory) ->
+    console.log "new orders factory: ", ordersFactory
     previousFactory = state.previous('ordersFactory')
     @stopListening(previousFactory) if previousFactory
 
