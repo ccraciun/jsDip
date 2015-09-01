@@ -2,3 +2,34 @@
     width: 70%;
     height: 78%;
 }
+
+.orders-popout {
+  border: 1px solid #336;
+  background: beige;
+  box-shadow: 0 0 7px #333;
+  border-radius: 7px;
+  overflow: hidden;
+
+  ul {
+    padding: 0; // Should just be in reset.css
+    margin: 0; // Should jsut be in reset.css
+
+    list-style: none;
+  }
+  li {
+    display: block;
+    padding: 5px 10px;
+    &:hover {
+      background: #ccc;
+    }
+    cursor: pointer;
+  }
+}
+
+.popout-blanket {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

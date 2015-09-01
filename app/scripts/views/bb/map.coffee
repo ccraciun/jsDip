@@ -9,6 +9,7 @@ Views = {
   Base: require './base'
   SupplyCenter: require './supply_center'
   Unit: require './unit'
+  ActionMenu: require './action_menu'
 }
 Data = {
   coords: require '../../../data/coords.json'
@@ -96,6 +97,9 @@ module.exports = class Map extends Views.Base
 
   initOrderTypePicker: (e) ->
     console.log "TODO(rkofman): Need to create a popup for picking type."
+    actionMenu = new Views.ActionMenu()
+    actionMenu.render()
+    actionMenu.show(e.pageX, e.pageY)
 
   ## Model events
   onOrdersFactoryChange: (state, ordersFactory) ->

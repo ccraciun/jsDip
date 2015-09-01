@@ -12,3 +12,6 @@ module.exports = class BaseView extends backbone.View
     return @model if @model
     return @collection if @collection
     return {}
+
+  toJson: -> # An alias for convenience.
+    @toJSON()
