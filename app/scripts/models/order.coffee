@@ -48,6 +48,10 @@ module.exports = class Order extends BaseModel
 
   @fromString: (str) ->
     try
+      if -1 != str.toLowerCase().indexOf 'via convoy'
+        # TODO(cosmic): Remember that a convoy was requested for the move.
+        str = str.replace /via convoy/i, ""
+
       # startsWith 'build': build (unit)
       if 0 == str.toLowerCase().indexOf 'build'
         action = 'build'

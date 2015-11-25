@@ -13,6 +13,11 @@
 # TODO(cosmic): Illegal orders should be able to receive hold support, but not
 #               move orders.
 # TODO(cosmic): All support orders need to be looked at again -- including in judge.
+#               Invalid orders need to be tested as invalid not failed.
+#
+# According to DPTG (http://diplom.org/Zine/S2009M/Kruijswijk/dptg.txt), consider
+# result of support orders: (illegal/invalid, cancelled, success, fail, cut, dislodged?)
+# result of move orders: (illegal, success, fail, dislodged)
 
 ###################################
 # ADJUSTMENT TEST CASES
@@ -1257,296 +1262,251 @@
 
 
 # TODO(cosmic): UPDATE FOLLOWING TEST CASES \/
-#
 ## 6.E. TEST CASES, HEAD TO HEAD BATTLES AND BELEAGUERED GARRISON
-#
-#- testCaseID: 6.E.1  # 6.E.1. TEST CASE, DISLODGED UNIT HAS NO EFFECT ON ATTACKERS AREA
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
+- testCaseID: 6.E.1  # 6.E.1. TEST CASE, DISLODGED UNIT HAS NO EFFECT ON ATTACKERS AREA
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
 ## An army can follow.
-#
-#    Germany:
-#      A Berlin - Prussia
-#      F Kiel - Berlin
-#      A Silesia Supports A Berlin - Prussia
-#
-#    Russia:
-#      A Prussia - Berlin
+    Germany:
+      A Berlin - Prussia: true
+      F Kiel - Berlin: true
+      A Silesia Supports A Berlin - Prussia: true
+
+    Russia:
+      A Prussia - Berlin: false
 ## The army in Kiel will move to Berlin.
-#
-#- testCaseID: 6.E.2  # 6.E.2. TEST CASE, NO SELF DISLODGEMENT IN HEAD TO HEAD BATTLE
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
+
+- testCaseID: 6.E.2  # 6.E.2. TEST CASE, NO SELF DISLODGEMENT IN HEAD TO HEAD BATTLE
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
 ## Self dislodgement is not allowed. This also counts for head to head battles.
-#
-#    Germany:
-#      A Berlin - Kiel
-#      F Kiel - Berlin
-#      A Munich Supports A Berlin - Kiel
+    Germany:
+      A Berlin - Kiel: false
+      F Kiel - Berlin: false
+      A Munich Supports A Berlin - Kiel: false
 ## No unit will move.
-#
-#- testCaseID: 6.E.3  # 6.E.3. TEST CASE, NO HELP IN DISLODGING OWN UNIT
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
+
+- testCaseID: 6.E.3  # 6.E.3. TEST CASE, NO HELP IN DISLODGING OWN UNIT
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
 ## To help a foreign power to dislodge own unit in head to head battle is not possible.
-#
-#    Germany:
-#      A Berlin - Kiel
-#      A Munich Supports F Kiel - Berlin
-#
-#    England:
-#      F Kiel - Berlin
+    Germany:
+      A Berlin - Kiel: false
+      A Munich Supports F Kiel - Berlin: false
+    England:
+      F Kiel - Berlin: false
 ## No unit will move.
-#
-#- testCaseID: 6.E.4  # 6.E.4. TEST CASE, NON-DISLODGED LOSER HAS STILL EFFECT
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
+
+- testCaseID: 6.E.4  # 6.E.4. TEST CASE, NON-DISLODGED LOSER HAS STILL EFFECT
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
 ## If in an unbalanced head to head battle the loser is not dislodged, it has still effect on the area of the attacker.
-#
-#    Germany:
-#      F Holland - North Sea
-#      F Helgoland Bight Supports F Holland - North Sea
-#      F Skagerrak Supports F Holland - North Sea
-#
-#    France:
-#      F North Sea - Holland
-#      F Belgium Supports F North Sea - Holland
-#
-#    England:
-#      F Edinburgh Supports F Norwegian Sea - North Sea
-#      F Yorkshire Supports F Norwegian Sea - North Sea
-#      F Norwegian Sea - North Sea
-#
-#    Austria:
-#      A Kiel Supports A Ruhr - Holland
-#      A Ruhr - Holland
+    Germany:
+      F Holland - North Sea: false
+      F Helgoland Bight Supports F Holland - North Sea: false
+      F Skagerrak Supports F Holland - North Sea: false
+    France:
+      F North Sea - Holland: false
+      F Belgium Supports F North Sea - Holland: false
+    England:
+      F Edinburgh Supports F Norwegian Sea - North Sea: false
+      F Yorkshire Supports F Norwegian Sea - North Sea: false
+      F Norwegian Sea - North Sea: false
+    Austria:
+      A Kiel Supports A Ruhr - Holland: false
+      A Ruhr - Holland: false
 ## The French fleet in the North Sea is not dislodged due to the beleaguered garrison. Therefore, the Austrian army in Ruhr will not move to Holland.
-#
-#- testCaseID: 6.E.5  # 6.E.5. TEST CASE, LOSER DISLODGED BY ANOTHER ARMY HAS STILL EFFECT
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## If in an unbalanced head to head battle the loser is dislodged by a unit not part of the head to head battle, the loser has still effect on the place of the winner of the head to head battle.
-#
-#    Germany:
-#      F Holland - North Sea
-#      F Helgoland Bight Supports F Holland - North Sea
-#      F Skagerrak Supports F Holland - North Sea
-#
-#    France:
-#      F North Sea - Holland
-#      F Belgium Supports F North Sea - Holland
-#
-#    England:
-#      F Edinburgh Supports F Norwegian Sea - North Sea
-#      F Yorkshire Supports F Norwegian Sea - North Sea
-#      F Norwegian Sea - North Sea
-#      F London Supports F Norwegian Sea - North Sea
-#
-#    Austria:
-#      A Kiel Supports A Ruhr - Holland
-#      A Ruhr - Holland
-## The French fleet in the North Sea is dislodged but not by the German fleet in Holland. Therefore, the French fleet can still prevent that the Austrian army in Ruhr will move to Holland. So, the Austrian move in Ruhr fails and the German fleet in Holland is not dislodged.
-#
-#- testCaseID: 6.E.6  # 6.E.6. TEST CASE, NOT DISLODGE BECAUSE OF OWN SUPPORT HAS STILL EFFECT
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## If in an unbalanced head to head battle the loser is not dislodged because the winner had help of a unit of the loser, the loser has still effect on the area of the winner.
-#
-#    Germany:
-#      F Holland - North Sea
-#      F Helgoland Bight Supports F Holland - North Sea
-#
-#    France:
-#      F North Sea - Holland
-#      F Belgium Supports F North Sea - Holland
-#      F English Channel Supports F Holland - North Sea
-#
-#    Austria:
-#      A Kiel Supports A Ruhr - Holland
-#      A Ruhr - Holland
-## Although the German force from Holland to North Sea is one larger than the French force from North Sea to Holland, the French fleet in the North Sea is not dislodged, because one of the supports on the German movement is French. Therefore, the Austrian army in Ruhr will not move to Holland.
-#
-#- testCaseID: 6.E.7  # 6.E.7. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## An attempt to self dislodgement can be combined with a beleaguered garrison. Such self dislodgment is still not possible.
-#
-#    England:
-#      F North Sea Hold
-#      F Yorkshire Supports F Norway - North Sea
-#
-#    Germany:
-#      F Holland Supports F Helgoland Bight - North Sea
-#      F Helgoland Bight - North Sea
-#
-#    Russia:
-#      F Skagerrak Supports F Norway - North Sea
-#      F Norway - North Sea
-## Although the Russians beat the German attack (with the support of Yorkshire) and the two Russian fleets are enough to dislodge the fleet in the North Sea, the fleet in the North Sea is not dislodged, since it would not be dislodged if the English fleet in Yorkshire would not give support. According to the DPTG the fleet in the North Sea would be dislodged. The DPTG is incorrect in this case.
-#
-#- testCaseID: 6.E.8  # 6.E.8. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON AND HEAD TO HEAD BATTLE
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## Similar to the previous test case, but now the beleaguered fleet is also engaged in a head to head battle.
-#
-#    England:
-#      F North Sea - Norway
-#      F Yorkshire Supports F Norway - North Sea
-#
-#    Germany:
-#      F Holland Supports F Helgoland Bight - North Sea
-#      F Helgoland Bight - North Sea
-#
-#    Russia:
-#      F Skagerrak Supports F Norway - North Sea
-#      F Norway - North Sea
-## Again, none of the fleets move.
-#
-#- testCaseID: 6.E.9  # 6.E.9. TEST CASE, ALMOST SELF DISLODGEMENT WITH BELEAGUERED GARRISON
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## Similar to the previous test case, but now the beleaguered fleet is moving away.
-#
-#    England:
-#      F North Sea - Norwegian Sea
-#      F Yorkshire Supports F Norway - North Sea
-#
-#    Germany:
-#      F Holland Supports F Helgoland Bight - North Sea
-#      F Helgoland Bight - North Sea
-#
-#    Russia:
-#      F Skagerrak Supports F Norway - North Sea
-#      F Norway - North Sea
-## Both the fleet in the North Sea and the fleet in Norway move.
-#
-#- testCaseID: 6.E.10  # 6.E.10. TEST CASE, ALMOST CIRCULAR MOVEMENT WITH NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## Similar to the previous test case, but now the beleaguered fleet is in circular movement with the weaker attacker. So, the circular movement fails.
-#
-#    England:
-#      F North Sea - Denmark
-#      F Yorkshire Supports F Norway - North Sea
-#
-#    Germany:
-#      F Holland Supports F Helgoland Bight - North Sea
-#      F Helgoland Bight - North Sea
-#      F Denmark - Helgoland Bight
-#
-#    Russia:
-#      F Skagerrak Supports F Norway - North Sea
-#      F Norway - North Sea
-## There is no movement of fleets.
-#
-#- testCaseID: 6.E.11  # 6.E.11. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON, UNIT SWAP WITH ADJACENT CONVOYING AND TWO COASTS
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## Similar to the previous test case, but now the beleaguered fleet is in a unit swap with the stronger attacker. So, the unit swap succeeds. To make the situation more complex, the swap is on an area with two coasts.
-#
-#    France:
-#      A Spain - Portugal via Convoy
-#      F Mid-Atlantic Ocean Convoys A Spain - Portugal
-#      F Gulf of Lyon Supports F Portugal - Spain(nc)
-#
-#    Germany:
-#      A Marseilles Supports A Gascony - Spain
-#      A Gascony - Spain
-#
-#    Italy:
-#      F Portugal - Spain(nc)
-#      F Western Mediterranean Supports F Portugal - Spain(nc)
-## The unit swap succeeds. Note that due to the success of the swap, there is no beleaguered garrison anymore.
-#
-#- testCaseID: 6.E.12  # 6.E.12. TEST CASE, SUPPORT ON ATTACK ON OWN UNIT CAN BE USED FOR OTHER MEANS
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-#      A support on an attack on your own unit has still effect. It can prevent that another army will dislodge the unit.
-#
-#    Austria:
-#      A Budapest - Rumania
-#      A Serbia Supports A Vienna - Budapest
-#
-#    Italy:
-#      A Vienna - Budapest
-#
-#    Russia:
-#      A Galicia - Budapest
-#      A Rumania Supports A Galicia - Budapest
-## The support of Serbia on the Italian army prevents that the Russian army in Galicia will advance. No army will move.
-#
-#- testCaseID: 6.E.13  # 6.E.13. TEST CASE, THREE WAY BELEAGUERED GARRISON
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## In a beleaguered garrison from three sides, the adjudicator may not let two attacks fail and then let the third succeed.
-#
-#    England:
-#      F Edinburgh Supports F Yorkshire - North Sea
-#      F Yorkshire - North Sea
-#
-#    France:
-#      F Belgium - North Sea
-#      F English Channel Supports F Belgium - North Sea
-#
-#    Germany:
-#      F North Sea Hold
-#
-#    Russia:
-#      F Norwegian Sea - North Sea
-#      F Norway Supports F Norwegian Sea - North Sea
-## None of the fleets move. The German fleet in the North Sea is not dislodged.
-#
-#- testCaseID: 6.E.14  # 6.E.14. TEST CASE, ILLEGAL HEAD TO HEAD BATTLE CAN STILL DEFEND
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## If in a head to head battle, one of the units makes an illegal move, than that unit has still the possibility to defend against attacks with strength of one.
-#
-#    England:
-#      A Liverpool - Edinburgh
-#
-#    Russia:
-#      F Edinburgh - Liverpool
-## The move of the Russian fleet is illegal, but can still prevent the English army to enter Edinburgh. So, none of the units move.
-#
-#- testCaseID: 6.E.15  # 6.E.15. TEST CASE, THE FRIENDLY HEAD TO HEAD BATTLE
-#  generateForces: true
-#  state: *STATE_MOVEMENT
-#  orders:
-## In this case both units in the head to head battle prevent that the other one is dislodged.
-#
-#    England:
-#      F Holland Supports A Ruhr - Kiel
-#      A Ruhr - Kiel
-#
-#    France:
-#      A Kiel - Berlin
-#      A Munich Supports A Kiel - Berlin
-#      A Silesia Supports A Kiel - Berlin
-#
-#    Germany:
-#      A Berlin - Kiel
-#      F Denmark Supports A Berlin - Kiel
-#      F Helgoland Bight Supports A Berlin - Kiel
-#
-#    Russia:
-#      F Baltic Sea Supports A Prussia - Berlin
-#      A Prussia - Berlin
-## None of the moves succeeds. This case is especially difficult for sequence based adjudicators. They will start adjudicating the head to head battle and continue to adjudicate the attack on one of the units part of the head to head battle. In this process, one of the sides of the head to head battle might be cancelled out. This happens in the DPTG. If this is adjudicated according to the DPTG, the unit in Ruhr or in Prussia will advance (depending on the order the units are adjudicated). This is clearly a bug in the DPTG.
-#
+
+- testCaseID: 6.E.5  # 6.E.5. TEST CASE, LOSER DISLODGED BY ANOTHER ARMY HAS STILL EFFECT
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# If in an unbalanced head to head battle the loser is dislodged by a unit not part of the head to head battle, the loser has still effect on the place of the winner of the head to head battle.
+    Germany:
+      F Holland - North Sea: false
+      F Helgoland Bight Supports F Holland - North Sea: false
+      F Skagerrak Supports F Holland - North Sea: false
+    France:
+      F North Sea - Holland: false
+      F Belgium Supports F North Sea - Holland: false
+    England:
+      F Edinburgh Supports F Norwegian Sea - North Sea: true
+      F Yorkshire Supports F Norwegian Sea - North Sea: true
+      F Norwegian Sea - North Sea: true
+      F London Supports F Norwegian Sea - North Sea: true
+    Austria:
+      A Kiel Supports A Ruhr - Holland: false
+      A Ruhr - Holland: false
+# The French fleet in the North Sea is dislodged but not by the German fleet in Holland. Therefore, the French fleet can still prevent that the Austrian army in Ruhr will move to Holland. So, the Austrian move in Ruhr fails and the German fleet in Holland is not dislodged.
+
+- testCaseID: 6.E.6  # 6.E.6. TEST CASE, NOT DISLODGE BECAUSE OF OWN SUPPORT HAS STILL EFFECT
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# If in an unbalanced head to head battle the loser is not dislodged because the winner had help of a unit of the loser, the loser has still effect on the area of the winner.
+    Germany:
+      F Holland - North Sea: false
+      F Helgoland Bight Supports F Holland - North Sea: false
+    France:
+      F North Sea - Holland: false
+      F Belgium Supports F North Sea - Holland: false
+      F English Channel Supports F Holland - North Sea: false
+    Austria:
+      A Kiel Supports A Ruhr - Holland: false
+      A Ruhr - Holland: false
+# Although the German force from Holland to North Sea is one larger than the French force from North Sea to Holland, the French fleet in the North Sea is not dislodged, because one of the supports on the German movement is French. Therefore, the Austrian army in Ruhr will not move to Holland.
+
+- testCaseID: 6.E.7  # 6.E.7. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# An attempt to self dislodgement can be combined with a beleaguered garrison. Such self dislodgment is still not possible.
+    England:
+      F North Sea Hold: true
+      F Yorkshire Supports F Norway - North Sea: false
+    Germany:
+      F Holland Supports F Helgoland Bight - North Sea: false
+      F Helgoland Bight - North Sea: false
+    Russia:
+      F Skagerrak Supports F Norway - North Sea: false
+      F Norway - North Sea: false
+# Although the Russians beat the German attack (with the support of Yorkshire) and the two Russian fleets are enough to dislodge the fleet in the North Sea, the fleet in the North Sea is not dislodged, since it would not be dislodged if the English fleet in Yorkshire would not give support. According to the DPTG the fleet in the North Sea would be dislodged. The DPTG is incorrect in this case.
+
+- testCaseID: 6.E.8  # 6.E.8. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON AND HEAD TO HEAD BATTLE
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# Similar to the previous test case, but now the beleaguered fleet is also engaged in a head to head battle.
+    England:
+      F North Sea - Norway: false
+      F Yorkshire Supports F Norway - North Sea: false
+    Germany:
+      F Holland Supports F Helgoland Bight - North Sea: false
+      F Helgoland Bight - North Sea: false
+    Russia:
+      F Skagerrak Supports F Norway - North Sea: false
+      F Norway - North Sea: false
+# Again, none of the fleets move.
+
+- testCaseID: 6.E.9  # 6.E.9. TEST CASE, ALMOST SELF DISLODGEMENT WITH BELEAGUERED GARRISON
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# Similar to the previous test case, but now the beleaguered fleet is moving away.
+    England:
+      F North Sea - Norwegian Sea: true
+      F Yorkshire Supports F Norway - North Sea: true
+    Germany:
+      F Holland Supports F Helgoland Bight - North Sea: false
+      F Helgoland Bight - North Sea: false
+    Russia:
+      F Skagerrak Supports F Norway - North Sea: true
+      F Norway - North Sea: true
+# Both the fleet in the North Sea and the fleet in Norway move.
+
+- testCaseID: 6.E.10  # 6.E.10. TEST CASE, ALMOST CIRCULAR MOVEMENT WITH NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# Similar to the previous test case, but now the beleaguered fleet is in circular movement with the weaker attacker. So, the circular movement fails.
+    England:
+      F North Sea - Denmark: false
+      F Yorkshire Supports F Norway - North Sea: false
+    Germany:
+      F Holland Supports F Helgoland Bight - North Sea: false
+      F Helgoland Bight - North Sea: false
+      F Denmark - Helgoland Bight: false
+    Russia:
+      F Skagerrak Supports F Norway - North Sea: false
+      F Norway - North Sea: false
+# There is no movement of fleets.
+
+- testCaseID: 6.E.11  # 6.E.11. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON, UNIT SWAP WITH ADJACENT CONVOYING AND TWO COASTS
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# Similar to the previous test case, but now the beleaguered fleet is in a unit swap with the stronger attacker. So, the unit swap succeeds. To make the situation more complex, the swap is on an area with two coasts.
+    France:
+      A Spain - Portugal via Convoy: true
+      F Mid-Atlantic Ocean Convoys A Spain - Portugal: true
+      F Gulf of Lyon Supports F Portugal - Spain(nc): true
+    Germany:
+      A Marseilles Supports A Gascony - Spain: false
+      A Gascony - Spain: false
+    Italy:
+      F Portugal - Spain(nc): true
+      F Western Mediterranean Supports F Portugal - Spain(nc): true
+# The unit swap succeeds. Note that due to the success of the swap, there is no beleaguered garrison anymore.
+
+- testCaseID: 6.E.12  # 6.E.12. TEST CASE, SUPPORT ON ATTACK ON OWN UNIT CAN BE USED FOR OTHER MEANS
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# A support on an attack on your own unit has still effect. It can prevent that another army will dislodge the unit.
+    Austria:
+      A Budapest - Rumania: false
+      A Serbia Supports A Vienna - Budapest: false
+    Italy:
+      A Vienna - Budapest: false
+    Russia:
+      A Galicia - Budapest: false
+      A Rumania Supports A Galicia - Budapest: false
+# The support of Serbia on the Italian army prevents that the Russian army in Galicia will advance. No army will move.
+
+- testCaseID: 6.E.13  # 6.E.13. TEST CASE, THREE WAY BELEAGUERED GARRISON
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# In a beleaguered garrison from three sides, the adjudicator may not let two attacks fail and then let the third succeed.
+    England:
+      F Edinburgh Supports F Yorkshire - North Sea: false
+      F Yorkshire - North Sea: false
+    France:
+      F Belgium - North Sea: false
+      F English Channel Supports F Belgium - North Sea: false
+    Germany:
+      F North Sea Hold: false
+    Russia:
+      F Norwegian Sea - North Sea: false
+      F Norway Supports F Norwegian Sea - North Sea: false
+# None of the fleets move. The German fleet in the North Sea is not dislodged.
+
+- testCaseID: 6.E.14  # 6.E.14. TEST CASE, ILLEGAL HEAD TO HEAD BATTLE CAN STILL DEFEND
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# If in a head to head battle, one of the units makes an illegal move, than that unit has still the possibility to defend against attacks with strength of one.
+    England:
+      A Liverpool - Edinburgh: false
+    Russia:
+      F Edinburgh - Liverpool: false
+# The move of the Russian fleet is illegal, but can still prevent the English army to enter Edinburgh. So, none of the units move.
+
+- testCaseID: 6.E.15  # 6.E.15. TEST CASE, THE FRIENDLY HEAD TO HEAD BATTLE
+  generateForces: true
+  state: *STATE_MOVEMENT
+  orders:
+# In this case both units in the head to head battle prevent that the other one is dislodged.
+    England:
+      F Holland Supports A Ruhr - Kiel: false
+      A Ruhr - Kiel: false
+    France:
+      A Kiel - Berlin: false
+      A Munich Supports A Kiel - Berlin: false
+      A Silesia Supports A Kiel - Berlin: false
+    Germany:
+      A Berlin - Kiel: false
+      F Denmark Supports A Berlin - Kiel: false
+      F Helgoland Bight Supports A Berlin - Kiel: false
+    Russia:
+      F Baltic Sea Supports A Prussia - Berlin: false
+      A Prussia - Berlin: false
+# None of the moves succeeds. This case is especially difficult for sequence based adjudicators. They will start adjudicating the head to head battle and continue to adjudicate the attack on one of the units part of the head to head battle. In this process, one of the sides of the head to head battle might be cancelled out. This happens in the DPTG. If this is adjudicated according to the DPTG, the unit in Ruhr or in Prussia will advance (depending on the order the units are adjudicated). This is clearly a bug in the DPTG.
+
 ## 6.F. TEST CASES, CONVOYS
 #
 #- testCaseID: 6.F.1  # 6.F.1. TEST CASE, NO CONVOY IN COASTAL AREAS
@@ -2054,7 +2014,7 @@
 ## When the 'All Hold' rule is used, the movement of the armies in Brest and Norway as the fleets in Edinburgh and the Irish Sea will fail.
 #
 ## Since there is no consistent resolution where all convoys fail, the DPTG has in this case the same result as the 'All Hold' rule.
-#
+
 ## 6.G. TEST CASES, CONVOYING TO ADJACENT PLACES
 #
 #- testCaseID: 6.G.1  # 6.G.1. TEST CASE, TWO UNITS CAN SWAP PLACES BY CONVOY
@@ -2439,7 +2399,7 @@
 #      A Belgium - London
 #      A Wales Supports A Belgium - London
 ## Belgium and London are swapped, while the army in Yorkshire fails to move to London.
-#
+
 ## 6.H. TEST CASES, RETREATING
 #
 #- testCaseID: 6.H.1  # 6.H.1. TEST CASE, NO SUPPORTS DURING RETREAT
@@ -2785,7 +2745,7 @@
 #      F Tunis Supports F Tyrrhenian Sea - Western Mediterranean
 #      F Tyrrhenian Sea - Western Mediterranean
 ## The French fleet in the Western Mediterranean can not retreat to Spain(sc).
-#
+
 ## 6.I. TEST CASES, BUILDING
 #
 #- testCaseID: 6.I.1  # 6.I.1. TEST CASE, TOO MANY BUILD ORDERS
@@ -2878,7 +2838,7 @@
 ## Build A Moscow
 ## Build A Moscow
 ## The second build should fail.
-#
+
 ## 6.J. TEST CASES, CIVIL DISORDER AND DISBANDS
 #
 #- testCaseID: 6.J.1  # 6.J.1. TEST CASE, TOO MANY REMOVE ORDERS
