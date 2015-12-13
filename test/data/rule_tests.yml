@@ -13,11 +13,14 @@
 # TODO(cosmic): Illegal orders should be able to receive hold support, but not
 #               move orders.
 # TODO(cosmic): All support orders need to be looked at again -- including in judge.
-#               Invalid orders need to be tested as invalid not failed.
+# TODO(cosmic): Invalid orders need to be tested as invalid not failed.
 #
 # According to DPTG (http://diplom.org/Zine/S2009M/Kruijswijk/dptg.txt), consider
 # result of support orders: (illegal/invalid, cancelled, success, fail, cut, dislodged?)
 # result of move orders: (illegal, success, fail, dislodged)
+# result of convoy orders: (illegal, success, dislodged, cancelled)
+# result of build orders: (illegal, success, fail)
+# result of hold orders: (success, dislodged)
 
 ###################################
 # ADJUSTMENT TEST CASES
@@ -37,11 +40,12 @@
       Turkey: [Ankara, Constantinople, Smyrna]
   orders:
     England:
-      Build A Liverpool: true
+      Build A Liverpool: [true, success]
 
-- orders:
+- testCaseID: Adjustment.2
+  orders:
     England:
-      Build A Liverpool: false
+      Build A Liverpool: [false, illegal]
   state:
     date:
       phase: Adjustment
@@ -53,7 +57,6 @@
     supplyCenters:
       England:
         - Liverpool
-  testCaseID: Adjustment.2
 
 ###################################
 # MOVEMENT TEST CASES
@@ -66,7 +69,7 @@
     activePowers: [Austria, Italy, England, Germany, France, Turkey, Russia]
   orders:
     England:
-      F London - Yorkshire: false
+      F London - Yorkshire: [false, illegal]
 
 ###################################
 # 6.A. TEST CASES, BASIC CHECKS
@@ -81,7 +84,7 @@
 ###################################
 - orders:
     England:
-      F North Sea - Picardy: false
+      F North Sea - Picardy: [false, fail]
   state:
     date:
       phase: Movement
@@ -103,7 +106,7 @@
 ###################################
 - orders:
     England:
-      A Liverpool - Irish Sea: false
+      A Liverpool - Irish Sea: [false, illegal]
   state:
     date:
       phase: Movement
@@ -116,16 +119,15 @@
 
 ###################################
 # 6.A.3. TEST CASE, MOVE FLEET TO LAND
-
 # Check whether a fleet can not move to land.
-
+#
 # Germany:
 # F Kiel - Munich
 # Order should fail.
 ###################################
 - orders:
     Germany:
-      F Kiel - Munich: false
+      F Kiel - Munich: [false, illegal]
   state:
     date:
       phase: Movement
@@ -147,7 +149,7 @@
 ###################################
 - orders:
     Germany:
-      F Kiel - Kiel: false
+      F Kiel - Kiel: [false, illegal]
   state:
     date:
       phase: Movement
@@ -175,12 +177,12 @@
 ###################################
 - orders:
     England:
-      A Liverpool Supports A Yorkshire - Yorkshire: false
-      A Yorkshire - Yorkshire: false
-      F North Sea Convoys A Yorkshire - Yorkshire: false
+      A Liverpool Supports A Yorkshire - Yorkshire: [false, illegal]
+      A Yorkshire - Yorkshire: [false, illegal]
+      F North Sea Convoys A Yorkshire - Yorkshire: [false, illegal]
     Germany:
-      A Wales Supports F London - Yorkshire: true
-      F London - Yorkshire: true
+      A Wales Supports F London - Yorkshire: [true, success]
+      F London - Yorkshire: [true, success]
   state:
     date:
       phase: Movement
@@ -212,7 +214,7 @@
 ###################################
 - orders:
     Germany:
-      F London - North Sea: false
+      F London - North Sea: [false, illegal]
   state:
     date:
       phase: Movement
@@ -235,8 +237,8 @@
 ###################################
 - orders:
     England:
-      F London - Belgium: false
-      F North Sea Convoys A London - Belgium: false
+      F London - Belgium: [false, illegal]
+      F North Sea Convoys A London - Belgium: [false, cancelled]
   state:
     date:
       phase: Movement
@@ -263,10 +265,10 @@
 ###################################
 - orders:
     Austria:
-      F Trieste Supports F Trieste: false
+      F Trieste Supports F Trieste: [false, fail]
     Italy:
-      A Tyrolia Supports A Venice - Trieste: true
-      A Venice - Trieste: true
+      A Tyrolia Supports A Venice - Trieste: [true, success]
+      A Venice - Trieste: [true, success]
   state:
     date:
       phase: Movement
@@ -292,7 +294,7 @@
 ###################################
 - orders:
     Italy:
-      F Rome - Venice: false
+      F Rome - Venice: [false, illegal]
   state:
     date:
       phase: Movement
@@ -318,10 +320,10 @@
 ###################################
 - orders:
     Austria:
-      A Venice Hold: true
+      A Venice Hold: [true, success]
     Italy:
-      A Apulia - Venice: false
-      F Rome Supports A Apulia - Venice: false
+      A Apulia - Venice: [false, fail]
+      F Rome Supports A Apulia - Venice: [false, illegal]
   state:
     date:
       phase: Movement
@@ -351,9 +353,9 @@
 ###################################
 - orders:
     Austria:
-      A Vienna - Tyrolia: false
+      A Vienna - Tyrolia: [false, fail]
     Italy:
-      A Venice - Tyrolia: false
+      A Venice - Tyrolia: [false, fail]
   state:
     date:
       phase: Movement
@@ -384,11 +386,11 @@
 ###################################
 - orders:
     Austria:
-      A Vienna - Tyrolia: false
+      A Vienna - Tyrolia: [false, fail]
     Germany:
-      A Munich - Tyrolia: false
+      A Munich - Tyrolia: [false, fail]
     Italy:
-      A Venice - Tyrolia: false
+      A Venice - Tyrolia: [false, fail]
   state:
     date:
       phase: Movement
@@ -415,9 +417,8 @@
   orders:
 # Coast is significant in this case:
     France:
-      F Portugal - Spain: false
+      F Portugal - Spain: [false, illegal]
 # Some adjudicators take a default coast (see issue 4.B.1).
-
 # I prefer that the move fails.
 
 - testCaseID: 6.B.2  # 6.B.2. TEST CASE, MOVING WITH UNSPECIFIED COAST WHEN COAST IS NOT NECESSARY
@@ -426,9 +427,8 @@
   orders:
 # There is only one coast possible in this case:
     France:
-      F Gascony - Spain: true
+      F Gascony - Spain: [true, success]
 # Since the North Coast is the only coast that can be reached, it seems logical that the a move is attempted to the north coast of Spain. Some adjudicators require that a coast is also specified in this case and will decide that the move fails or take a default coast (see issue 4.B.2).
-
 # I prefer that an attempt is made to the only possible coast, the north coast of Spain.
 
 - testCaseID: 6.B.3  # 6.B.3. TEST CASE, MOVING WITH WRONG COAST WHEN COAST IS NOT NECESSARY
@@ -437,9 +437,8 @@
   orders:
 # If only one coast is possible, but the wrong coast can be specified.
     France:
-      F Gascony - Spain(sc): false
+      F Gascony - Spain(sc): [false, illegal]
 # If the rules are played very clemently, a move will be attempted to the north coast of Spain. However, since this order is very clear and precise, it is more common that the move fails (see issue 4.B.3).
-
 # I prefer that the move fails.
 
 - testCaseID: 6.B.4  # 6.B.4. TEST CASE, SUPPORT TO UNREACHABLE COAST ALLOWED
@@ -448,10 +447,10 @@
   orders:
 # A fleet can give support to a coast where it can not go.
     France:
-      F Gascony - Spain(nc): true
-      F Marseilles Supports F Gascony - Spain(nc): true
+      F Gascony - Spain(nc): [true, success]
+      F Marseilles Supports F Gascony - Spain(nc): [true, success]
     Italy:
-      F Western Mediterranean - Spain(sc): false
+      F Western Mediterranean - Spain(sc): [false, fail]
 # Although the fleet in Marseilles can not go to the north coast it can still support targeting the north coast. So, the support is successful, the move of the fleet in Gasgony succeeds and the move of the Italian fleet fails.
 
 - testCaseID: 6.B.5  # 6.B.5. TEST CASE, SUPPORT FROM UNREACHABLE COAST NOT ALLOWED
@@ -460,10 +459,10 @@
   orders:
 # A fleet can not give support to an area that can not be reached from the current coast of the fleet.
     France:
-      F Marseilles - Gulf of Lyon: false
-      F Spain(nc) Supports F Marseilles - Gulf of Lyon: false
+      F Marseilles - Gulf of Lyon: [false, fail]
+      F Spain(nc) Supports F Marseilles - Gulf of Lyon: [false, illegal]
     Italy:
-      F Gulf of Lyon Hold: true
+      F Gulf of Lyon Hold: [true, success]
 # The Gulf of Lyon can not be reached from the North Coast of Spain. Therefore, the support of Spain is invalid and the fleet in the Gulf of Lyon is not dislodged.
 
 - testCaseID: 6.B.6  # 6.B.6. TEST CASE, SUPPORT CAN BE CUT WITH OTHER COAST
@@ -472,13 +471,13 @@
   orders:
 # Support can be cut from the other coast.
     England:
-      F Irish Sea Supports F North Atlantic Ocean - Mid-Atlantic Ocean: true
-      F North Atlantic Ocean - Mid-Atlantic Ocean: true
+      F Irish Sea Supports F North Atlantic Ocean - Mid-Atlantic Ocean: [true, success]
+      F North Atlantic Ocean - Mid-Atlantic Ocean: [true, success]
     France:
-      F Spain(nc) Supports F Mid-Atlantic Ocean: false
-      F Mid-Atlantic Ocean Hold: false
+      F Spain(nc) Supports F Mid-Atlantic Ocean: [false, fail]
+      F Mid-Atlantic Ocean Hold: [false, fail]
     Italy:
-      F Gulf of Lyon - Spain(sc): false
+      F Gulf of Lyon - Spain(sc): [false, fail]
 # The Italian fleet in the Gulf of Lyon will cut the support in Spain. That means that the French fleet in the Mid Atlantic Ocean will be dislodged by the English fleet in the North Atlantic Ocean.
 
 - testCaseID: 6.B.7  # 6.B.7. TEST CASE, SUPPORTING WITH UNSPECIFIED COAST
@@ -486,16 +485,13 @@
   state: *STATE_MOVEMENT
   orders:
 # Most house rules accept support orders without coast specification.
-
     France:
-      F Portugal Supports F Mid-Atlantic Ocean - Spain: true
-      F Mid-Atlantic Ocean - Spain(nc): false
-
+      F Portugal Supports F Mid-Atlantic Ocean - Spain: [true, success]
+      F Mid-Atlantic Ocean - Spain(nc): [false, fail]
     Italy:
-      F Gulf of Lyon Supports F Western Mediterranean - Spain(sc): true
-      F Western Mediterranean - Spain(sc): false
+      F Gulf of Lyon Supports F Western Mediterranean - Spain(sc): [true, success]
+      F Western Mediterranean - Spain(sc): [false, fail]
 # See issue 4.B.4. If coasts are not required in support orders, then the support of Portugal is successful. This means that the Italian fleet in the Western Mediterranean bounces. Some adjudicators may not accept a support order without coast (the support will fail or a default coast is taken). In that case the support order of Portugal fails (in case of a default coast the coast will probably the south coast) and the Italian fleet in the Western Mediterranean will successfully move.
-
 # I prefer that the support succeeds and the Italian fleet in the Western Mediterranean bounces.
 
 - testCaseID: 6.B.8  # 6.B.8. TEST CASE, SUPPORTING WITH UNSPECIFIED COAST WHEN ONLY ONE COAST IS POSSIBLE
@@ -503,16 +499,13 @@
   state: *STATE_MOVEMENT
   orders:
 # Some hardliners require a coast in a support order even when only one coast is possible.
-
     France:
-      F Portugal Supports F Gascony - Spain: true
-      F Gascony - Spain(nc): false
-
+      F Portugal Supports F Gascony - Spain: [true, success]
+      F Gascony - Spain(nc): [false, fail]
     Italy:
-      F Gulf of Lyon Supports F Western Mediterranean - Spain(sc): false
-      F Western Mediterranean - Spain(sc): false
+      F Gulf of Lyon Supports F Western Mediterranean - Spain(sc): [false, fail]
+      F Western Mediterranean - Spain(sc): [false, fail]
 # See issue 4.B.4. If coasts are not required in support orders, then the support of Portugal is successful. This means that the Italian fleet in the Western Mediterranean bounces. Some adjudicators may not accept a support order without coast (the support will fail or a default coast is taken). In that case the support order of Portugal fails (in case of a default coast the coast will probably the south coast) and the Italian fleet in the Western Mediterranean will successfully move.
-
 # I prefer that supporting without coasts should be allowed. So I prefer that the support of Portugal is successful and that the Italian fleet in the Western Mediterranean bounces.
 
 - testCaseID: 6.B.9  # 6.B.9. TEST CASE, SUPPORTING WITH WRONG COAST
@@ -520,16 +513,13 @@
   state: *STATE_MOVEMENT
   orders:
 # Coasts can be specified in a support, but the result depends on the house rules.
-
     France:
-      F Portugal Supports F Mid-Atlantic Ocean - Spain(nc): false
-      F Mid-Atlantic Ocean - Spain(sc): false
-
+      F Portugal Supports F Mid-Atlantic Ocean - Spain(nc): [false, fail]
+      F Mid-Atlantic Ocean - Spain(sc): [false, fail]
     Italy:
-      F Gulf of Lyon Supports F Western Mediterranean - Spain(sc): true
-      F Western Mediterranean - Spain(sc): true
+      F Gulf of Lyon Supports F Western Mediterranean - Spain(sc): [true, success]
+      F Western Mediterranean - Spain(sc): [true, success]
 # See issue 4.B.4. If it is required that the coast matches, then the support of the French fleet in the Mid-Atlantic Ocean fails and that the Italian fleet in the Western Mediterranean moves successfully. Some adjudicators ignores the coasts in support orders. In that case, the move of the Italian fleet bounces.
-
 # I prefer that the support fails and that the Italian fleet in the Western Mediterranean moves successfully.
 
 - testCaseID: 6.B.10  # 6.B.10. TEST CASE, UNIT ORDERED WITH WRONG COAST
@@ -537,16 +527,14 @@
   state: *STATE_MOVEMENT
   orders:
     # A player might specify the wrong coast for the ordered unit.
-
 # France has a fleet on the south coast of Spain and orders:
     France:
-      F Spain(nc) - Gulf of Lyon: true
+      F Spain(nc) - Gulf of Lyon: [true, success]
 # If only perfect orders are accepted, then the move will fail, but since the coast for the ordered unit has no purpose, it might also be ignored (see issue 4.B.5).
-
 # I prefer that a move will be attempted.
 
 - testCaseID: 6.B.11  # 6.B.11. TEST CASE, COAST CAN NOT BE ORDERED TO CHANGE
-  generateForces: false
+  generateForces: [false, fail]
   state:
     <<: *STATE_MOVEMENT
     forces:
@@ -554,10 +542,9 @@
         fleets: ["Spain(nc)"]
   orders:
 # The coast can not change by just ordering the other coast.
-
 # France has a fleet on the north coast of Spain and orders:
     France:
-      F Spain(sc) - Gulf of Lyon: false
+      F Spain(sc) - Gulf of Lyon: [false, fail]
 # The move fails.
 
 - testCaseID: 6.B.12  # 6.B.12. TEST CASE, ARMY MOVEMENT WITH COASTAL SPECIFICATION
@@ -565,11 +552,9 @@
   state: *STATE_MOVEMENT
   orders:
 # For armies the coasts are irrelevant:
-
     France:
-      A Gascony - Spain(nc): true
+      A Gascony - Spain(nc): [true, success]
 # If only perfect orders are accepted, then the move will fail. But it is also possible that coasts are ignored in this case and a move will be attempted (see issue 4.B.6).
-
 # I prefer that a move will be attempted.
 
 - testCaseID: 6.B.13  # 6.B.13. TEST CASE, COASTAL CRAWL NOT ALLOWED
@@ -577,20 +562,18 @@
   state: *STATE_MOVEMENT
   orders:
 # If a fleet is leaving a sector from a certain coast while in the opposite direction another fleet is moving to another coast of the sector, it is still a head to head battle. This has been decided in the great revision of the 1961 rules that resulted in the 1971 rules.
-
     Turkey:
-      F Bulgaria(sc) - Constantinople: false
-      F Constantinople - Bulgaria(ec): false
+      F Bulgaria(sc) - Constantinople: [false, fail]
+      F Constantinople - Bulgaria(ec): [false, fail]
 # Both moves fail.
 
 - testCaseID: 6.B.14  # 6.B.14. TEST CASE, BUILDING WITH UNSPECIFIED COAST
-  generateForces: false
+  generateForces: [false, fail]
   state: *STATE_ADJUSTMENT
   orders:
 # Coast must be specified in certain build cases:
-
     Russia:
-      Build F St Petersburg: false
+      Build F St Petersburg: [false, fail]
 # If no default coast is taken (see issue 4.B.7), the build fails.
 
 # I do not like default coast, so I prefer that the build fails.
@@ -602,11 +585,10 @@
   state: *STATE_MOVEMENT
   orders:
 # Three units can change place, even in spring 1901.
-
     Turkey:
-      F Ankara - Constantinople: true
-      A Constantinople - Smyrna: true
-      A Smyrna - Ankara: true
+      F Ankara - Constantinople: [true, success]
+      A Constantinople - Smyrna: [true, success]
+      A Smyrna - Ankara: [true, success]
 # All three units will move.
 
 - testCaseID: 6.C.2  # 6.C.2. TEST CASE, THREE ARMY CIRCULAR MOVEMENT WITH SUPPORT
@@ -614,12 +596,11 @@
   state: *STATE_MOVEMENT
   orders:
 # Three units can change place, even when one gets support.
-
     Turkey:
-      F Ankara - Constantinople: true
-      A Constantinople - Smyrna: true
-      A Smyrna - Ankara: true
-      A Bulgaria Supports F Ankara - Constantinople: true
+      F Ankara - Constantinople: [true, success]
+      A Constantinople - Smyrna: [true, success]
+      A Smyrna - Ankara: [true, success]
+      A Bulgaria Supports F Ankara - Constantinople: [true, success]
 # Of course the three units will move, but knowing how programs are written, this can confuse the adjudicator.
 
 - testCaseID: 6.C.3  # 6.C.3. TEST CASE, A DISRUPTED THREE ARMY CIRCULAR MOVEMENT
@@ -627,12 +608,11 @@
   state: *STATE_MOVEMENT
   orders:
 # When one of the units bounces, the whole circular movement will hold.
-
     Turkey:
-      F Ankara - Constantinople: false
-      A Constantinople - Smyrna: false
-      A Smyrna - Ankara: false
-      A Bulgaria - Constantinople: false
+      F Ankara - Constantinople: [false, fail]
+      A Constantinople - Smyrna: [false, fail]
+      A Smyrna - Ankara: [false, fail]
+      A Bulgaria - Constantinople: [false, fail]
 # Every unit will keep its place.
 
 - testCaseID: 6.C.4  # 6.C.4. TEST CASE, A CIRCULAR MOVEMENT WITH ATTACKED CONVOY
@@ -640,19 +620,16 @@
   state: *STATE_MOVEMENT
   orders:
 # When the circular movement contains an attacked convoy, the circular movement succeeds. The adjudication algorithm should handle attack of convoys before calculating circular movement.
-
     Austria:
-      A Trieste - Serbia: true
-      A Serbia - Bulgaria: true
-
+      A Trieste - Serbia: [true, success]
+      A Serbia - Bulgaria: [true, success]
     Turkey:
-      A Bulgaria - Trieste: true
-      F Aegean Sea Convoys A Bulgaria - Trieste: true
-      F Ionian Sea Convoys A Bulgaria - Trieste: true
-      F Adriatic Sea Convoys A Bulgaria - Trieste: true
-
+      A Bulgaria - Trieste: [true, success]
+      F Aegean Sea Convoys A Bulgaria - Trieste: [true, success]
+      F Ionian Sea Convoys A Bulgaria - Trieste: [true, success]
+      F Adriatic Sea Convoys A Bulgaria - Trieste: [true, success]
     Italy:
-      F Naples - Ionian Sea: false
+      F Naples - Ionian Sea: [false, fail]
 # The fleet in the Ionian Sea is attacked but not dislodged. The circular movement succeeds. The Austrian and Turkish armies will advance.
 
 - testCaseID: 6.C.5  # 6.C.5. TEST CASE, A DISRUPTED CIRCULAR MOVEMENT DUE TO DISLODGED CONVOY
@@ -660,20 +637,17 @@
   state: *STATE_MOVEMENT
   orders:
 # When the circular movement contains a convoy, the circular movement is disrupted when the convoying fleet is dislodged. The adjudication algorithm should disrupt convoys before calculating circular movement.
-
     Austria:
-      A Trieste - Serbia: false
-      A Serbia - Bulgaria: false
-
+      A Trieste - Serbia: [false, fail]
+      A Serbia - Bulgaria: [false, fail]
     Turkey:
-      A Bulgaria - Trieste: false
-      F Aegean Sea Convoys A Bulgaria - Trieste: false
-      F Ionian Sea Convoys A Bulgaria - Trieste: false
-      F Adriatic Sea Convoys A Bulgaria - Trieste: false
-
+      A Bulgaria - Trieste: [false, fail]
+      F Aegean Sea Convoys A Bulgaria - Trieste: [false, fail]
+      F Ionian Sea Convoys A Bulgaria - Trieste: [false, fail]
+      F Adriatic Sea Convoys A Bulgaria - Trieste: [false, fail]
     Italy:
-      F Naples - Ionian Sea: true
-      F Tunis Supports F Naples - Ionian Sea: true
+      F Naples - Ionian Sea: [true, success]
+      F Tunis Supports F Naples - Ionian Sea: [true, success]
 # Due to the dislodged convoying fleet, all Austrian and Turkish armies will not move.
 
 - testCaseID: 6.C.6  # 6.C.6. TEST CASE, TWO ARMIES WITH TWO CONVOYS
@@ -681,14 +655,12 @@
   state: *STATE_MOVEMENT
   orders:
 # Two armies can swap places even when they are not adjacent.
-
     England:
-      F North Sea Convoys A London - Belgium: true
-      A London - Belgium: true
-
+      F North Sea Convoys A London - Belgium: [true, success]
+      A London - Belgium: [true, success]
     France:
-      F English Channel Convoys A Belgium - London: true
-      A Belgium - London: true
+      F English Channel Convoys A Belgium - London: [true, success]
+      A Belgium - London: [true, success]
 # Both convoys should succeed.
 
 - testCaseID: 6.C.7  # 6.C.7. TEST CASE, DISRUPTED UNIT SWAP
@@ -696,15 +668,13 @@
   state: *STATE_MOVEMENT
   orders:
 # If in a swap one of the unit bounces, then the swap fails.
-
     England:
-      F North Sea Convoys A London - Belgium: false
-      A London - Belgium: false
-
+      F North Sea Convoys A London - Belgium: [false, fail]
+      A London - Belgium: [false, fail]
     France:
-      F English Channel Convoys A Belgium - London: false
-      A Belgium - London: false
-      A Burgundy - Belgium: false
+      F English Channel Convoys A Belgium - London: [false, fail]
+      A Belgium - London: [false, fail]
+      A Burgundy - Belgium: [false, fail]
 # None of the units will succeed to move.
 
 # 6.D. TEST CASES, SUPPORTS AND DISLODGES
@@ -714,14 +684,12 @@
   state: *STATE_MOVEMENT
   orders:
 # The most simple support to hold order.
-
     Austria:
-      F Adriatic Sea Supports A Trieste - Venice: false
-      A Trieste - Venice: false
-
+      F Adriatic Sea Supports A Trieste - Venice: [false, fail]
+      A Trieste - Venice: [false, fail]
     Italy:
-      A Venice Hold: true
-      A Tyrolia Supports A Venice: true
+      A Venice Hold: [true, success]
+      A Tyrolia Supports A Venice: [true, success]
 # The support of Tyrolia prevents that the army in Venice is dislodged. The army in Trieste will not move.
 
 - testCaseID: 6.D.2  # 6.D.2. TEST CASE, A MOVE CUTS SUPPORT ON HOLD
@@ -729,15 +697,13 @@
   state: *STATE_MOVEMENT
   orders:
 # The most simple support on hold cut.
-
     Austria:
-      F Adriatic Sea Supports A Trieste - Venice: true
-      A Trieste - Venice: true
-      A Vienna - Tyrolia: false
-
+      F Adriatic Sea Supports A Trieste - Venice: [true, success]
+      A Trieste - Venice: [true, success]
+      A Vienna - Tyrolia: [false, fail]
     Italy:
-      A Venice Hold: false
-      A Tyrolia Supports A Venice: false
+      A Venice Hold: [false, fail]
+      A Tyrolia Supports A Venice: [false, fail]
 # The support of Tyrolia is cut by the army in Vienna. That means that the army in Venice is dislodged by the army from Trieste.
 
 - testCaseID: 6.D.3  # 6.D.3. TEST CASE, A MOVE CUTS SUPPORT ON MOVE
@@ -745,14 +711,12 @@
   state: *STATE_MOVEMENT
   orders:
 # The most simple support on move cut.
-
     Austria:
-      F Adriatic Sea Supports A Trieste - Venice: false
-      A Trieste - Venice: false
-
+      F Adriatic Sea Supports A Trieste - Venice: [false, fail]
+      A Trieste - Venice: [false, fail]
     Italy:
-      A Venice Hold: true
-      F Ionian Sea - Adriatic Sea: true
+      A Venice Hold: [true, success]
+      F Ionian Sea - Adriatic Sea: [true, success]
 # The support of the fleet in the Adriatic Sea is cut. That means that the army in Venice will not be dislodged and the army in Trieste stays in Trieste.
 
 - testCaseID: 6.D.4  # 6.D.4. TEST CASE, SUPPORT TO HOLD ON UNIT SUPPORTING A HOLD ALLOWED
@@ -760,14 +724,12 @@
   state: *STATE_MOVEMENT
   orders:
      #A unit that is supporting a hold, can receive a hold support.
-
     Germany:
-      A Berlin Supports F Kiel: true
-      F Kiel Supports A Berlin: true
-
+      A Berlin Supports F Kiel: [true, success]
+      F Kiel Supports A Berlin: [true, success]
     Russia:
-      F Baltic Sea Supports A Prussia - Berlin: false
-      A Prussia - Berlin: false
+      F Baltic Sea Supports A Prussia - Berlin: [false, fail]
+      A Prussia - Berlin: [false, fail]
 # The Russian move from Prussia to Berlin fails.
 
 - testCaseID: 6.D.5  # 6.D.5. TEST CASE, SUPPORT TO HOLD ON UNIT SUPPORTING A MOVE ALLOWED
@@ -775,15 +737,13 @@
   state: *STATE_MOVEMENT
   orders:
       # A unit that is supporting a move, can receive a hold support.
-
     Germany:
-      A Berlin Supports A Munich - Silesia: true
-      F Kiel Supports A Berlin: true
-      A Munich - Silesia: true
-
+      A Berlin Supports A Munich - Silesia: [true, success]
+      F Kiel Supports A Berlin: [true, success]
+      A Munich - Silesia: [true, success]
     Russia:
-      F Baltic Sea Supports A Prussia - Berlin: false
-      A Prussia - Berlin: false
+      F Baltic Sea Supports A Prussia - Berlin: [false, fail]
+      A Prussia - Berlin: [false, fail]
 # The Russian move from Prussia to Berlin fails.
 
 - testCaseID: 6.D.6  # 6.D.6. TEST CASE, SUPPORT TO HOLD ON CONVOYING UNIT ALLOWED
@@ -791,15 +751,13 @@
   state: *STATE_MOVEMENT
   orders:
       # A unit that is convoying, can receive a hold support.
-
     Germany:
-      A Berlin - Sweden: true
-      F Baltic Sea Convoys A Berlin - Sweden: true
-      F Prussia Supports F Baltic Sea: true
-
+      A Berlin - Sweden: [true, success]
+      F Baltic Sea Convoys A Berlin - Sweden: [true, success]
+      F Prussia Supports F Baltic Sea: [true, success]
     Russia:
-      F Livonia - Baltic Sea: false
-      F Gulf of Bothnia Supports F Livonia - Baltic Sea: false
+      F Livonia - Baltic Sea: [false, fail]
+      F Gulf of Bothnia Supports F Livonia - Baltic Sea: [false, fail]
 # The Russian move from Livonia to the Baltic Sea fails. The convoy from Berlin to Sweden succeeds.
 
 - testCaseID: 6.D.7  # 6.D.7. TEST CASE, SUPPORT TO HOLD ON MOVING UNIT NOT ALLOWED
@@ -807,15 +765,13 @@
   state: *STATE_MOVEMENT
   orders:
       # A unit that is moving, can not receive a hold support for the situation that the move fails.
-
     Germany:
-      F Baltic Sea - Sweden: false
-      F Prussia Supports F Baltic Sea: false
-
+      F Baltic Sea - Sweden: [false, fail]
+      F Prussia Supports F Baltic Sea: [false, fail]
     Russia:
-      F Livonia - Baltic Sea: true
-      F Gulf of Bothnia Supports F Livonia - Baltic Sea: true
-      A Finland - Sweden: false
+      F Livonia - Baltic Sea: [true, success]
+      F Gulf of Bothnia Supports F Livonia - Baltic Sea: [true, success]
+      A Finland - Sweden: [false, fail]
 # The support of the fleet in Prussia fails. The fleet in Baltic Sea will bounce on the Russian army in Finland and will be dislodged by the Russian fleet from Livonia when it returns to the Baltic Sea.
 
 - testCaseID: 6.D.8  # 6.D.8. TEST CASE, FAILED CONVOY CAN NOT RECEIVE HOLD SUPPORT
@@ -823,15 +779,13 @@
   state: *STATE_MOVEMENT
   orders:
 # If a convoy fails because of disruption of the convoy or when the right convoy orders are not given, then the army to be convoyed can not receive support in hold, since it still tried to move.
-
     Austria:
-      F Ionian Sea Hold: true
-      A Serbia Supports A Albania - Greece: true
-      A Albania - Greece: true
-
+      F Ionian Sea Hold: [true, success]
+      A Serbia Supports A Albania - Greece: [true, success]
+      A Albania - Greece: [true, success]
     Turkey:
-      A Greece - Naples: false
-      A Bulgaria Supports A Greece: false
+      A Greece - Naples: [false, fail]
+      A Bulgaria Supports A Greece: [false, fail]
 # TODO(cosmic): Below shouldn't be a problem.
 # There was a possible convoy from Greece to Naples, before the orders were made public (via the Ionian Sea). This means that the order of Greece to Naples should never be treated as illegal order and be changed in a hold order able to receive hold support (see also issue VI.A). Therefore, the support in Bulgaria fails and the army in Greece is dislodged by the army in Albania.
 
@@ -840,14 +794,12 @@
   state: *STATE_MOVEMENT
   orders:
       # A unit that is holding can not receive a support in moving.
-
     Italy:
-      A Venice - Trieste: true
-      A Tyrolia Supports A Venice - Trieste: true
-
+      A Venice - Trieste: [true, success]
+      A Tyrolia Supports A Venice - Trieste: [true, success]
     Austria:
-      A Albania Supports A Trieste - Serbia: false
-      A Trieste Hold: false
+      A Albania Supports A Trieste - Serbia: [false, fail]
+      A Trieste Hold: [false, fail]
 # The support of the army in Albania fails and the army in Trieste is dislodged by the army from Venice.
 
 - testCaseID: 6.D.10  # 6.D.10. TEST CASE, SELF DISLODGMENT PROHIBITED
@@ -855,11 +807,10 @@
   state: *STATE_MOVEMENT
   orders:
       # A unit may not dislodge a unit of the same great power.
-
     Germany:
-      A Berlin Hold: false
-      F Kiel - Berlin: false
-      A Munich Supports F Kiel - Berlin: false
+      A Berlin Hold: [false, fail]
+      F Kiel - Berlin: [false, fail]
+      A Munich Supports F Kiel - Berlin: [false, fail]
 # Move to Berlin fails.
 
 - testCaseID: 6.D.11  # 6.D.11. TEST CASE, NO SELF DISLODGMENT OF RETURNING UNIT
@@ -867,14 +818,12 @@
   state: *STATE_MOVEMENT
   orders:
 # Idem.
-
     Germany:
-      A Berlin - Prussia: false
-      F Kiel - Berlin: false
-      A Munich Supports F Kiel - Berlin: false
-
+      A Berlin - Prussia: [false, fail]
+      F Kiel - Berlin: [false, fail]
+      A Munich Supports F Kiel - Berlin: [false, fail]
     Russia:
-      A Warsaw - Prussia: false
+      A Warsaw - Prussia: [false, fail]
 # Army in Berlin bounces, but is not dislodged by own unit.
 
 - testCaseID: 6.D.12  # 6.D.12. TEST CASE, SUPPORTING A FOREIGN UNIT TO DISLODGE OWN UNIT PROHIBITED
@@ -882,13 +831,11 @@
   state: *STATE_MOVEMENT
   orders:
 # You may not help another power in dislodging your own unit.
-
     Austria:
-      F Trieste Hold: true
-      A Vienna Supports A Venice - Trieste: false
-
+      F Trieste Hold: [true, success]
+      A Vienna Supports A Venice - Trieste: [false, fail]
     Italy:
-      A Venice - Trieste: false
+      A Venice - Trieste: [false, fail]
 # No dislodgment of fleet in Trieste.
 
 - testCaseID: 6.D.13  # 6.D.13. TEST CASE, SUPPORTING A FOREIGN UNIT TO DISLODGE A RETURNING OWN UNIT PROHIBITED
@@ -896,14 +843,12 @@
   state: *STATE_MOVEMENT
   orders:
 # Idem.
-
     Austria:
-      F Trieste - Adriatic Sea: false
-      A Vienna Supports A Venice - Trieste: false
-
+      F Trieste - Adriatic Sea: [false, fail]
+      A Vienna Supports A Venice - Trieste: [false, fail]
     Italy:
-      A Venice - Trieste: false
-      F Apulia - Adriatic Sea: false
+      A Venice - Trieste: [false, fail]
+      F Apulia - Adriatic Sea: [false, fail]
 # No dislodgment of fleet in Trieste.
 
 - testCaseID: 6.D.14  # 6.D.14. TEST CASE, SUPPORTING A FOREIGN UNIT IS NOT ENOUGH TO PREVENT DISLODGEMENT
@@ -911,15 +856,13 @@
   state: *STATE_MOVEMENT
   orders:
 # If a foreign unit has enough support to dislodge your unit, you may not prevent that dislodgement by supporting the attack.
-
     Austria:
-      F Trieste Hold: false
-      A Vienna Supports A Venice - Trieste: false
-
+      F Trieste Hold: [false, fail]
+      A Vienna Supports A Venice - Trieste: [false, fail]
     Italy:
-      A Venice - Trieste: true
-      A Tyrolia Supports A Venice - Trieste: true
-      F Adriatic Sea Supports A Venice - Trieste: true
+      A Venice - Trieste: [true, success]
+      A Tyrolia Supports A Venice - Trieste: [true, success]
+      F Adriatic Sea Supports A Venice - Trieste: [true, success]
 # The fleet in Trieste is dislodged.
 
 - testCaseID: 6.D.15  # 6.D.15. TEST CASE, DEFENDER CAN NOT CUT SUPPORT FOR ATTACK ON ITSELF
@@ -927,13 +870,11 @@
   state: *STATE_MOVEMENT
   orders:
       # A unit that is attacked by a supported unit can not prevent dislodgement by guessing which of the units will do the support.
-
     Russia:
-      F Constantinople Supports F Black Sea - Ankara: true
-      F Black Sea - Ankara: true
-
+      F Constantinople Supports F Black Sea - Ankara: [true, success]
+      F Black Sea - Ankara: [true, success]
     Turkey:
-      F Ankara - Constantinople: false
+      F Ankara - Constantinople: [false, fail]
 # The support of Constantinople is not cut and the fleet in Ankara is dislodged by the fleet in the Black Sea. a name="6.D.16">
 
 - testCaseID: 6.D.16  # 6.D.16. TEST CASE, CONVOYING A UNIT DISLODGING A UNIT OF SAME POWER IS ALLOWED
@@ -941,14 +882,12 @@
   state: *STATE_MOVEMENT
   orders:
 # It is allowed to convoy a foreign unit that dislodges your own unit is allowed.
-
     England:
-      A London Hold: false
-      F North Sea Convoys A Belgium - London: true
-
+      A London Hold: [false, fail]
+      F North Sea Convoys A Belgium - London: [true, success]
     France:
-      F English Channel Supports A Belgium - London: true
-      A Belgium - London: true
+      F English Channel Supports A Belgium - London: [true, success]
+      A Belgium - London: [true, success]
 # The English army in London is dislodged by the French army coming from Belgium.
 
 - testCaseID: 6.D.17  # 6.D.17. TEST CASE, DISLODGEMENT CUTS SUPPORTS
@@ -956,15 +895,13 @@
   state: *STATE_MOVEMENT
   orders:
 # The famous dislodge rule.
-
     Russia:
-      F Constantinople Supports F Black Sea - Ankara: false
-      F Black Sea - Ankara: false
-
+      F Constantinople Supports F Black Sea - Ankara: [false, fail]
+      F Black Sea - Ankara: [false, fail]
     Turkey:
-      F Ankara - Constantinople: true
-      A Smyrna Supports F Ankara - Constantinople: true
-      A Armenia - Ankara: false
+      F Ankara - Constantinople: [true, success]
+      A Smyrna Supports F Ankara - Constantinople: [true, success]
+      A Armenia - Ankara: [false, fail]
 # The Russian fleet in Constantinople is dislodged. This cuts the support to from Black Sea to Ankara. Black Sea will bounce with the army from Armenia.
 
 - testCaseID: 6.D.18  # 6.D.18. TEST CASE, A SURVIVING UNIT WILL SUSTAIN SUPPORT
@@ -972,16 +909,14 @@
   state: *STATE_MOVEMENT
   orders:
 # Idem. But now with an additional hold that prevents dislodgement.
-
     Russia:
-      F Constantinople Supports F Black Sea - Ankara: true
-      F Black Sea - Ankara: true
-      A Bulgaria Supports F Constantinople: true
-
+      F Constantinople Supports F Black Sea - Ankara: [true, success]
+      F Black Sea - Ankara: [true, success]
+      A Bulgaria Supports F Constantinople: [true, success]
     Turkey:
-      F Ankara - Constantinople: false
-      A Smyrna Supports F Ankara - Constantinople: false
-      A Armenia - Ankara: false
+      F Ankara - Constantinople: [false, fail]
+      A Smyrna Supports F Ankara - Constantinople: [false, fail]
+      A Armenia - Ankara: [false, fail]
 # The Russian fleet in the Black Sea will dislodge the Turkish fleet in Ankara.
 
 - testCaseID: 6.D.19  # 6.D.19. TEST CASE, EVEN WHEN SURVIVING IS IN ALTERNATIVE WAY
@@ -989,14 +924,12 @@
   state: *STATE_MOVEMENT
   orders:
 # Now, the dislodgement is prevented because the supports comes from a Russian army:
-
     Russia:
-      F Constantinople Supports F Black Sea - Ankara: true
-      F Black Sea - Ankara: true
-      A Smyrna Supports F Ankara - Constantinople: false
-
+      F Constantinople Supports F Black Sea - Ankara: [true, success]
+      F Black Sea - Ankara: [true, success]
+      A Smyrna Supports F Ankara - Constantinople: [false, fail]
     Turkey:
-      F Ankara - Constantinople: false
+      F Ankara - Constantinople: [false, fail]
 # The Russian fleet in Constantinople is not dislodged, because one of the support is of Russian origin. The support from Black Sea to Ankara will sustain and the fleet in Ankara will be dislodged.
 
 - testCaseID: 6.D.20  # 6.D.20. TEST CASE, UNIT CAN NOT CUT SUPPORT OF ITS OWN COUNTRY
@@ -1004,14 +937,12 @@
   state: *STATE_MOVEMENT
   orders:
 # Although this is not mentioned in all rulebooks, it is generally accepted that when a unit attacks another unit of the same Great Power, it will not cut support.
-
     England:
-      F London Supports F North Sea - English Channel: true
-      F North Sea - English Channel: true
-      A Yorkshire - London: false
-
+      F London Supports F North Sea - English Channel: [true, success]
+      F North Sea - English Channel: [true, success]
+      A Yorkshire - London: [false, fail]
     France:
-      F English Channel Hold: false
+      F English Channel Hold: [false, fail]
 # The army in York does not cut support. This means that the fleet in the English Channel is dislodged by the fleet in the North Sea.
 
 - testCaseID: 6.D.21  # 6.D.21. TEST CASE, DISLODGING DOES NOT CANCEL A SUPPORT CUT
@@ -1019,20 +950,16 @@
   state: *STATE_MOVEMENT
   orders:
 # Sometimes there is the question whether a dislodged moving unit does not cut support (similar to the dislodge rule). This is not the case.
-
     Austria:
-      F Trieste Hold: true
-
+      F Trieste Hold: [true, success]
     Italy:
-      A Venice - Trieste: false
-      A Tyrolia Supports A Venice - Trieste: false
-
+      A Venice - Trieste: [false, fail]
+      A Tyrolia Supports A Venice - Trieste: [false, fail]
     Germany:
-      A Munich - Tyrolia: false
-
+      A Munich - Tyrolia: [false, fail]
     Russia:
-      A Silesia - Munich: true
-      A Berlin Supports A Silesia - Munich: true
+      A Silesia - Munich: [true, success]
+      A Berlin Supports A Silesia - Munich: [true, success]
 # Although the German army is dislodged, it still cuts the Italian support. That means that the Austrian Fleet is not dislodged.
 
 - testCaseID: 6.D.22  # 6.D.22. TEST CASE, IMPOSSIBLE FLEET MOVE CAN NOT BE SUPPORTED
@@ -1040,28 +967,24 @@
   state: *STATE_MOVEMENT
   orders:
 # If a fleet tries moves to a land area it seems pointless to support the fleet, since the move will fail anyway. However, in such case, the support is also invalid for defense purposes.
-
     Germany:
-      F Kiel - Munich: false
-      A Burgundy Supports F Kiel - Munich: false
-
+      F Kiel - Munich: [false, fail]
+      A Burgundy Supports F Kiel - Munich: [false, fail]
     Russia:
-      A Munich - Kiel: true
-      A Berlin Supports A Munich - Kiel: true
+      A Munich - Kiel: [true, success]
+      A Berlin Supports A Munich - Kiel: [true, success]
 # The German move from Kiel to Munich is illegal (fleets can not go to Munich). Therefore, the support from Burgundy fails and the Russian army in Munich will dislodge the fleet in Kiel. Note that the failing of the support is not explicitly mentioned in the rulebooks (the DPTG is more clear about this point). If you take the rulebooks very literally, you might conclude that the fleet in Munich is not dislodged, but this is an incorrect interpretation.
 - testCaseID: 6.D.23  # 6.D.23. TEST CASE, IMPOSSIBLE COAST MOVE CAN NOT BE SUPPORTED
   generateForces: true
   state: *STATE_MOVEMENT
   orders:
 # Comparable with the previous test case, but now the fleet move is impossible for coastal reasons.
-
     Italy:
-      F Gulf of Lyon - Spain(sc): true
-      F Western Mediterranean Supports F Gulf of Lyon - Spain(sc): true
-
+      F Gulf of Lyon - Spain(sc): [true, success]
+      F Western Mediterranean Supports F Gulf of Lyon - Spain(sc): [true, success]
     France:
-      F Spain(nc) - Gulf of Lyon: false
-      F Marseilles Supports F Spain(nc) - Gulf of Lyon: false
+      F Spain(nc) - Gulf of Lyon: [false, fail]
+      F Marseilles Supports F Spain(nc) - Gulf of Lyon: [false, fail]
 # The French move from Spain North Coast to Gulf of Lyon is illegal (wrong coast). Therefore, the support from Marseilles fails and the fleet in Spain is dislodged.
 
 - testCaseID: 6.D.24  # 6.D.24. TEST CASE, IMPOSSIBLE ARMY MOVE CAN NOT BE SUPPORTED
@@ -1069,17 +992,14 @@
   state: *STATE_MOVEMENT
   orders:
 # Comparable with the previous test case, but now an army tries to move into sea and the support is used in a beleaguered garrison.
-
     France:
-      A Marseilles - Gulf of Lyon: false
-      F Spain(sc) Supports A Marseilles - Gulf of Lyon: false
-
+      A Marseilles - Gulf of Lyon: [false, fail]
+      F Spain(sc) Supports A Marseilles - Gulf of Lyon: [false, fail]
     Italy:
-      F Gulf of Lyon Hold: false
-
+      F Gulf of Lyon Hold: [false, fail]
     Turkey:
-      F Tyrrhenian Sea Supports F Western Mediterranean - Gulf of Lyon: true
-      F Western Mediterranean - Gulf of Lyon: true
+      F Tyrrhenian Sea Supports F Western Mediterranean - Gulf of Lyon: [true, success]
+      F Western Mediterranean - Gulf of Lyon: [true, success]
 # The French move from Marseilles to Gulf of Lyon is illegal (an army can not go to sea). Therefore, the support from Spain fails and there is no beleaguered garrison. The fleet in the Gulf of Lyon is dislodged by the Turkish fleet in the Western Mediterranean.
 
 - testCaseID: 6.D.25  # 6.D.25. TEST CASE, FAILING HOLD SUPPORT CAN BE SUPPORTED
@@ -1087,14 +1007,12 @@
   state: *STATE_MOVEMENT
   orders:
 # If an adjudicator fails on one of the previous three test cases, then the bug should be removed with care. A failing move can not be supported, but a failing hold support, because of some preconditions (unmatching order) can still be supported.
-
     Germany:
-      A Berlin Supports A Prussia: false
-      F Kiel Supports A Berlin: true
-
+      A Berlin Supports A Prussia: [false, fail]
+      F Kiel Supports A Berlin: [true, success]
     Russia:
-      F Baltic Sea Supports A Prussia - Berlin: false
-      A Prussia - Berlin: false
+      F Baltic Sea Supports A Prussia - Berlin: [false, fail]
+      A Prussia - Berlin: [false, fail]
 # Although the support of Berlin on Prussia fails (because of unmatching orders), the support of Kiel on Berlin is still valid. So, Berlin will not be dislodged.
 
 - testCaseID: 6.D.26  # 6.D.26. TEST CASE, FAILING MOVE SUPPORT CAN BE SUPPORTED
@@ -1102,14 +1020,12 @@
   state: *STATE_MOVEMENT
   orders:
 # Similar as the previous test case, but now with an unmatched support to move.
-
     Germany:
-      A Berlin Supports A Prussia - Silesia: false
-      F Kiel Supports A Berlin: true
-
+      A Berlin Supports A Prussia - Silesia: [false, fail]
+      F Kiel Supports A Berlin: [true, success]
     Russia:
-      F Baltic Sea Supports A Prussia - Berlin: false
-      A Prussia - Berlin: false
+      F Baltic Sea Supports A Prussia - Berlin: [false, fail]
+      A Prussia - Berlin: [false, fail]
 # Again, Berlin will not be dislodged.
 
 - testCaseID: 6.D.27  # 6.D.27. TEST CASE, FAILING CONVOY CAN BE SUPPORTED
@@ -1117,17 +1033,14 @@
   state: *STATE_MOVEMENT
   orders:
 # Similar as the previous test case, but now with an unmatched convoy.
-
     England:
-      F Sweden - Baltic Sea: false
-      F Denmark Supports F Sweden - Baltic Sea: false
-
+      F Sweden - Baltic Sea: [false, fail]
+      F Denmark Supports F Sweden - Baltic Sea: [false, fail]
     Germany:
-      A Berlin Hold: true
-
+      A Berlin Hold: [true, success]
     Russia:
-      F Baltic Sea Convoys A Berlin - Livonia: false
-      F Prussia Supports F Baltic Sea: true
+      F Baltic Sea Convoys A Berlin - Livonia: [false, fail]
+      F Prussia Supports F Baltic Sea: [true, success]
 # The convoy order in the Baltic Sea is unmatched and fails. However, the support of Prussia on the Baltic Sea is still valid and the fleet in the Baltic Sea is not dislodged.
 
 - testCaseID: 6.D.28  # 6.D.28. TEST CASE, IMPOSSIBLE MOVE AND SUPPORT
@@ -1135,16 +1048,13 @@
   state: *STATE_MOVEMENT
   orders:
 # If a move is impossible then it can be treated as "illegal", which makes a hold support possible.
-
     Austria:
-      A Budapest Supports F Rumania: true
-
+      A Budapest Supports F Rumania: [true, success]
     Russia:
-      F Rumania - Holland: false
-
+      F Rumania - Holland: [false, fail]
     Turkey:
-      F Black Sea - Rumania: false
-      A Bulgaria Supports F Black Sea - Rumania: false
+      F Black Sea - Rumania: [false, fail]
+      A Bulgaria Supports F Black Sea - Rumania: [false, fail]
 # The move of the Russian fleet is impossible. But the question is, whether it is "illegal" (see issue 4.E.1). If the move is "illegal" it must be ignored and that makes the hold support of the army in Budapest valid and the fleet in Rumania will not be dislodged.
 
 # I prefer that the move is "illegal", which means that the fleet in the Black Sea does not dislodge the supported Russian fleet.
@@ -1154,18 +1064,14 @@
   state: *STATE_MOVEMENT
   orders:
 # Similar to the previous test case, but now the move can be "illegal" because of the wrong coast.
-
     Austria:
-      A Budapest Supports F Rumania: true
-
+      A Budapest Supports F Rumania: [true, success]
     Russia:
-      F Rumania - Bulgaria(sc): false
-
+      F Rumania - Bulgaria(sc): [false, fail]
     Turkey:
-      F Black Sea - Rumania: false
-      A Bulgaria Supports F Black Sea - Rumania: false
+      F Black Sea - Rumania: [false, fail]
+      A Bulgaria Supports F Black Sea - Rumania: [false, fail]
 # Again the move of the Russian fleet is impossible. However, some people might correct the coast (see issue 4.B.3). If the coast is not corrected, again the question is whether it is "illegal" (see issue 4.E.1). If the move is "illegal" it must be ignored and that makes the hold support of the army in Budapest valid and the fleet in Rumania will not be dislodged.
-
 # I prefer that unambiguous orders are not changed and that the move is "illegal". That means that the fleet in the Black Sea does not dislodge the supported Russian fleet.
 
 - testCaseID: 6.D.30  # 6.D.30. TEST CASE, MOVE WITHOUT COAST AND SUPPORT
@@ -1173,18 +1079,14 @@
   state: *STATE_MOVEMENT
   orders:
 # Similar to the previous test case, but now the move can be "illegal" because of missing coast.
-
     Italy:
-      F Aegean Sea Supports F Constantinople: true
-
+      F Aegean Sea Supports F Constantinople: [true, success]
     Russia:
-      F Constantinople - Bulgaria: false
-
+      F Constantinople - Bulgaria: [false, fail]
     Turkey:
-      F Black Sea - Constantinople: false
-      A Bulgaria Supports F Black Sea - Constantinople: false
+      F Black Sea - Constantinople: [false, fail]
+      A Bulgaria Supports F Black Sea - Constantinople: [false, fail]
 # Again the order to the Russian fleet is with problems, because it does not specify the coast, while both coasts of Bulgaria are possible. If no default coast is taken (see issue 4.B.1), then also here it must be decided whether the order is "illegal" (see issue 4.E.1). If the move is "illegal" it must be ignored and that makes the hold support of the fleet in the Aegean Sea valid and the Russian fleet will not be dislodged.
-
 # I don't like default coasts and I prefer that the move is "illegal". That means that the fleet in the Black Sea does not dislodge the supported Russian fleet.
 
 - testCaseID: 6.D.31  # 6.D.31. TEST CASE, A TRICKY IMPOSSIBLE SUPPORT
@@ -1192,17 +1094,13 @@
   state: *STATE_MOVEMENT
   orders:
     # A support order can be impossible for complex reasons.
-
     Austria:
-      A Rumania - Armenia: true
-
+      A Rumania - Armenia: [true, success]
     Turkey:
-      F Black Sea Supports A Rumania - Armenia: false
+      F Black Sea Supports A Rumania - Armenia: [false, fail]
 # TODO(cosmic): And above ^
 # Although the army in Rumania can move to Armenia and the fleet in the Black Sea can also go to Armenia, the support is still not possible. The reason is that the only possible convoy is through the Black Sea and a fleet can not convoy and support at the same time.
-
 # This is relevant for computer programs that show only the possible orders. In the list of possible orders, the support as given to the fleet in the Black Sea, should not be listed. Furthermore, if the fleet in the Black Sea gets a second order, then this may fail, because of double orders (although it can also be ruled differently, see issue 4.D.3). However, when the support order is considered "illegal" (see issue 4.E.1), then this impossible support must be ignored and the second order must be carried out.
-
 # I prefer that impossible orders are "illegal" and ignored. If there would be a second order for the fleet in the Black Sea, that order should be carried out.
 
 - testCaseID: 6.D.32  # 6.D.32. TEST CASE, A MISSING FLEET
@@ -1210,19 +1108,15 @@
   state: *STATE_MOVEMENT
   orders:
 # The previous test cases contained an order that was impossible even when some other pieces on the board where changed. In this test case, the order is impossible, but only for that situation.
-
     England:
-      F Edinburgh Supports A Liverpool - Yorkshire: false
-      A Liverpool - Yorkshire: false
-
+      F Edinburgh Supports A Liverpool - Yorkshire: [false, fail]
+      A Liverpool - Yorkshire: [false, fail]
     France:
-      F London Supports A Yorkshire: true
-
+      F London Supports A Yorkshire: [true, success]
     Germany:
-      A Yorkshire - Holland: false
+      A Yorkshire - Holland: [false, fail]
 # TODO(cosmic): da hell? ^
 # The German order to Yorkshire can not be executed, because there is no fleet in the North Sea. In other situations (where there is a fleet in the North Sea), the exact same order would be possible. It should be determined whether this is "illegal" (see issue 4.E.1) or not. If it is illegal, then the order should be ignored and the support of the French fleet in London succeeds. This means that the army in Yorkshire is not dislodged.
-
 # I prefer that impossible orders, even if it is only impossible for the current situation, are "illegal" and ignored. The army in Yorkshire is not dislodged.
 
 - testCaseID: 6.D.33  # 6.D.33. TEST CASE, UNWANTED SUPPORT ALLOWED
@@ -1230,16 +1124,13 @@
   state: *STATE_MOVEMENT
   orders:
     # A self stand-off can be broken by an unwanted support.
-
     Austria:
-      A Serbia - Budapest: true
-      A Vienna - Budapest: false
-
+      A Serbia - Budapest: [true, success]
+      A Vienna - Budapest: [false, fail]
     Russia:
-      A Galicia Supports A Serbia - Budapest: true
-
+      A Galicia Supports A Serbia - Budapest: [true, success]
     Turkey:
-      A Bulgaria - Serbia: true
+      A Bulgaria - Serbia: [true, success]
 # Due to the Russian support, the army in Serbia advances to Budapest. This enables Turkey to capture Serbia with the army in Bulgaria.
 
 - testCaseID: 6.D.34  # 6.D.34. TEST CASE, SUPPORT TARGETING OWN AREA NOT ALLOWED
@@ -1248,16 +1139,14 @@
   orders:
 # Support targeting the area where the supporting unit is standing, is illegal.
     Germany:
-      A Berlin - Prussia: true
-      A Silesia Supports A Berlin - Prussia: true
-      F Baltic Sea Supports A Berlin - Prussia: true
-
+      A Berlin - Prussia: [true, success]
+      A Silesia Supports A Berlin - Prussia: [true, success]
+      F Baltic Sea Supports A Berlin - Prussia: [true, success]
     Italy:
-      A Prussia Supports Livonia - Prussia: false
-
+      A Prussia Supports Livonia - Prussia: [false, fail]
     Russia:
-      A Warsaw Supports A Livonia - Prussia: false
-      A Livonia - Prussia: false
+      A Warsaw Supports A Livonia - Prussia: [false, fail]
+      A Livonia - Prussia: [false, fail]
 # Russia and Italy wanted to get rid of the Italian army in Prussia (to build an Italian fleet somewhere else). However, they didn't want a possible German attack on Prussia to succeed. They invented this odd order of Italy. It was intended that the attack of the army in Livonia would have strength three, so it would be capable to prevent the possible German attack to succeed. However, the order of Italy is illegal, because a unit may only support to an area where the unit can go by itself. # A unit can't go to the area it is already standing, so the Italian order is illegal and the German move from Berlin succeeds. Even if it would be legal, the German move from Berlin would still succeed, because the support of Prussia is cut by Livonia and Berlin.
 
 
@@ -1269,12 +1158,11 @@
   orders:
 ## An army can follow.
     Germany:
-      A Berlin - Prussia: true
-      F Kiel - Berlin: true
-      A Silesia Supports A Berlin - Prussia: true
-
+      A Berlin - Prussia: [true, success]
+      F Kiel - Berlin: [true, success]
+      A Silesia Supports A Berlin - Prussia: [true, success]
     Russia:
-      A Prussia - Berlin: false
+      A Prussia - Berlin: [false, fail]
 ## The army in Kiel will move to Berlin.
 
 - testCaseID: 6.E.2  # 6.E.2. TEST CASE, NO SELF DISLODGEMENT IN HEAD TO HEAD BATTLE
@@ -1283,9 +1171,9 @@
   orders:
 ## Self dislodgement is not allowed. This also counts for head to head battles.
     Germany:
-      A Berlin - Kiel: false
-      F Kiel - Berlin: false
-      A Munich Supports A Berlin - Kiel: false
+      A Berlin - Kiel: [false, fail]
+      F Kiel - Berlin: [false, fail]
+      A Munich Supports A Berlin - Kiel: [false, fail]
 ## No unit will move.
 
 - testCaseID: 6.E.3  # 6.E.3. TEST CASE, NO HELP IN DISLODGING OWN UNIT
@@ -1294,10 +1182,10 @@
   orders:
 ## To help a foreign power to dislodge own unit in head to head battle is not possible.
     Germany:
-      A Berlin - Kiel: false
-      A Munich Supports F Kiel - Berlin: false
+      A Berlin - Kiel: [false, fail]
+      A Munich Supports F Kiel - Berlin: [false, fail]
     England:
-      F Kiel - Berlin: false
+      F Kiel - Berlin: [false, fail]
 ## No unit will move.
 
 - testCaseID: 6.E.4  # 6.E.4. TEST CASE, NON-DISLODGED LOSER HAS STILL EFFECT
@@ -1306,19 +1194,19 @@
   orders:
 ## If in an unbalanced head to head battle the loser is not dislodged, it has still effect on the area of the attacker.
     Germany:
-      F Holland - North Sea: false
-      F Helgoland Bight Supports F Holland - North Sea: false
-      F Skagerrak Supports F Holland - North Sea: false
+      F Holland - North Sea: [false, fail]
+      F Helgoland Bight Supports F Holland - North Sea: [false, fail]
+      F Skagerrak Supports F Holland - North Sea: [false, fail]
     France:
-      F North Sea - Holland: false
-      F Belgium Supports F North Sea - Holland: false
+      F North Sea - Holland: [false, fail]
+      F Belgium Supports F North Sea - Holland: [false, fail]
     England:
-      F Edinburgh Supports F Norwegian Sea - North Sea: false
-      F Yorkshire Supports F Norwegian Sea - North Sea: false
-      F Norwegian Sea - North Sea: false
+      F Edinburgh Supports F Norwegian Sea - North Sea: [false, fail]
+      F Yorkshire Supports F Norwegian Sea - North Sea: [false, fail]
+      F Norwegian Sea - North Sea: [false, fail]
     Austria:
-      A Kiel Supports A Ruhr - Holland: false
-      A Ruhr - Holland: false
+      A Kiel Supports A Ruhr - Holland: [false, fail]
+      A Ruhr - Holland: [false, fail]
 ## The French fleet in the North Sea is not dislodged due to the beleaguered garrison. Therefore, the Austrian army in Ruhr will not move to Holland.
 
 - testCaseID: 6.E.5  # 6.E.5. TEST CASE, LOSER DISLODGED BY ANOTHER ARMY HAS STILL EFFECT
@@ -1327,20 +1215,20 @@
   orders:
 # If in an unbalanced head to head battle the loser is dislodged by a unit not part of the head to head battle, the loser has still effect on the place of the winner of the head to head battle.
     Germany:
-      F Holland - North Sea: false
-      F Helgoland Bight Supports F Holland - North Sea: false
-      F Skagerrak Supports F Holland - North Sea: false
+      F Holland - North Sea: [false, fail]
+      F Helgoland Bight Supports F Holland - North Sea: [false, fail]
+      F Skagerrak Supports F Holland - North Sea: [false, fail]
     France:
-      F North Sea - Holland: false
-      F Belgium Supports F North Sea - Holland: false
+      F North Sea - Holland: [false, fail]
+      F Belgium Supports F North Sea - Holland: [false, fail]
     England:
-      F Edinburgh Supports F Norwegian Sea - North Sea: true
-      F Yorkshire Supports F Norwegian Sea - North Sea: true
-      F Norwegian Sea - North Sea: true
-      F London Supports F Norwegian Sea - North Sea: true
+      F Edinburgh Supports F Norwegian Sea - North Sea: [true, success]
+      F Yorkshire Supports F Norwegian Sea - North Sea: [true, success]
+      F Norwegian Sea - North Sea: [true, success]
+      F London Supports F Norwegian Sea - North Sea: [true, success]
     Austria:
-      A Kiel Supports A Ruhr - Holland: false
-      A Ruhr - Holland: false
+      A Kiel Supports A Ruhr - Holland: [false, fail]
+      A Ruhr - Holland: [false, fail]
 # The French fleet in the North Sea is dislodged but not by the German fleet in Holland. Therefore, the French fleet can still prevent that the Austrian army in Ruhr will move to Holland. So, the Austrian move in Ruhr fails and the German fleet in Holland is not dislodged.
 
 - testCaseID: 6.E.6  # 6.E.6. TEST CASE, NOT DISLODGE BECAUSE OF OWN SUPPORT HAS STILL EFFECT
@@ -1349,15 +1237,15 @@
   orders:
 # If in an unbalanced head to head battle the loser is not dislodged because the winner had help of a unit of the loser, the loser has still effect on the area of the winner.
     Germany:
-      F Holland - North Sea: false
-      F Helgoland Bight Supports F Holland - North Sea: false
+      F Holland - North Sea: [false, fail]
+      F Helgoland Bight Supports F Holland - North Sea: [false, fail]
     France:
-      F North Sea - Holland: false
-      F Belgium Supports F North Sea - Holland: false
-      F English Channel Supports F Holland - North Sea: false
+      F North Sea - Holland: [false, fail]
+      F Belgium Supports F North Sea - Holland: [false, fail]
+      F English Channel Supports F Holland - North Sea: [false, fail]
     Austria:
-      A Kiel Supports A Ruhr - Holland: false
-      A Ruhr - Holland: false
+      A Kiel Supports A Ruhr - Holland: [false, fail]
+      A Ruhr - Holland: [false, fail]
 # Although the German force from Holland to North Sea is one larger than the French force from North Sea to Holland, the French fleet in the North Sea is not dislodged, because one of the supports on the German movement is French. Therefore, the Austrian army in Ruhr will not move to Holland.
 
 - testCaseID: 6.E.7  # 6.E.7. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
@@ -1366,14 +1254,14 @@
   orders:
 # An attempt to self dislodgement can be combined with a beleaguered garrison. Such self dislodgment is still not possible.
     England:
-      F North Sea Hold: true
-      F Yorkshire Supports F Norway - North Sea: false
+      F North Sea Hold: [true, success]
+      F Yorkshire Supports F Norway - North Sea: [false, fail]
     Germany:
-      F Holland Supports F Helgoland Bight - North Sea: false
-      F Helgoland Bight - North Sea: false
+      F Holland Supports F Helgoland Bight - North Sea: [false, fail]
+      F Helgoland Bight - North Sea: [false, fail]
     Russia:
-      F Skagerrak Supports F Norway - North Sea: false
-      F Norway - North Sea: false
+      F Skagerrak Supports F Norway - North Sea: [false, fail]
+      F Norway - North Sea: [false, fail]
 # Although the Russians beat the German attack (with the support of Yorkshire) and the two Russian fleets are enough to dislodge the fleet in the North Sea, the fleet in the North Sea is not dislodged, since it would not be dislodged if the English fleet in Yorkshire would not give support. According to the DPTG the fleet in the North Sea would be dislodged. The DPTG is incorrect in this case.
 
 - testCaseID: 6.E.8  # 6.E.8. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON AND HEAD TO HEAD BATTLE
@@ -1382,14 +1270,14 @@
   orders:
 # Similar to the previous test case, but now the beleaguered fleet is also engaged in a head to head battle.
     England:
-      F North Sea - Norway: false
-      F Yorkshire Supports F Norway - North Sea: false
+      F North Sea - Norway: [false, fail]
+      F Yorkshire Supports F Norway - North Sea: [false, fail]
     Germany:
-      F Holland Supports F Helgoland Bight - North Sea: false
-      F Helgoland Bight - North Sea: false
+      F Holland Supports F Helgoland Bight - North Sea: [false, fail]
+      F Helgoland Bight - North Sea: [false, fail]
     Russia:
-      F Skagerrak Supports F Norway - North Sea: false
-      F Norway - North Sea: false
+      F Skagerrak Supports F Norway - North Sea: [false, fail]
+      F Norway - North Sea: [false, fail]
 # Again, none of the fleets move.
 
 - testCaseID: 6.E.9  # 6.E.9. TEST CASE, ALMOST SELF DISLODGEMENT WITH BELEAGUERED GARRISON
@@ -1398,14 +1286,14 @@
   orders:
 # Similar to the previous test case, but now the beleaguered fleet is moving away.
     England:
-      F North Sea - Norwegian Sea: true
-      F Yorkshire Supports F Norway - North Sea: true
+      F North Sea - Norwegian Sea: [true, success]
+      F Yorkshire Supports F Norway - North Sea: [true, success]
     Germany:
-      F Holland Supports F Helgoland Bight - North Sea: false
-      F Helgoland Bight - North Sea: false
+      F Holland Supports F Helgoland Bight - North Sea: [false, fail]
+      F Helgoland Bight - North Sea: [false, fail]
     Russia:
-      F Skagerrak Supports F Norway - North Sea: true
-      F Norway - North Sea: true
+      F Skagerrak Supports F Norway - North Sea: [true, success]
+      F Norway - North Sea: [true, success]
 # Both the fleet in the North Sea and the fleet in Norway move.
 
 - testCaseID: 6.E.10  # 6.E.10. TEST CASE, ALMOST CIRCULAR MOVEMENT WITH NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON
@@ -1414,15 +1302,15 @@
   orders:
 # Similar to the previous test case, but now the beleaguered fleet is in circular movement with the weaker attacker. So, the circular movement fails.
     England:
-      F North Sea - Denmark: false
-      F Yorkshire Supports F Norway - North Sea: false
+      F North Sea - Denmark: [false, fail]
+      F Yorkshire Supports F Norway - North Sea: [false, fail]
     Germany:
-      F Holland Supports F Helgoland Bight - North Sea: false
-      F Helgoland Bight - North Sea: false
-      F Denmark - Helgoland Bight: false
+      F Holland Supports F Helgoland Bight - North Sea: [false, fail]
+      F Helgoland Bight - North Sea: [false, fail]
+      F Denmark - Helgoland Bight: [false, fail]
     Russia:
-      F Skagerrak Supports F Norway - North Sea: false
-      F Norway - North Sea: false
+      F Skagerrak Supports F Norway - North Sea: [false, fail]
+      F Norway - North Sea: [false, fail]
 # There is no movement of fleets.
 
 - testCaseID: 6.E.11  # 6.E.11. TEST CASE, NO SELF DISLODGEMENT WITH BELEAGUERED GARRISON, UNIT SWAP WITH ADJACENT CONVOYING AND TWO COASTS
@@ -1431,15 +1319,15 @@
   orders:
 # Similar to the previous test case, but now the beleaguered fleet is in a unit swap with the stronger attacker. So, the unit swap succeeds. To make the situation more complex, the swap is on an area with two coasts.
     France:
-      A Spain - Portugal via Convoy: true
-      F Mid-Atlantic Ocean Convoys A Spain - Portugal: true
-      F Gulf of Lyon Supports F Portugal - Spain(nc): true
+      A Spain - Portugal via Convoy: [true, success]
+      F Mid-Atlantic Ocean Convoys A Spain - Portugal: [true, success]
+      F Gulf of Lyon Supports F Portugal - Spain(nc): [true, success]
     Germany:
-      A Marseilles Supports A Gascony - Spain: false
-      A Gascony - Spain: false
+      A Marseilles Supports A Gascony - Spain: [false, fail]
+      A Gascony - Spain: [false, fail]
     Italy:
-      F Portugal - Spain(nc): true
-      F Western Mediterranean Supports F Portugal - Spain(nc): true
+      F Portugal - Spain(nc): [true, success]
+      F Western Mediterranean Supports F Portugal - Spain(nc): [true, success]
 # The unit swap succeeds. Note that due to the success of the swap, there is no beleaguered garrison anymore.
 
 - testCaseID: 6.E.12  # 6.E.12. TEST CASE, SUPPORT ON ATTACK ON OWN UNIT CAN BE USED FOR OTHER MEANS
@@ -1448,13 +1336,13 @@
   orders:
 # A support on an attack on your own unit has still effect. It can prevent that another army will dislodge the unit.
     Austria:
-      A Budapest - Rumania: false
-      A Serbia Supports A Vienna - Budapest: false
+      A Budapest - Rumania: [false, fail]
+      A Serbia Supports A Vienna - Budapest: [false, fail]
     Italy:
-      A Vienna - Budapest: false
+      A Vienna - Budapest: [false, fail]
     Russia:
-      A Galicia - Budapest: false
-      A Rumania Supports A Galicia - Budapest: false
+      A Galicia - Budapest: [false, fail]
+      A Rumania Supports A Galicia - Budapest: [false, fail]
 # The support of Serbia on the Italian army prevents that the Russian army in Galicia will advance. No army will move.
 
 - testCaseID: 6.E.13  # 6.E.13. TEST CASE, THREE WAY BELEAGUERED GARRISON
@@ -1463,16 +1351,16 @@
   orders:
 # In a beleaguered garrison from three sides, the adjudicator may not let two attacks fail and then let the third succeed.
     England:
-      F Edinburgh Supports F Yorkshire - North Sea: false
-      F Yorkshire - North Sea: false
+      F Edinburgh Supports F Yorkshire - North Sea: [false, fail]
+      F Yorkshire - North Sea: [false, fail]
     France:
-      F Belgium - North Sea: false
-      F English Channel Supports F Belgium - North Sea: false
+      F Belgium - North Sea: [false, fail]
+      F English Channel Supports F Belgium - North Sea: [false, fail]
     Germany:
-      F North Sea Hold: false
+      F North Sea Hold: [false, fail]
     Russia:
-      F Norwegian Sea - North Sea: false
-      F Norway Supports F Norwegian Sea - North Sea: false
+      F Norwegian Sea - North Sea: [false, fail]
+      F Norway Supports F Norwegian Sea - North Sea: [false, fail]
 # None of the fleets move. The German fleet in the North Sea is not dislodged.
 
 - testCaseID: 6.E.14  # 6.E.14. TEST CASE, ILLEGAL HEAD TO HEAD BATTLE CAN STILL DEFEND
@@ -1481,9 +1369,9 @@
   orders:
 # If in a head to head battle, one of the units makes an illegal move, than that unit has still the possibility to defend against attacks with strength of one.
     England:
-      A Liverpool - Edinburgh: false
+      A Liverpool - Edinburgh: [false, fail]
     Russia:
-      F Edinburgh - Liverpool: false
+      F Edinburgh - Liverpool: [false, fail]
 # The move of the Russian fleet is illegal, but can still prevent the English army to enter Edinburgh. So, none of the units move.
 
 - testCaseID: 6.E.15  # 6.E.15. TEST CASE, THE FRIENDLY HEAD TO HEAD BATTLE
@@ -1492,19 +1380,19 @@
   orders:
 # In this case both units in the head to head battle prevent that the other one is dislodged.
     England:
-      F Holland Supports A Ruhr - Kiel: false
-      A Ruhr - Kiel: false
+      F Holland Supports A Ruhr - Kiel: [false, fail]
+      A Ruhr - Kiel: [false, fail]
     France:
-      A Kiel - Berlin: false
-      A Munich Supports A Kiel - Berlin: false
-      A Silesia Supports A Kiel - Berlin: false
+      A Kiel - Berlin: [false, fail]
+      A Munich Supports A Kiel - Berlin: [false, fail]
+      A Silesia Supports A Kiel - Berlin: [false, fail]
     Germany:
-      A Berlin - Kiel: false
-      F Denmark Supports A Berlin - Kiel: false
-      F Helgoland Bight Supports A Berlin - Kiel: false
+      A Berlin - Kiel: [false, fail]
+      F Denmark Supports A Berlin - Kiel: [false, fail]
+      F Helgoland Bight Supports A Berlin - Kiel: [false, fail]
     Russia:
-      F Baltic Sea Supports A Prussia - Berlin: false
-      A Prussia - Berlin: false
+      F Baltic Sea Supports A Prussia - Berlin: [false, fail]
+      A Prussia - Berlin: [false, fail]
 # None of the moves succeeds. This case is especially difficult for sequence based adjudicators. They will start adjudicating the head to head battle and continue to adjudicate the attack on one of the units part of the head to head battle. In this process, one of the sides of the head to head battle might be cancelled out. This happens in the DPTG. If this is adjudicated according to the DPTG, the unit in Ruhr or in Prussia will advance (depending on the order the units are adjudicated). This is clearly a bug in the DPTG.
 
 ## 6.F. TEST CASES, CONVOYS

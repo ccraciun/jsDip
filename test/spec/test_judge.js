@@ -35,7 +35,8 @@ var Defs = require('../../app/scripts/models/defs');
                     for (var orderStr in doc[testNum].orders[power]) {
                         var order = Order.fromString(orderStr);
                         order.owner = power;
-                        order.test_expectedSucceeds = doc[testNum].orders[power][orderStr];
+                        console.log(doc[testNum].orders[power][orderStr]);
+                        order.test_expectedSucceeds = doc[testNum].orders[power][orderStr][0];
                         orders.push(order);
                     }
                 }
