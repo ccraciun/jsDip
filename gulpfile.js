@@ -10,6 +10,7 @@ var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 
 var browserify = require('browserify');
+
 var source = require('vinyl-source-stream');
 
 
@@ -17,9 +18,9 @@ gulp.task('browserify', function () {
   // TODO(rkofman): Remove source maps unless in DEV
   return browserify(
     {
-     entries: ['./app/scripts/application.coffee'],
-     extensions: ['.coffee', '.hbs'],
-     debug: true
+      entries: ['./app/scripts/application.coffee'],
+      extensions: ['.coffee', '.hbs'],
+      debug: true
     })
     .bundle() // generates source maps.
     .pipe(source('application.js'))
@@ -136,7 +137,8 @@ gulp.task('watch', ['connect'], function () {
   gulp.watch([
     'app/*.html',
     'tmp/styles/**/*.css',
-    '{tmp,app}/scripts/**/*.js',
+    'app/data/**/*',
+    '{tmp,app}/scripts/**/*.{js,hbs}',
     'app/images/**/*'
   ]).on('change', plugins.livereload.changed);
 
@@ -154,6 +156,7 @@ gulp.task('default', ['clean'], function () {
 });
 
 gulp.task('test', function () {
-    return gulp.src('test/spec/*.js', {read: false})
-        .pipe(plugins.mocha({reporter: 'spec'}));
+  require('coffee-script/register')
+  return gulp.src('test/spec/**/*.coffee', {read: false})
+    .pipe(plugins.mocha({reporter: 'spec'}));
 });
