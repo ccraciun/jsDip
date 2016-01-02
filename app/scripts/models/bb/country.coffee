@@ -13,9 +13,9 @@ Collections = {
 module.exports = class Country extends backbone.Model
   # Attributes:
   #   - name: String, the name of the country.
-  #   - provinces: A collection of provinces owned by this country.
-  #   - units: A collection fleets and armies owned by this country.
-  #   - orders: The current collection of orders entered for this country.
+  #   - provinces: A Collection of provinces owned by this country.
+  #   - units: A Collection fleets and armies owned by this country.
+  #   - orders: The current Collection of orders entered for this country.
 
   idAttribute: "name"
 
@@ -48,13 +48,7 @@ module.exports = class Country extends backbone.Model
   _vivifyUnit: (type, provinceName, allProvinces) ->
     attrs = {
       type: type
-      province: provinceName
-    }
-    options = {
-      allProvinces: allProvinces
+      province: allProvinces[provinceName]
       owner: @
-      parse: true
     }
     new Models.Unit(attrs, options)
-
-

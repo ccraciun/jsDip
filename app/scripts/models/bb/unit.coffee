@@ -2,9 +2,7 @@ backbone = require 'backbone'
 _ = require 'underscore'
 
 module.exports = class Unit extends backbone.Model
-  parse: (data, options) ->
-    _(super).tap (attrs) =>
-      attrs.owner = options.owner
-      attrs.province = options.allProvinces.get(attrs.province)
-      throw "Bad data encountered." unless attrs.province
-      attrs.province.set('unit', @)
+  # Expected attributes:
+  #   type: 'fleet' / 'army'
+  #   province: vivified Province model
+  #   owner: vivified Country model
