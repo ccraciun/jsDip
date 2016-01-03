@@ -7,7 +7,7 @@ Models = {
   }
 }
 
-module.exports = class RetreatOrders extends BaseOrdersFactory
+module.exports = class RetreatOrdersFactory extends BaseOrdersFactory
   actionableProvinces: ->
     @get('country').get('units').where(disloged: true).map (unit) ->
       unit.get('province')

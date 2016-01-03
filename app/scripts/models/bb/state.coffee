@@ -44,4 +44,3 @@ module.exports = class State extends backbone.Model
     orderFactory = Models.OrderFactories[@get('phase')]
     throw "Can't parse phase." unless orderFactory
     @set('ordersFactory', new orderFactory(country: country))
-

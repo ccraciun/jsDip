@@ -1,17 +1,20 @@
 BaseOrdersFactory = require './base'
 
-Models = {
-  Orders: {
-    Hold: require '../orders/hold'
-    Move: require '../orders/move'
-    Support: require '../orders/support'
-    Convoy: require '../orders/convoy'
-  }
-}
+OrderClasses = [
+  # order == display order in UI.
+  require '../orders/move'
+  require '../orders/hold'
+  require '../orders/support'
+  require '../orders/convoy'
+]
 
-module.exports = class MovementOrders extends BaseOrdersFactory
+module.exports = class MovementOrdersFactory extends BaseOrdersFactory
+  orderClasses: OrderClasses
+
   initialize: ->
     @provinces = []
+    @orders = []
+    @currentOrder = null
 
   actionableProvinces: ->
     @get('country').get('units').map (unit) ->

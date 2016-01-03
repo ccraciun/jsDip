@@ -97,8 +97,11 @@ module.exports = class Map extends Views.Base
 
   initOrderTypePicker: (e) ->
     console.log "TODO(rkofman): Need to create a popup for picking type."
-    actionMenu = new Views.ActionMenu()
+    actionMenu = new Views.ActionMenu(
+      @ordersFactory.orderClasses
+    )
     actionMenu.render()
+    @listenTo(actionMenu, 'select', (orderClass) -> console.log orderClass)
     actionMenu.show(e.pageX, e.pageY)
 
   ## Model events

@@ -1,14 +1,10 @@
 $ = require 'jquery'
+_ = require 'underscore'
 Views = {
   Base: require './base'
 }
 template = require '../templates/action_menu.hbs'
 
-# Note, this is a work in progress. Click-action handling
-# on the menu isn't done yet. Ideally, the menu will listen to
-# clicks on its links -- and publish an event to interested
-# subscribers.
-#
 # How to use me:
 #   actionMenu = new ActionMenu(arrayOforderTypes)
 #   actionMenu.render()
@@ -22,11 +18,18 @@ module.exports = class ActionMenu extends Views.Base
     'click .order-type': 'onOrderTypeSelect'
   }
 
+  initialize: (@orderClasses) ->
+
   onOrderTypeSelect: (e) ->
-    console.log "order selected: ", e
+    type = $(e.currentTarget).data('orderType')
+    orderClass = _(@orderClasses).find (type: type)
+    @trigger('select', orderClass)
+    @remove()
 
   toJSON: ->
-    orderTypes: @types
+    orderClasses: _(@orderClasses).map (orderClass) ->
+      type: orderClass.type
+      displayName: orderClass.displayName
 
   render: ->
     super

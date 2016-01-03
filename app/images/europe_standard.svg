@@ -22,8 +22,11 @@ Created for Diplomap (http://www.games2relax.net/diplomap/)
 <marker id="move" orient="auto" markerwidth="2" markerHeight="4" refX="0.1" refY="2">
     <path d="M0,0 V4 L2,2 Z" fill="black"/>
 </marker>
-<marker id="support" orient="auto" markerwidth="1.5" markerHeight="3" refX="0.1" refY="1.5">
+<!-- <marker id="support" orient="auto" markerwidth="1.5" markerHeight="3" refX="0.1" refY="1.5">
     <path d="M0,0 V3 L1.5,1.5 Z" fill="green"/>
+</marker>
+ --> <marker id="support" orient="auto" refX="9" refY="4" markerUnits="strokeWidth" markerWidth="10" markerHeight="10">
+    <line x1="1" y1="0" x2="1" y2="8" class="support"/>
 </marker>
 <marker id="convoy" orient="auto" markerwidth="1.5" markerHeight="3" refX="0.1" refY="1.5">
     <path d="M0,0 V3 L1.5,1.5 Z" fill="blue"/>
@@ -359,5 +362,7 @@ Created for Diplomap (http://www.games2relax.net/diplomap/)
 </g>
 <g id="SupplyCenters"></g>
 <g id="Units"></g>
-<g id="Orders"></g>
+<g id="Orders">
+    <path xmlns="http://www.w3.org/2000/svg" id="353,378" class="support" d="M353,378 Q351,438 305,412" marker-end="url(#S)"></path>
+</g>
 </svg>

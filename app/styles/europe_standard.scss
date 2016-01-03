@@ -112,19 +112,45 @@ text {
 
 // #ForcesLayer.accepting .force:hover 	{stroke:gray}
 
-// #OrdersLayer .order.move {fill:none; stroke:black; stroke-width:3; marker-end:url(#move)}
-// #OrdersLayer .order.support {fill:none; stroke:green; stroke-width:3; marker-end:url(#support)}
-// #OrdersLayer .order.convoy {fill:none; stroke:blue; stroke-width:3; marker-end:url(#convoy)}
-// #OrdersLayer .order.hold {fill:none; stroke:black; stroke-width:3; marker-end:url(#hold)}
-// #OrdersLayer .order.fail {marker-mid:url(#fail)}
+marker      {
+  .support { stroke: #007700; }
+  stroke-width:1.5; stroke-linejoin:round;
+}
+#Orders {
+  fill:none;
+  opacity: .6;
+  stroke-width:2;
 
-// #OrdersLayer .Austria .force 	{ fill: $austria-color; stroke:black; opacity:.5; }
-// #OrdersLayer .England .force 	{ fill: $england-color; stroke:black; opacity:.5; }
-// #OrdersLayer .France .force  	{ fill: $france-color; stroke:black; opacity:.5; }
-// #OrdersLayer .Germany .force 	{ fill: $germany-color; stroke:black; opacity:.5; }
-// #OrdersLayer .Italy .force   	{ fill: $italy-color; stroke:black; opacity:.5; }
-// #OrdersLayer .Russia .force  	{ fill: $russia-color; stroke:black; opacity:.5; }
-// #OrdersLayer .Turkey .force  	{ fill: $turkey-color; stroke:black; opacity:.5; }
+  .move {
+    stroke:black;
+    marker-end:url(#move);
+  }
+  .support {
+    stroke:#007700;
+    marker-end: url(#support);
+    stroke-dasharray: 1;
+  }
+  .convoy {
+    stroke:blue;
+    marker-end:url(#convoy);
+    stroke-dasharray: 1;
+  }
+  .hold {
+    stroke:black;
+    marker-end:url(#hold);
+  }
+  .fail {
+    marker-mid:url(#fail);
+  }
+}
+
+// #Orders .Austria .force 	{ fill: $austria-color; stroke:black; opacity:.5; }
+// #Orders .England .force 	{ fill: $england-color; stroke:black; opacity:.5; }
+// #Orders .France .force  	{ fill: $france-color; stroke:black; opacity:.5; }
+// #Orders .Germany .force 	{ fill: $germany-color; stroke:black; opacity:.5; }
+// #Orders .Italy .force   	{ fill: $italy-color; stroke:black; opacity:.5; }
+// #Orders .Russia .force  	{ fill: $russia-color; stroke:black; opacity:.5; }
+// #Orders .Turkey .force  	{ fill: $turkey-color; stroke:black; opacity:.5; }
 
 // .message.Austria    { color: $austria-color }
 // .message.England    { color: $england-color; }

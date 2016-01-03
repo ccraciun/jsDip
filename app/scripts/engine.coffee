@@ -45,7 +45,6 @@ module.exports = class DipEngine
     console.log "deferring loadMap"
     deferred = new jQuery.Deferred()
 
-
     @dipMap.loadMapFromUrl mapSvgUrl
     deferred.promise()
 
