@@ -8,25 +8,20 @@ Models = {
 describe 'Models.Orders', ->
   describe '#parse', ->
     describe 'Hold orders', ->
-      Hold = Models.Orders.Hold; # less repetetive text entry
+      Hold = Models.Orders.Hold; # less repetitive text entry
       describe 'with bad inputs,', ->
         describe 'not ending with Hold:', ->
-          nonHoldOrders = [
-            'A Marseilles - Gascony'
-            'A Burgundy SUPPORT A Marseilles - Gascony'
-            'F North Sea CONVOY A Yorkshire - Norway'
-            'A Yorkshire - Norway'
-          ]
-          _(nonHoldOrders).each (orderText) ->
-            describe orderText, ->
-              it "should raise syntax exception", ->
-                expect(() -> new Hold(orderText, parse: true)).to.throw(Error)
-                expect(() -> new Hold(orderText, parse: true)).to.throw(/Can't parse order text/)
+          orderText = 'A Marseilles - Gascony'
+          describe orderText, ->
+            it "should raise syntax exception", ->
+              expect(() -> new Hold(orderText, parse: true)).to.throw(Error)
+              expect(() -> new Hold(orderText, parse: true)).to.throw(/Can't parse order text/)
         describe 'not starting with "A" or "F"', ->
-          it "should raise syntax exception", ->
-            orderText = "Yorkshire Hold"
-            expect(() -> new Hold(orderText, parse: true)).to.throw(Error)
-            expect(() -> new Hold(orderText, parse: true)).to.throw(/Can't parse order text/)
+          orderText = 'Yorkshire Hold'
+          describe orderText, ->
+            it "should raise syntax exception", ->
+              expect(() -> new Hold(orderText, parse: true)).to.throw(Error)
+              expect(() -> new Hold(orderText, parse: true)).to.throw(/Can't parse order text/)
 
       describe 'with good input', ->
         orderText = 'A Burgundy Hold'
