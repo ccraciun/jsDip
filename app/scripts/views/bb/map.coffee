@@ -1,5 +1,5 @@
 backbone = require 'backbone'
-$ = require 'jQuery'
+$ = require 'jquery'
 Snap = require 'snap.svg'
 
 Collections = {

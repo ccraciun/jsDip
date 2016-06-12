@@ -2,7 +2,7 @@ Views = {
   Base: require './base'
 }
 _ = require 'underscore'
-$ = require 'jQuery'
+$ = require 'jquery'
 
 module.exports = class BaseSvgView extends Views.Base
   nameSpace: "http://www.w3.org/2000/svg"

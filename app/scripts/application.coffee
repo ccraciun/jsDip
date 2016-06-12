@@ -1,7 +1,7 @@
 Views = {
   Game: require('./views/bb/game')
 }
-$ = require('jQuery')
+$ = require('jquery')
 
 
 bootstrap = ->
