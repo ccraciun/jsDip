@@ -1,35 +1,42 @@
-_ = require('underscore')
+_ = require 'underscore'
+Backbone = require 'backbone'
 expect = require('chai').expect
 Models = {
   Orders:
-    Hold: require('../../../../app/scripts/models/bb/orders/Hold')
+    Hold: require('../../../../app/scripts/models/bb/orders/hold')
+  Province: require('../../../../app/scripts/models/bb/province')
 }
 
-describe 'Models.Orders', ->
-  describe '#parse', ->
-    describe 'Hold orders', ->
-      Hold = Models.Orders.Hold; # less repetitive text entry
+Hold = Models.Orders.Hold; # less repetitive text entry
+
+describe 'Models.Orders.Hold', ->
+  describe 'with a collection of Provinces to parse against', ->
+    province1 = new Models.Province({name: 'Province 1'})
+    province2 = new Models.Province({name: 'Province 2'})
+    provinces = new Backbone.Collection([province1, province2], model: Models.Province)
+
+    describe '#parse', ->
+      describe 'with good input', ->
+        orderText = 'A Province 1 Hold'
+        order = new Hold(orderText, parse: true, provinces: provinces)
+
+        it "should successfully parse order", ->
+          expect(order.provinceName()).to.equal('Province 1')
+          expect(order.unitType()).to.equal('A')
+
+        it "should successfully re-serialize the order", ->
+          expect(order.toJSON()).to.equal(orderText)
+
       describe 'with bad inputs,', ->
         describe 'not ending with Hold:', ->
-          orderText = 'A Marseilles - Gascony'
+          orderText = 'A Province 1 - Province 2'
           describe orderText, ->
             it "should raise syntax exception", ->
-              expect(() -> new Hold(orderText, parse: true)).to.throw(Error)
+              expect(() -> new Hold(orderText, parse: true, provinces: provinces)).to.throw(Error)
               expect(() -> new Hold(orderText, parse: true)).to.throw(/Can't parse order text/)
         describe 'not starting with "A" or "F"', ->
-          orderText = 'Yorkshire Hold'
+          orderText = 'Province 1 Hold'
           describe orderText, ->
             it "should raise syntax exception", ->
-              expect(() -> new Hold(orderText, parse: true)).to.throw(Error)
-              expect(() -> new Hold(orderText, parse: true)).to.throw(/Can't parse order text/)
-
-      describe 'with good input', ->
-        orderText = 'A Burgundy Hold'
-        it "should successfully parse order", ->
-          expect(() -> new Hold(orderText, parse: true)).to.not.throw(Error)
-
-        it "should successfully parse the Unit being ordered", ->
-          # # TODO(rkofman) this should include army type + province.
-          # Should probably also test for mismatch of type + location in current state.
-
-
+              expect(() -> new Hold(orderText, parse: true, provinces: provinces)).to.throw(Error)
+              expect(() -> new Hold(orderText, parse: true, provinces: provinces)).to.throw(/Can't parse order text/)
