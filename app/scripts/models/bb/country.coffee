@@ -51,4 +51,4 @@ module.exports = class Country extends backbone.Model
       province: allProvinces[provinceName]
       owner: @
     }
-    new Models.Unit(attrs, options)
+    new Models.Unit(attrs)
