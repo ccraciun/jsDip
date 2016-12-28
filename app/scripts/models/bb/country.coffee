@@ -48,7 +48,7 @@ module.exports = class Country extends backbone.Model
   _vivifyUnit: (type, provinceName, allProvinces) ->
     attrs = {
       type: type
-      province: allProvinces[provinceName]
+      province: allProvinces.get(provinceName)
       owner: @
     }
     new Models.Unit(attrs)

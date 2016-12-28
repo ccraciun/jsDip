@@ -2,7 +2,7 @@ BaseOrdersFactory = require './base'
 
 Models = {
   Orders: {
-    Retreat: require '../orders/retreat'
+    Move: require '../orders/move'
     Disband: require '../orders/disband'
   }
 }
