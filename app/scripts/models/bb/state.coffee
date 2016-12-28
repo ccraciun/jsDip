@@ -14,9 +14,6 @@ Models = {
 }
 
 module.exports = class State extends backbone.Model
-  initialize: (attrs, options) ->
-    super
-
   parse: (data, options) ->
     _(super).tap (attrs) =>
       countries = _(attrs.countries).map (val, key) =>

@@ -8,13 +8,9 @@ Views = {
   Header: require './header'
 }
 Models = {
-  GameDefinition: require '../../models/bb/game_definition'
-  Map: require '../../models/bb/map'
   Game: require '../../models/bb/game'
 }
-Collections = {
-  Provinces: require '../../collections/provinces'
-}
+
 Data = {
   Base: {
     gameDefinition: require '../../../data/game_definition.json'

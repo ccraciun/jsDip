@@ -16,8 +16,9 @@ describe 'Models.Orders.Hold', ->
     provinces = new Backbone.Collection([province1, province2], model: Models.Province)
 
     describe '#parse', ->
-      describe 'with good input', ->
-        orderText = 'A Province 1 Hold'
+      canonicalOrderText = 'A Province 1 Hold'
+      context 'with canonical input', ->
+        orderText = canonicalOrderText
         order = new Hold(orderText, parse: true, provinces: provinces)
 
         it "should successfully parse order", ->
@@ -25,7 +26,20 @@ describe 'Models.Orders.Hold', ->
           expect(order.unitType()).to.equal('A')
 
         it "should successfully re-serialize the order", ->
-          expect(order.toJSON()).to.equal(orderText)
+          expect(order.toJSON()).to.equal(canonicalOrderText)
+
+        context 'with alternative order inputs', ->
+          alternativeOrderTexts = [
+            'A Province 1 h'
+            'A Province 1 H'
+            'A Province 1 hold'
+            'A Province 1 HOLD'
+          ]
+          it "should successfully parse orders", ->
+            orders = (new Hold(orderText, parse: true, provinces:provinces) for orderText in alternativeOrderTexts)
+            for order in orders
+              expect(order.provinceName()).to.equal('Province 1')
+              expect(order.unitType()).to.equal('A')
 
       describe 'with bad inputs,', ->
         describe 'not ending with Hold:', ->
