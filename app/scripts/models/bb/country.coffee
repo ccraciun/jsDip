@@ -51,4 +51,6 @@ module.exports = class Country extends backbone.Model
       province: allProvinces.get(provinceName)
       owner: @
     }
-    new Models.Unit(attrs)
+    unit = new Models.Unit(attrs)
+    unit.get('province').set('unit', unit)
+    unit
