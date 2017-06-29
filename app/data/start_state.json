@@ -13,7 +13,7 @@
             "armies": ["Liverpool"],
             "fleets": ["London", "Edinburgh"],
             "provinces": ["Edinburgh", "Liverpool", "London", "Yorkshire", "Wales", "Clyde"],
-            "orders": []
+            "orders": ["F Edinburgh -> North Sea"]
         },
         "France": {
             "armies": ["Paris", "Marseilles"],

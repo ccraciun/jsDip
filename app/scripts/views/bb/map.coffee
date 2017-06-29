@@ -37,8 +37,8 @@ module.exports = class Map extends Views.Base
     @initOrderEntry() # should depend on current State Machine.
 
   initOrderEntry: ->
-    @listenTo(@state, 'change:ordersFactory', @onOrdersFactoryChange)
-    @onOrdersFactoryChange(@state, @state.get('ordersFactory')) if @state.get('ordersFactory')
+    @listenTo(@state, 'change:ordersFactory', @onChangedOrdersFactory)
+    @onChangedOrdersFactory(@state, @state.get('ordersFactory')) if @state.get('ordersFactory')
 
 
   render: (svgData=null) ->
@@ -91,27 +91,31 @@ module.exports = class Map extends Views.Base
   onActionableClick: (e) ->
     provinceName = Snap(e.currentTarget).attr('data-province')
     province = @model.get('provinces').get(provinceName)
-    @ordersFactory.push province # needs implementation.
-    unless @ordersFactory.currentOrder
+    unless @ordersFactory.hasOrderUnderConstruction()
       @initOrderTypePicker(e)
+    @ordersFactory.pushProvince province # needs implementation.
 
   initOrderTypePicker: (e) ->
-    console.log "TODO(rkofman): Need to create a popup for picking type."
     actionMenu = new Views.ActionMenu(
       @ordersFactory.orderClasses
     )
     actionMenu.render()
-    @listenTo(actionMenu, 'select', (orderClass) -> console.log orderClass)
+    @listenTo(actionMenu, 'select', (orderClass) -> @ordersFactory.pushOrderClass(orderClass))
     actionMenu.show(e.pageX, e.pageY)
 
   ## Model events
-  onOrdersFactoryChange: (state, ordersFactory) ->
+  onChangedOrdersFactory: (state, ordersFactory) ->
     console.log "new orders factory: ", ordersFactory
     previousFactory = state.previous('ordersFactory')
     @stopListening(previousFactory) if previousFactory
 
     @ordersFactory = ordersFactory
-    @setActionableProvinces ordersFactory.actionableProvinces()
+    @listenTo(@ordersFactory, 'change:actionableProvinces', @onOrdersFactoryActionableChanged)
+    @updateActionableProvinces()
+
+  onOrdersFactoryActionableChanged: ->
+    @updateActionableProvinces()
+
 
   onProvinceHover: (province, isHovered) ->
     svgEl = @getSvgProvince(province)
@@ -129,10 +133,11 @@ module.exports = class Map extends Views.Base
     Snap.selectAll(".actionable")?.forEach (svgEl) ->
       svgEl.removeClass('actionable')
 
-  setActionableProvinces: (provinces) ->
+  updateActionableProvinces: () ->
     @removeHover()
     @removeActionable()
-    _(provinces).each (province) =>
+    provinces = @ordersFactory.get('actionableProvinces')
+    provinces.each (province) =>
       name = province.get('name')
       Snap.selectAll("[data-province='#{name}']").forEach (svgEl) ->
         svgEl.addClass('actionable', true)

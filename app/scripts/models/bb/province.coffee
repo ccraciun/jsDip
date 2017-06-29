@@ -19,9 +19,15 @@ module.exports = class Province extends backbone.Model
   initAdjacencyLinks: ->
     vivifiedAdjacencies = {}
     for type, modelNames of @get('adjacent')
-      # type is 'A' or 'F'
+      # type is 'A' or 'F'. Shoreline provinces will appear in both. 
       vivifiedAdjacencies[type] = @_vivifyProvinces modelNames
     @set('adjacent', vivifiedAdjacencies, silent: true)
+
+  getAdjacentForArmies: ->
+    @get('adjacent')['A']
+
+  getAdjacentForFleets: ->
+    @get('adjacent')['F']
 
   htmlId: ->
     @get('name').replace(/\s/g, "_").replace(/\(/g, "_").replace(/\)/g, "");

@@ -11,11 +11,6 @@ bootstrap = ->
     #game = new Views.Game() # args here
     #game.render()
 
-    ## useful for ease of debugging.
-    #window.$ = $
-    #window._ = require('underscore')
-    #window.game = game
-
 # bootstrap()
 
 bootstrap_playground = ->
@@ -30,4 +25,3 @@ bootstrap_playground = ->
     window._ = require('underscore')
     window.game = game
 bootstrap_playground()
-

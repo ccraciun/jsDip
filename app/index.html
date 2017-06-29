@@ -12,20 +12,21 @@
     <!-- endbuild -->
   </head>
   <body>
+    <div id="header">
+        <span class="turn"></span>,
+        <span class="phase"></span>
+        <select class="country-selector"></select>
+    </div>
     <div class="main-content">
-        <div id="header">
-            <span class="turn"></span>,
-            <span class="phase"></span>
-            <select class="country-selector"></select>
-        </div>
         <div id="map"></div>
+        <div id="sidebar"></div>
     </div>
 
     <div class="footer">
         <strong>jsDip GUI Sandbox</strong> | <a href="https://github.com/ccraciun/jsDip">https://github.com/ccraciun/jsDip</a> &nbsp;
     </div>
-        <!-- build:js scripts/main.js -->
-        <script src="scripts/application.js"></script>
-        <!-- endbuild -->
+    <!-- build:js scripts/main.js -->
+    <script src="scripts/application.js"></script>
+    <!-- endbuild -->
 </body>
 </html>

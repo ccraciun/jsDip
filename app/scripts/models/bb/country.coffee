@@ -43,7 +43,7 @@ module.exports = class Country extends backbone.Model
     delete attrs.armies
 
   _parseOrders: (attrs, options) ->
-    attrs.orders = new Collections.Orders(attrs.orders, parse: true)
+    attrs.orders = new Collections.Orders(attrs.orders, allProvinces: options.allProvinces, parse: true)
 
   _vivifyUnit: (type, provinceName, allProvinces) ->
     attrs = {

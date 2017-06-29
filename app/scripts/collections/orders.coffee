@@ -1,8 +1,11 @@
 backbone = require 'backbone'
 
+Models = {
+  Orders: require('../models/bb/orders')
+}
+
 module.exports = class OrdersBase extends backbone.Collection
 
   model: (attrs, options) ->
-    # TODO(rkofman): Parse order-type here, and build correct order?
-    # Otherwise, pass the responsibility to some other actor.
-    # Perhaps, a function in the models/bb/orders module?
+    parser = Models.Orders.getParser(options.allProvinces)
+    parser.parse attrs

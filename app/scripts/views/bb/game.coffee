@@ -6,6 +6,7 @@ Views = {
   Base: require './base'
   Map: require './map'
   Header: require './header'
+  OrderPane: require './order_pane'
 }
 Models = {
   Game: require '../../models/bb/game'
@@ -34,6 +35,8 @@ module.exports = class DiplomacyGame extends Views.Base
     @subViews = {
       map: new Views.Map(model: @model, svgData: svgData)
       header: new Views.Header(model: @model.get('state'))
+      orderPane: new Views.OrderPane(model: @model.get('state'))
     }
     @subViews.map.render()
+    @subViews.orderPane.render()
     @subViews.header.render()
