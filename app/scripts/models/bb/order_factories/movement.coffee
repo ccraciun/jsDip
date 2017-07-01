@@ -39,9 +39,15 @@ module.exports = class MovementOrdersFactory extends BaseOrdersFactory
     @pendingProvince = null
 
   onConstructionComplete: ->
+    @dedupExisting(@orderUnderConstruction)
     @get('orders').push @orderUnderConstruction
     @orderUnderConstruction = null
     @pendingProvince = null # probably not necessary.
+
+  dedupExisting: (order) ->
+    dupe = @get('orders').where({province: order.get('province')})
+    @get('orders').remove(dupe)
+
 
   pushProvince: (province) ->
     if @orderUnderConstruction

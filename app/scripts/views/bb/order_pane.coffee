@@ -15,7 +15,6 @@ module.exports = class OrderPane extends Views.Base
     @redraw()
     super
 
-
   redraw: ->
     @collectionView?.remove()
     @collectionView = new Views.CollectionView(
