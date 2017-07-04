@@ -1,4 +1,4 @@
-﻿{
+{
     "year": 1901,
     "season": "Spring",
     "phase": "Movement",
@@ -10,17 +10,10 @@
             "orders": []
         },
         "England": {
-            "armies": ["Liverpool", "Yorkshire", "Norway", "Sweden"],
-            "fleets": ["London", "Edinburgh", "North Sea"],
+            "armies": ["Liverpool"],
+            "fleets": ["London", "Edinburgh"],
             "provinces": ["Edinburgh", "Liverpool", "London", "Yorkshire", "Wales", "Clyde"],
-            "orders": [
-                "F Edinburgh -> Norwegian Sea",
-                "A Sweden -> Finland",
-                "A Norway SUPPORTS A Sweden -> Finland",
-                "A Yorkshire -> Denmark",
-                "F North Sea CONVOYS A Yorkshire -> Denmark",
-                "A Liverpool HOLD"
-            ]
+            "orders": []
         },
         "France": {
             "armies": ["Paris", "Marseilles"],
