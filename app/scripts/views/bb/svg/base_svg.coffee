@@ -1,5 +1,5 @@
 Views = {
-  Base: require './base'
+  Base: require '../base'
 }
 _ = require 'underscore'
 $ = require 'jquery'
@@ -21,6 +21,7 @@ module.exports = class BaseSvgView extends Views.Base
 
   _setXlinkAttrs: ($el) ->
     for key, value of _.result(@, 'xlink')
+      #TODO (rkofman): remove debugger statement
       debugger unless $el
       $el[0].setAttributeNS(@xlinkNameSpace, key, value)
 

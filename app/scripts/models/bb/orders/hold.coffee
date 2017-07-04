@@ -7,10 +7,12 @@ module.exports = class MoveOrder extends OrderBase
     match = text.match(/([AF]) (.+?) (HOLD|H)/i) # case insensitive!
     throw new Error("Can't parse order text: `#{text}`") unless match
     @_unitType = match[1]
-    @province = provinces.get(match[2])
+    {
+      province: provinces.get(match[2])
+    }
 
   provinceName: () ->
-  	@province.get('name')
+  	@get('province').get('name')
 
   unitType: () ->
   	@_unitType

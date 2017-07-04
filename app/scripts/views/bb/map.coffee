@@ -7,9 +7,11 @@ Collections = {
 }
 Views = {
   Base: require './base'
-  SupplyCenter: require './supply_center'
-  Unit: require './unit'
+  SupplyCenter: require './svg/supply_center'
+  Unit: require './svg/unit'
+  OrdersList: require './svg/orders_list'
   ActionMenu: require './action_menu'
+
 }
 Data = {
   coords: require '../../../data/coords.json'
@@ -105,17 +107,21 @@ module.exports = class Map extends Views.Base
 
   ## Model events
   onChangedOrdersFactory: (state, ordersFactory) ->
-    console.log "new orders factory: ", ordersFactory
     previousFactory = state.previous('ordersFactory')
     @stopListening(previousFactory) if previousFactory
 
     @ordersFactory = ordersFactory
     @listenTo(@ordersFactory, 'change:actionableProvinces', @onOrdersFactoryActionableChanged)
     @updateActionableProvinces()
+    @resetOrdersList()
+
+  resetOrdersList: ->
+    @ordersListView?.remove()
+    @ordersListView = new Views.OrdersList el: @svgOrders, collection: @ordersFactory.get('orders')
+    @ordersListView.render()
 
   onOrdersFactoryActionableChanged: ->
     @updateActionableProvinces()
-
 
   onProvinceHover: (province, isHovered) ->
     svgEl = @getSvgProvince(province)
