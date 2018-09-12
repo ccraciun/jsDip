@@ -13,6 +13,8 @@ var browserify = require('browserify');
 
 var source = require('vinyl-source-stream');
 
+var sass = require('gulp-sass');
+
 
 gulp.task('browserify', function () {
   // TODO(rkofman): Remove source maps unless in DEV
@@ -30,10 +32,7 @@ gulp.task('browserify', function () {
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.scss')
     .pipe(plugins.plumber())
-    .pipe(plugins.rubySass({
-      style: 'expanded',
-      precision: 10
-    }))
+    .pipe(sass().on('error', sass.logError))
     .pipe(plugins.autoprefixer({browsers: ['last 1 version']}))
     .pipe(gulp.dest('tmp/styles'));
 });
