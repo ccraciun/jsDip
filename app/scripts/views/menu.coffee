@@ -1,5 +1,3 @@
-judge = window.judge
-
 module.exports = class Menu
   selector: '#menu'
   constructor: (map, state) ->
@@ -31,9 +29,9 @@ module.exports = class Menu
   clickEndPhase: (e) =>
     @clickDone()
     for power in @state.activePowers
-      console.log("#{power} is active but has no orders.") unless power in @turnOrders
+      console.log("#{power} is active but has no orders.") unless power of @turnOrders
       # WIP(ccraciun): Stuff here.
-      newState = judge(@state, @turnOrders);
+      newState = window.judge.judge(@state, @turnOrders);
       console.log(newState);
 
   deselectPowers: =>
