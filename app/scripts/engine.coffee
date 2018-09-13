@@ -42,7 +42,7 @@ module.exports = class DipEngine
 
     # TODO(ccraciun): Support loading jDip map data..
     $.getJSON(defsUrl).done((data) =>
-      globals.defs = new Defs(data) # not sure if correct, but unreaks some .js
+      window.defs = new Defs(data) # not sure if correct, but unreaks some .js
       @defs = data
       @dipMap.setDefs data
       console.log "done loadMap"

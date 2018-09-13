@@ -290,7 +290,7 @@ function DipMap(mapSelector) {
             var currentOrder = new Order();
 
             var finalizeOrder = function () {
-                var canonical = defs.canonical(currentOrder.org);
+                var canonical = window.defs.canonicalName(currentOrder.org);
                 orders[canonical] = currentOrder;
 
                 instanceDipMap.drawOrders(orders);
