@@ -20,23 +20,14 @@
   <body>
     <div id="main">
         <div id="menu">
-            <span id="controls">
-                <a href="#" class="menu-item done"><span>Done</span></a>
-                <span class="separator"> | </span>
-                <a href="#" class="menu-item resign"><span>Resign</span></a>
-                <span class="separator"> | </span>
-                <a href="#" class="menu-item end-phase"><span>End Phase</span></a>
-            </span>
-            <span id="powers">
-                Power
-            </span>
-        </div>
-        <svg id="map" viewbox="0 0 610 560"></svg>
-        <div id="map_interface">
             <div id="status">
                 <div id="date"></div>
                 <div id="messageBox"></div>
             </div>
+            <div id="powers" ></div>
+        </div>
+        <div id="map_interface">
+            <svg id="map" viewbox="0 0 610 560"></svg>
             <div id="map_actions">
                 <div id="movements">
                     <span>Action</span>
@@ -50,6 +41,13 @@
                     <a href="#" class="army resupply action">Army</a>
                     <a href="#" class="fleet resupply action">Fleet</a>
                     <a href="#" class="disband action">Disband</a>
+                </div>
+                <div id="controls">
+                    <a href="#" class="menu-item done">Done</a>
+                    <div class="phase-controls">
+                        <a href="#" class="menu-item resign">Resign</a>
+                        <a href="#" class="menu-item end-phase">End Phase</a>
+                    </div>
                 </div>
             </div>
         </div>

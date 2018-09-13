@@ -1,16 +1,16 @@
 module.exports = class Menu
-  selector: '#menu'
   constructor: (map, state) ->
     @state = state
     @map = map
-    @$el = $(@selector)
+    @$menuEl = $('#menu')
+    @$mapInterfaceEl = $('#map_interface')
     @listen()
     @turnOrders = {}
 
   listen: ->
-    @$el.find('.power').click @clickPower
-    @$el.find('.done').click @clickDone
-    @$el.find('.end-phase').click @clickEndPhase
+    @$menuEl.find('.power').click @clickPower
+    @$mapInterfaceEl.find('.done').click @clickDone
+    @$mapInterfaceEl.find('.end-phase').click @clickEndPhase
 
   clickPower: (evt) =>
     power = evt.target.textContent # TODO(rkofman): use a data-attribute.
@@ -20,6 +20,7 @@ module.exports = class Menu
     @selectPower(power)
 
   clickDone: (evt) =>
+    console.log('clicked done...');
     if @collectOrders
       @turnOrders[@selectedPower()] = @collectOrders()
       @collectOrders = null
@@ -35,14 +36,16 @@ module.exports = class Menu
       console.log(newState);
 
   deselectPowers: =>
-    @$el.find('.selected').removeClass('selected')
+    @$menuEl.find('.selected').removeClass('selected')
+    @$mapInterfaceEl[0].className = '';
 
   selectPower: (power) ->
     @deselectPowers()
-    @$el.find(".#{power.toLowerCase()}").addClass('selected');
+    @$menuEl.find(".#{power.toLowerCase()}").addClass('selected');
+    @$mapInterfaceEl[0].className = power.toLowerCase();
 
   selectedPower: ->
-    selected = @$el.find('.selected')[0].textContent # TODO(rkofman): use a data-attribute
+    selected = @$menuEl.find('.selected')[0].textContent # TODO(rkofman): use a data-attribute
 
   printOrders: (orders) ->
     console.log('Current turn orders:')
