@@ -38,6 +38,9 @@ module.exports = class Menu
   deselectPowers: =>
     @$menuEl.find('.selected').removeClass('selected')
     @$mapInterfaceEl[0].className = '';
+    for power in Object.keys(@turnOrders)
+        console.log('element and power:', power, @$menuEl.find('.' + power.toLowerCase()));
+        @$menuEl.find('.' + power.toLowerCase()).addClass('has-orders');
 
   selectPower: (power) ->
     @deselectPowers()

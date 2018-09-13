@@ -45,16 +45,23 @@
                 border-radius: 7px 7px 0px 0px;
                 text-shadow: 1px 1px 5px #000000;
                 margin: 0 1px;
-                corsor: pointer;
+                cursor: pointer;
+
+                &.has-orders {
+                    background-image: url(../images/check-circle-blk-bg.png);
+                    background-repeat: no-repeat;
+                    background-position: 95% 61%;
+                    background-size: 16px;
+                }
             }
 
-            .austria { background: red; }
-            .russia { background: darkgreen; }
-            .turkey { background: yellow; }
-            .france { background: #00FFFF; }
-            .england { background: blue; }
-            .germany { background: #808080; }
-            .italy { background: #00FF00; }
+            .austria { background-color: red; }
+            .russia { background-color: darkgreen; }
+            .turkey { background-color: yellow; }
+            .france { background-color: #00FFFF; }
+            .england { background-color: blue; }
+            .germany { background-color: #808080; }
+            .italy { background-color: #00FF00; }
         }
     }
 
