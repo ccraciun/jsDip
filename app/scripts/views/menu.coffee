@@ -40,7 +40,8 @@ module.exports = class Menu
     @$mapInterfaceEl[0].className = '';
     for power in Object.keys(@turnOrders)
         console.log('element and power:', power, @$menuEl.find('.' + power.toLowerCase()));
-        @$menuEl.find('.' + power.toLowerCase()).addClass('has-orders');
+        if Object.keys(@turnOrders[power]).length
+            @$menuEl.find('.' + power.toLowerCase()).addClass('has-orders');
 
   selectPower: (power) ->
     @deselectPowers()
