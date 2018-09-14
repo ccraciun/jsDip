@@ -33,7 +33,7 @@ module.exports = class DipEngine
 
   showTime: ->
     dateString = [@state.date.year, @state.date.season, @state.date.phase].join(" ")
-    $("#map_interface #status #date").text dateString
+    $("#menu #status #date").text dateString
 
   loadMap: (defsUrl, mapSvgUrl) =>
     # TODO(rkofman): just return the getJSON deferred object
@@ -60,8 +60,7 @@ module.exports = class DipEngine
     @showTime
     @dipMap.drawState @state
     for pow in @state.activePowers
-      $("<span class=\"separator\"> | </span>").appendTo $("#menu #powers")
-      $("<a href=\"#\" class=\"menu-item power " + pow.toLowerCase() + "\"><span>" + pow + "</span></a>").appendTo $("#menu #powers")
+      $("<a class=\"menu-item power " + pow.toLowerCase() + "\">" + pow + "</a>").appendTo $("#menu #powers")
 
   loadStateUrl: (stateUrl) =>
     # TODO(rkofman): just return the getJSON deferred object

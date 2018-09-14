@@ -2,95 +2,162 @@
 // endbower
 
 #main {
-    width: 100%;
-    height: 100%;
-}
 
-#map {
-    width: 80%;
-    height: 88%;
-}
-
-#menu #powers {
-    float: right;
-}
-
-.interf-btn span {
-    display: inline-block;
-    border-radius: 4px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border: 1px;
-    border-color: black;
-    margin-left: 2px;
-    margin-right: 2px;
-    border-style: solid;
-    padding-left: 1px;
-    padding-right: 1px;
-}
-
-.interf-btn.selected span {
-    background-color: #3194C6;
-    color: white;
-}
-
-.interf-btn.highlight span {
-    background-color: #CCCCFF;
-}
-
-#map_interface {
-    float: right;
-    width: 19%;
-    border: 1px;
-    border-color: black;
-}
-
-#map_interface #status {
-    background-color: #CCCCCC;
-    overflow: auto;
-}
-
-#map_interface #status #turn {
-    font-family: 'Times New Roman',serif;
-    font-size: 24px;
-}
-
-#map_actions {
-    font-family: arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-     > div {
-        width: 100%;
+    #menu {
         display: flex;
-        flex-direction: column;
-        margin-bottom: 10px;
-        align-items: center;
-        justify-content: center;
-         a {
+        justify-content: space-between;
+        padding: 10px 10px 0 10px;
+        align-items: flex-end;
+        background: linear-gradient(rgba(0,0,0,0.8), black);
+
+        #status {
             display: flex;
-            width: 100%;
-            flex: 1;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            border: solid 1px black;
-            border-radius: 7px;
-            padding: 5px 0;
-            margin: 2px;
+            justify-content: space-between;
 
-            &.highlight {
-                background-color: #CCCCFF;
-            }
-
-            &.selected {
-                background-color: #3194C6;
+            #date, #turn {
+                background: rgba(0,0,0,0.5);
+                font-family: 'Tahoma', sans-serif;
+                font-size: 18px;
+                color: white;
+                padding: 4px 12px;
             }
         }
+
+        #messageBox {
+            min-height: 14px;
+            overflow: hidden;
+            padding: 2px 25px 2px 2px;
+            margin-left: 12px;
+            .message {
+                font-family: 'Lucida Sans Unicode',monospace;
+                font-size: 12px;
+            }
+        }
+
+        #powers {
+            display: flex;
+
+            .menu-item {
+                font-family: 'Tahoma', sans-serif;
+                font-size: 18px;
+                color: white;
+                padding: 4px 24px 4px 10px;
+                border-radius: 7px 7px 0px 0px;
+                text-shadow: 1px 1px 5px #000000;
+                margin: 0 1px;
+                cursor: pointer;
+
+                &.has-orders {
+                    background-image: url(../images/check-circle-blk-bg.png);
+                    background-repeat: no-repeat;
+                    background-position: 95% 61%;
+                    background-size: 16px;
+                }
+            }
+
+            .austria { background-color: red; }
+            .russia { background-color: darkgreen; }
+            .turkey { background-color: yellow; }
+            .france { background-color: #00FFFF; }
+            .england { background-color: blue; }
+            .germany { background-color: #808080; }
+            .italy { background-color: #00FF00; }
+        }
+    }
+
+    .interf-btn span {
+        display: inline-block;
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        border: 1px;
+        border-color: black;
+        margin-left: 2px;
+        margin-right: 2px;
+        border-style: solid;
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .interf-btn.selected span {
+        background-color: #3194C6;
+        color: white;
+    }
+
+    .interf-btn.highlight span {
+        background-color: #CCCCFF;
+    }
+
+    #map_interface {
+        display: flex;
+        justify-content: space-between;
+        border: solid 2px rgba(0,0,0,0.2);
+        background: linear-gradient(rgba(0,0,0,0.2), white);
+
+        #map {
+            width: 80%;
+            height: 88%;
+            background: white;
+        }
+
+        #map_actions {
+            font-family: arial, sans-serif;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 20%;
+            padding: 10px 0;
+
+            #controls .phase-controls {
+                margin: 10px 0 0 0;
+                padding: 0;
+            }
+
+             div {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                margin: 10px 0 0 0;
+                padding: 0 10px;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+
+                 a {
+                    display: flex;
+                    background: white;
+                    width: 100%;
+                    flex: 1;
+                    align-items: center;
+                    justify-content: center;
+                    text-decoration: none;
+                    border: solid 1px black;
+                    border-radius: 7px;
+                    padding: 5px 0;
+                    margin: 2px;
+
+                    &.highlight {
+                        background-color: #CCCCFF;
+                    }
+
+                    &.selected {
+                        background-color: #3194C6;
+                    }
+                }
+            }
+        }
+
+        &.austria { background: linear-gradient(red, white 50%); border-color: red; }
+        &.russia { background: linear-gradient(darkgreen, white 50%); border-color: darkgreen;}
+        &.turkey { background: linear-gradient(yellow, white 50%); border-color: yellow;}
+        &.france { background: linear-gradient(#00FFFF, white 50%); border-color: #00FFFF;}
+        &.england { background: linear-gradient(blue, white 50%); border-color: blue;}
+        &.germany { background: linear-gradient(#808080, white 50%); border-color: #808080;}
+        &.italy { background: linear-gradient(#00FF00, white 50%); border-color: #00FF00;}
     }
 }
 
-.message {
-    font-family: 'Lucida Sans Unicode',monospace;
-    font-size: 12px;
+#about, #footer {
+    padding: 0 10px;
 }
