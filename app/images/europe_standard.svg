@@ -363,6 +363,7 @@ Created for Diplomap (http://www.games2relax.net/diplomap/)
 <g id="SupplyCenters"></g>
 <g id="Units"></g>
 <g id="Orders">
-    <path xmlns="http://www.w3.org/2000/svg" id="353,378" class="support" d="M353,378 Q351,438 305,412" marker-end="url(#S)"></path>
+    <!-- <path xmlns="http://www.w3.org/2000/svg" id="353,378" class="support" d="M353,378 Q351,438 305,412" marker-end="url(#S)"></path> -->
+    <!-- <path xmlns="http://www.w3.org/2000/svg" id="353,378" class="move" d="M353,378 305,412" marker-end="url(#M)"></path> -->
 </g>
 </svg>

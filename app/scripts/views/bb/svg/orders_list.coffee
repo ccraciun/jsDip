@@ -3,6 +3,7 @@ _ = require 'underscore'
 Views = {
   BaseSvgView: require './base_svg'
   svgHold: require './orders/hold'
+  svgMove: require './orders/move'
 }
 
 module.exports = class OrdersList extends Views.BaseSvgView
@@ -28,6 +29,9 @@ module.exports = class OrdersList extends Views.BaseSvgView
     @subViews = @collection?.map (model) =>
       if model.type() == 'hold'
         view = new Views.svgHold model: model
+      if model.type() == 'move'
+        view = new Views.svgMove model: model
+      if view
         view.render()
         Snap(@el).append view.el
         view
