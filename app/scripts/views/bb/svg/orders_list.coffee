@@ -19,7 +19,7 @@ module.exports = class OrdersList extends Views.BaseSvgView
     super
     # TODO(rkofman): we should be listening to add/remove and doing the right thing
     # for each item rather than re-rendering the entire list each time.
-    @listenTo(@collection, 'update', @redraw)
+    # @listenTo(@collection, 'update', @redraw)
     @redraw()
     return @
 
